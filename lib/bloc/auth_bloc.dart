@@ -54,7 +54,7 @@ class AuthBloc {
       case LoginType.Gmail:
         return _authService.logoutGoogle();
       default:
-        return null;
+        return _authService.logoutGithub();
     }
   }
 

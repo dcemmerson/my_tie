@@ -8,8 +8,6 @@ class Authenticate extends StatefulWidget {
 
   Authenticate({@required this.child});
 
-  void setChild() {}
-
   @override
   _AuthenticateState createState() => _AuthenticateState();
 }
@@ -32,6 +30,7 @@ class _AuthenticateState extends State<Authenticate> {
           }
           switch (snapshot.connectionState) {
             case ConnectionState.waiting:
+              return Text('waiting');
             // case ConnectionState.none:
             // // return Text('loading');
             // case ConnectionState.done:

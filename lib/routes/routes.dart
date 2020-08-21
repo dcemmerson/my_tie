@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
+
 import 'package:my_tie/models/wasted_item.dart';
-import 'package:my_tie/pages/account_page.dart';
+import 'package:my_tie/pages/route_based_pages/account_page.dart';
+import 'package:my_tie/pages/base/home/page_home.dart';
 import 'package:my_tie/pages/base/page_base.dart';
 import 'package:my_tie/pages/base/page_container.dart';
-import 'package:my_tie/pages/waste_detail_page.dart';
-import 'package:my_tie/pages/waste_list_page.dart';
-import 'package:my_tie/pages/waste_post_page.dart';
+import 'package:my_tie/pages/route_based_pages/home_page.dart';
+import 'package:my_tie/pages/route_based_pages/waste_detail_page.dart';
+import 'package:my_tie/pages/route_based_pages/waste_list_page.dart';
+import 'package:my_tie/pages/route_based_pages/waste_post_page.dart';
 
 class Routes {
   static final routes = {
+    HomePage.route: (context) => PageHome(),
     AccountPage.route: (context) =>
         PageContainer(pageType: PageType.AccountPage),
     WasteListPage.route: (context) =>

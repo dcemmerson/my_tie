@@ -7,6 +7,7 @@ import 'package:my_tie/widgets/drawer/settings_drawer.dart';
 import 'package:my_tie/widgets/drawer/settings_drawer_icon.dart';
 
 enum PageType {
+  HomePage,
   AuthenticationPage,
   WastePage,
   WasteDetailPage,
@@ -58,18 +59,19 @@ abstract class PageBase extends StatelessWidget {
       );
     } else {
       return Theme(
-          data: themeManager.themeData,
-          child: Scaffold(
-            appBar: AppBar(
-              centerTitle: true,
-              elevation: 0.0,
-              title: Text(pageTitle),
-              textTheme: Theme.of(context).primaryTextTheme,
-              actions: [SettingsDrawerIcon()],
-            ),
-            endDrawer: SettingsDrawer(),
-            body: Authenticate(child: body),
-          ));
+        data: themeManager.themeData,
+        child: Scaffold(
+          appBar: AppBar(
+            centerTitle: true,
+            elevation: 0.0,
+            title: Text(pageTitle),
+            textTheme: Theme.of(context).primaryTextTheme,
+            actions: [SettingsDrawerIcon()],
+          ),
+          endDrawer: SettingsDrawer(),
+          body: Authenticate(child: body),
+        ),
+      );
     }
   }
 }
