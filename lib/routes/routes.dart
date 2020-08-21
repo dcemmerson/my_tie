@@ -1,0 +1,38 @@
+import 'package:flutter/material.dart';
+import 'package:my_tie/models/wasted_item.dart';
+import 'package:my_tie/pages/account_page.dart';
+import 'package:my_tie/pages/base/page_base.dart';
+import 'package:my_tie/pages/base/page_container.dart';
+import 'package:my_tie/pages/waste_detail_page.dart';
+import 'package:my_tie/pages/waste_list_page.dart';
+import 'package:my_tie/pages/waste_post_page.dart';
+
+class Routes {
+  static final routes = {
+    AccountPage.route: (context) =>
+        PageContainer(pageType: PageType.AccountPage),
+    WasteListPage.route: (context) =>
+        PageContainer(pageType: PageType.WastePage),
+    WasteDetailPage.route: (context) =>
+        PageContainer(pageType: PageType.WasteDetailPage),
+    WastePostPage.route: (context) =>
+        PageContainer(pageType: PageType.WastePostPage),
+  };
+
+  static Future wastePage(BuildContext context) {
+    return Navigator.pushNamed(context, WasteListPage.route);
+  }
+
+  static Future wasteDetailPage(BuildContext context,
+      {@required WastedItem item}) {
+    return Navigator.pushNamed(context, WasteDetailPage.route, arguments: item);
+  }
+
+  static Future addWastedPost(BuildContext context) {
+    return Navigator.pushNamed(context, WastePostPage.route);
+  }
+
+  static Future accountPage(BuildContext context) {
+    return Navigator.pushNamed(context, AccountPage.route);
+  }
+}
