@@ -43,7 +43,7 @@ abstract class PageBase extends StatelessWidget {
             ],
           ),
           endDrawer: SettingsDrawer(),
-          body: Authenticate(child: body),
+          body: body,
           floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
           floatingActionButton: Semantics(
             button: true,
@@ -51,9 +51,10 @@ abstract class PageBase extends StatelessWidget {
             label: 'New Waste Post',
             hint: 'Add new waste post',
             child: FloatingActionButton(
-                key: Key('addWastePost'),
-                onPressed: () => Routes.addWastedPost(context),
-                child: Icon(Icons.add_a_photo)),
+              key: Key('addWastePost'),
+              onPressed: () => Routes.addWastedPost(context),
+              child: Icon(Icons.add_a_photo),
+            ),
           ),
         ),
       );
@@ -66,7 +67,9 @@ abstract class PageBase extends StatelessWidget {
             elevation: 0.0,
             title: Text(pageTitle),
             textTheme: Theme.of(context).primaryTextTheme,
-            actions: [SettingsDrawerIcon()],
+            actions: [
+              SettingsDrawerIcon(),
+            ],
           ),
           endDrawer: SettingsDrawer(),
           body: Authenticate(child: body),

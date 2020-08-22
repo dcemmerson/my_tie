@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:my_tie/bloc/wasteagram_state.dart';
-import 'package:my_tie/pages/base/home/app_bottom_navigation_bar.dart';
+import 'package:my_tie/pages/base/navigation_base/app_bottom_navigation_bar.dart';
 import 'package:my_tie/pages/bottom_navigation_based_pages/bottom_nav_page_base.dart';
 import 'package:my_tie/routes/routes.dart';
 import 'package:my_tie/styles/theme_manager.dart';
-import 'package:my_tie/widgets/authentication/authenticate.dart';
 import 'package:my_tie/widgets/drawer/settings_drawer.dart';
 import 'package:my_tie/widgets/drawer/settings_drawer_icon.dart';
 
@@ -50,7 +49,7 @@ class _PageHomeState extends State<PageHome> {
           ],
         ),
         endDrawer: SettingsDrawer(),
-        body: Authenticate(child: _body),
+        body: _body,
         bottomNavigationBar: _appBottomNavigationBar,
         floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
         floatingActionButton: Semantics(

@@ -55,7 +55,7 @@ class _LoginButtonState extends State<LoginButton>
 
   void _signIn() async {
     setState(() => _waitingForServer = true);
-    await _authBloc.signIn(LoginType.Gmail);
+    await _authBloc.signIn(type: LoginType.Gmail);
     setState(() {
       _waitingForServer = false;
       _willBeAnimated = false;

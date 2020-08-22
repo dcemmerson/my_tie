@@ -1,26 +1,30 @@
 import 'package:flutter/material.dart';
 
 import 'package:my_tie/models/wasted_item.dart';
+import 'package:my_tie/pages/base/navigation_base/page_home.dart';
+import 'package:my_tie/pages/base/route_base/page_base.dart';
+import 'package:my_tie/pages/base/route_base/page_container.dart';
 import 'package:my_tie/pages/route_based_pages/account_page.dart';
-import 'package:my_tie/pages/base/home/page_home.dart';
-import 'package:my_tie/pages/base/page_base.dart';
-import 'package:my_tie/pages/base/page_container.dart';
 import 'package:my_tie/pages/route_based_pages/home_page.dart';
 import 'package:my_tie/pages/route_based_pages/waste_detail_page.dart';
 import 'package:my_tie/pages/route_based_pages/waste_list_page.dart';
 import 'package:my_tie/pages/route_based_pages/waste_post_page.dart';
+import 'package:my_tie/routes/route_guard.dart';
 
 class Routes {
   static final routes = {
-    HomePage.route: (context) => PageHome(),
+    HomePage.route: (context) {
+      print('home route');
+      return RouteGuard(child: PageHome());
+    },
     AccountPage.route: (context) =>
-        PageContainer(pageType: PageType.AccountPage),
+        RouteGuard(child: PageContainer(pageType: PageType.AccountPage)),
     WasteListPage.route: (context) =>
-        PageContainer(pageType: PageType.WastePage),
+        RouteGuard(child: PageContainer(pageType: PageType.WastePage)),
     WasteDetailPage.route: (context) =>
-        PageContainer(pageType: PageType.WasteDetailPage),
+        RouteGuard(child: PageContainer(pageType: PageType.WasteDetailPage)),
     WastePostPage.route: (context) =>
-        PageContainer(pageType: PageType.WastePostPage),
+        RouteGuard(child: PageContainer(pageType: PageType.WastePostPage)),
   };
 
   static Future wastePage(BuildContext context) {

@@ -8,18 +8,10 @@ import 'package:google_sign_in/google_sign_in.dart';
 class AuthService {
   RemoteConfig remoteConfig;
 
-  AuthService({this.remoteConfig}) {
-    //   _initRemoteConfig();
-  }
-
-  void _initRemoteConfig() async {
-    final RemoteConfig remoteConfig = await RemoteConfig.instance;
-    remoteConfig.setConfigSettings(RemoteConfigSettings(debugMode: true));
-    await remoteConfig.fetch(expiration: const Duration(hours: 5));
-    await remoteConfig.activateFetched();
-  }
+  AuthService({this.remoteConfig});
 
   Stream<User> get authStatus => FirebaseAuth.instance.authStateChanges();
+  User get currentUser => FirebaseAuth.instance.currentUser;
 
   Future<UserCredential> signInWithGoogle() async {
     try {

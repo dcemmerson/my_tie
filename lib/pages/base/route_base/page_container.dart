@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:my_tie/pages/base/route_base/page_base.dart';
 
 import 'package:my_tie/pages/route_based_pages/account_page.dart';
-import 'package:my_tie/pages/base/page_base.dart';
 import 'package:my_tie/pages/route_based_pages/waste_detail_page.dart';
 import 'package:my_tie/pages/route_based_pages/waste_list_page.dart';
 import 'package:my_tie/pages/route_based_pages/waste_post_page.dart';

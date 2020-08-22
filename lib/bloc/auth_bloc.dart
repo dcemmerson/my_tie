@@ -26,7 +26,6 @@ class AuthBloc {
 
   //Outputs - either going to wasteagram or uses services to Firebase.
   Stream<User> get user => _authStatusController.stream;
-
   StreamController<User> _authStatusController =
       BehaviorSubject<User>(seedValue: null);
 
@@ -34,8 +33,8 @@ class AuthBloc {
     _authService.authStatus.listen((user) => _authStatusController.add(user));
   }
 
-  Future<UserCredential> signIn(LoginType lType, {BuildContext context}) {
-    loginType = lType;
+  Future<UserCredential> signIn({LoginType type, BuildContext context}) {
+    loginType = type;
     switch (loginType) {
       case LoginType.Github:
         return _authService.signInWithGitHub(context);
@@ -45,6 +44,8 @@ class AuthBloc {
         return _authService.signInWithGoogle();
     }
   }
+
+  User get currentUser => _authService.currentUser;
 
   Future logout() {
     switch (loginType) {

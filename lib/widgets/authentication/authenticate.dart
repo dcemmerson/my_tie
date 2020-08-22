@@ -30,7 +30,7 @@ class _AuthenticateState extends State<Authenticate> {
           }
           switch (snapshot.connectionState) {
             case ConnectionState.waiting:
-              return Text('waiting');
+              return Text('aaawaiting...');
             // case ConnectionState.none:
             // // return Text('loading');
             // case ConnectionState.done:

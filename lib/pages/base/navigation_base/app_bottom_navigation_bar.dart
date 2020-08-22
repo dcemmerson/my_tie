@@ -53,16 +53,16 @@ class _AppBottomNavigationBarState extends State<AppBottomNavigationBar> {
     return BottomNavigationBar(
       items: [
         BottomNavigationBarItem(
-          title: Text('Home'),
+          title: Text(widget.home.title),
           icon: Icon(Icons.home),
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.add_box),
-          title: Text('New Tie'),
+          title: Text(widget.newTieFly.title),
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.account_box),
-          title: Text('Account'),
+          title: Text(widget.account.title),
         ),
       ],
       selectedItemColor: Colors.blueAccent,

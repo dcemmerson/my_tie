@@ -74,7 +74,7 @@ class _LoginButtonStandaloneState extends State<LoginButtonStandalone>
 
   void login(LoginType loginType) async {
     setState(() => attemptingLogin = true);
-    await _authBloc.signIn(loginType, context: context);
+    await _authBloc.signIn(type: loginType, context: context);
     setState(() => attemptingLogin = false);
   }
 
