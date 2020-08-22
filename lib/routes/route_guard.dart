@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:my_tie/bloc/wasteagram_state.dart';
-import 'package:my_tie/pages/base/authenticate_base.dart';
-import 'package:my_tie/widgets/authentication/login_button_standalone.dart';
+import 'package:my_tie/pages/base/page_base_stateless/page_base.dart';
+import 'package:my_tie/pages/base/page_base_stateless/page_container.dart';
 
 class RouteGuard extends StatelessWidget {
   final Widget child;
@@ -16,7 +16,9 @@ class RouteGuard extends StatelessWidget {
       stream: authBloc.user,
       builder: (context, snapshot) {
         if (authBloc.currentUser == null) {
-          return AuthenticateBase(child: LoginButtonStandalone());
+          return PageContainer(
+            pageType: PageType.AuthenticationPage,
+          );
         } else if (snapshot.hasError) {
           return Text('Error occurred with firebase auth');
         }

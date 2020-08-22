@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:my_tie/pages/base/route_base/page_base.dart';
+import 'package:my_tie/pages/authentication_page.dart';
+import 'package:my_tie/pages/base/page_base_stateless/page_base.dart';
 
 import 'package:my_tie/pages/route_based_pages/account_page.dart';
 import 'package:my_tie/pages/route_based_pages/waste_detail_page.dart';
@@ -17,6 +18,9 @@ class PageContainer extends PageBase {
   Widget get body {
     var page;
     switch (pageType) {
+      case PageType.AuthenticationPage:
+        page = AuthenticationPage();
+        break;
       case PageType.WastePage:
         page = WasteListPage();
         break;
@@ -41,6 +45,8 @@ class PageContainer extends PageBase {
   @override
   String get pageTitle {
     switch (pageType) {
+      case PageType.AuthenticationPage:
+        return AuthenticationPage.title;
       case PageType.WastePage:
         return WasteListPage.title;
       case PageType.WasteDetailPage:

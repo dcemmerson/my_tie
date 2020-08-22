@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my_tie/bloc/wasteagram_state.dart';
-import 'package:my_tie/pages/base/navigation_base/app_bottom_navigation_bar.dart';
+import 'package:my_tie/pages/base/page_base_stateful/app_bottom_navigation_bar.dart';
 import 'package:my_tie/pages/bottom_navigation_based_pages/bottom_nav_page_base.dart';
 import 'package:my_tie/routes/routes.dart';
 import 'package:my_tie/styles/theme_manager.dart';

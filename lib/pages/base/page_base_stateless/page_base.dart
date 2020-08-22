@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:my_tie/bloc/wasteagram_state.dart';
 import 'package:my_tie/routes/routes.dart';
 import 'package:my_tie/styles/theme_manager.dart';
-import 'package:my_tie/widgets/authentication/authenticate.dart';
 import 'package:my_tie/widgets/drawer/settings_drawer.dart';
 import 'package:my_tie/widgets/drawer/settings_drawer_icon.dart';
 
@@ -12,7 +11,7 @@ enum PageType {
   WastePage,
   WasteDetailPage,
   WastePostPage,
-  AccountPage
+  AccountPage,
 }
 
 abstract class PageBase extends StatelessWidget {
@@ -72,7 +71,7 @@ abstract class PageBase extends StatelessWidget {
             ],
           ),
           endDrawer: SettingsDrawer(),
-          body: Authenticate(child: body),
+          body: body,
         ),
       );
     }

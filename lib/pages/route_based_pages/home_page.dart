@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:my_tie/widgets/waste_item_detail.dart';
 
 class HomePage extends StatelessWidget {
   static const route = '/';
