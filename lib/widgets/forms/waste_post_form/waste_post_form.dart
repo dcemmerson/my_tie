@@ -4,11 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:location/location.dart';
 import 'package:my_tie/bloc/auth_bloc.dart';
 import 'package:my_tie/bloc/waste_bloc.dart';
-import 'package:my_tie/bloc/wasteagram_state.dart';
+import 'package:my_tie/bloc/my_tie_state.dart';
 import 'package:my_tie/models/wasted_item.dart';
 import 'package:my_tie/styles/styles.dart';
 import 'package:my_tie/utils/validate.dart';
-import 'package:my_tie/widgets/forms/waste_post_forms/date_time_form_field.dart';
+import 'package:my_tie/widgets/forms/waste_post_form/date_time_form_field.dart';
 import 'package:my_tie/widgets/misc/error_message.dart';
 
 class WastePostForm extends StatefulWidget {
@@ -38,8 +38,8 @@ class _WastePostFormState extends State<WastePostForm> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _wasteBloc = WasteagramStateContainer.of(context).blocProvider.wasteBloc;
-    _authBloc = WasteagramStateContainer.of(context).blocProvider.authBloc;
+    _wasteBloc = MyTieStateContainer.of(context).blocProvider.wasteBloc;
+    _authBloc = MyTieStateContainer.of(context).blocProvider.authBloc;
   }
 
   void _onFormChanged() {

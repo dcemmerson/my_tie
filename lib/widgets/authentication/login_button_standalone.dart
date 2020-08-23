@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:my_tie/bloc/auth_bloc.dart';
-import 'package:my_tie/bloc/wasteagram_state.dart';
+import 'package:my_tie/bloc/my_tie_state.dart';
 import 'package:my_tie/styles/styles.dart';
 
 class LoginButtonStandalone extends StatefulWidget {
@@ -45,7 +45,7 @@ class _LoginButtonStandaloneState extends State<LoginButtonStandalone>
   void didChangeDependencies() {
     super.didChangeDependencies();
     calculateAnimationDrops();
-    _authBloc = WasteagramStateContainer.of(context).blocProvider.authBloc;
+    _authBloc = MyTieStateContainer.of(context).blocProvider.authBloc;
   }
 
   @override

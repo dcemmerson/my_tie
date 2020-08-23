@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my_tie/bloc/auth_bloc.dart';
-import 'package:my_tie/bloc/wasteagram_state.dart';
+import 'package:my_tie/bloc/my_tie_state.dart';
 import 'package:my_tie/routes/routes.dart';
 import 'package:my_tie/styles/styles.dart';
 
@@ -50,7 +50,7 @@ class _LoginButtonState extends State<LoginButton>
 
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _authBloc = WasteagramStateContainer.of(context).blocProvider.authBloc;
+    _authBloc = MyTieStateContainer.of(context).blocProvider.authBloc;
   }
 
   void _signIn() async {

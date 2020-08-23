@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:my_tie/bloc/wasteagram_state.dart';
+import 'package:my_tie/bloc/my_tie_state.dart';
 import 'package:my_tie/routes/routes.dart';
 import 'package:my_tie/styles/theme_manager.dart';
 import 'package:my_tie/widgets/drawer/settings_drawer.dart';
@@ -27,7 +27,7 @@ abstract class PageBase extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     themeManager =
-        ThemeManager(darkMode: WasteagramStateContainer.of(context).isDarkMode);
+        ThemeManager(darkMode: MyTieStateContainer.of(context).isDarkMode);
     if (pageType == PageType.WastePage) {
       return Theme(
         data: themeManager.themeData,

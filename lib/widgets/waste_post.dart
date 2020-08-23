@@ -4,11 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:location/location.dart';
 import 'package:my_tie/bloc/waste_bloc.dart';
-import 'package:my_tie/bloc/wasteagram_state.dart';
+import 'package:my_tie/bloc/my_tie_state.dart';
 import 'package:my_tie/services/hardware/image_picker_manager.dart';
 import 'package:my_tie/services/hardware/location_manager.dart';
 import 'package:my_tie/styles/styles.dart';
-import 'package:my_tie/widgets/forms/waste_post_forms/waste_post_form.dart';
+import 'package:my_tie/widgets/forms/waste_post_form/waste_post_form.dart';
 import 'package:my_tie/widgets/misc/error_message.dart';
 import 'package:my_tie/widgets/misc/loading_content.dart';
 import 'package:my_tie/widgets/misc/location_denied.dart';
@@ -43,7 +43,7 @@ class _WastePostState extends State<WastePost> {
 
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _bloc = WasteagramStateContainer.of(context).blocProvider.wasteBloc;
+    _bloc = MyTieStateContainer.of(context).blocProvider.wasteBloc;
   }
 
   Widget _pickImage() {

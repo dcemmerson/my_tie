@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:my_tie/pages/bottom_navigation_based_pages/account.dart';
-import 'package:my_tie/pages/bottom_navigation_based_pages/home.dart';
-import 'package:my_tie/pages/bottom_navigation_based_pages/new_tie_fly.dart';
+import 'package:my_tie/pages/bottom_navigation_based_pages/account_page.dart';
+import 'package:my_tie/pages/bottom_navigation_based_pages/home_page.dart';
+import 'package:my_tie/pages/bottom_navigation_based_pages/new_fly_page.dart';
 
 enum BottomNav { Home, NewTieFly, Account }
 
@@ -9,9 +9,9 @@ typedef void SetBody(Widget widget);
 
 class AppBottomNavigationBar extends StatefulWidget {
   final SetBody setBody;
-  final Home home = Home();
-  final Account account = Account();
-  final NewTieFly newTieFly = NewTieFly();
+  final HomePage home = HomePage();
+  final AccountPage account = AccountPage();
+  final NewFlyPage newTieFly = NewFlyPage();
 
   AppBottomNavigationBar({@required this.setBody});
 

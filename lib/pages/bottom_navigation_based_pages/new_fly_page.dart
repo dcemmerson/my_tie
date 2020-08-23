@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:my_tie/pages/bottom_navigation_based_pages/bottom_nav_page_base.dart';
+import 'package:my_tie/widgets/bottom_navigation/new_fly.dart';
 
-class NewTieFly extends BottomNavPageBase {
+class NewFlyPage extends BottomNavPageBase {
   static const _title = 'New Tie Fly';
 
   @override
@@ -9,6 +10,6 @@ class NewTieFly extends BottomNavPageBase {
 
   @override
   Widget build(BuildContext context) {
-    return Container(child: Text('new tie fly'));
+    return NewFly();
   }
 }

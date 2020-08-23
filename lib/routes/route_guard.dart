@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:my_tie/bloc/wasteagram_state.dart';
+import 'package:my_tie/bloc/my_tie_state.dart';
 import 'package:my_tie/pages/base/page_base_stateless/page_base.dart';
 import 'package:my_tie/pages/base/page_base_stateless/page_container.dart';
 
@@ -10,7 +10,7 @@ class RouteGuard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var authBloc = WasteagramStateContainer.of(context).blocProvider.authBloc;
+    var authBloc = MyTieStateContainer.of(context).blocProvider.authBloc;
 
     return StreamBuilder(
       stream: authBloc.user,

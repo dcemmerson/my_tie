@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'bloc_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class WasteagramStateContainer extends StatefulWidget {
+class MyTieStateContainer extends StatefulWidget {
   static const initDarkMode = false;
   static const initCompactWasteListMode = true;
   static const prefsDarkMode = 'darkMode';
@@ -13,21 +13,21 @@ class WasteagramStateContainer extends StatefulWidget {
   final Widget child;
   final BlocProvider blocProvider;
 
-  const WasteagramStateContainer(
+  const MyTieStateContainer(
       {Key key, @required this.child, @required this.blocProvider})
       : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => WasteagramState();
+  State<StatefulWidget> createState() => MyTieState();
 
-  static WasteagramState of(BuildContext context) {
-    return (context.inheritFromWidgetOfExactType(_WasteagramContainer)
-            as _WasteagramContainer)
+  static MyTieState of(BuildContext context) {
+    return (context.inheritFromWidgetOfExactType(_MyTieContainer)
+            as _MyTieContainer)
         .wasteagramState;
   }
 }
 
-class WasteagramState extends State<WasteagramStateContainer> {
+class MyTieState extends State<MyTieStateContainer> {
   SharedPreferences _prefs;
 
   BlocProvider get blocProvider => widget.blocProvider;
@@ -47,42 +47,40 @@ class WasteagramState extends State<WasteagramStateContainer> {
 
   void initSharedPrefs() async {
     _prefs = await SharedPreferences.getInstance();
-    var initialDarkMode =
-        _prefs.getBool(WasteagramStateContainer.prefsDarkMode);
+    var initialDarkMode = _prefs.getBool(MyTieStateContainer.prefsDarkMode);
 
     var initialCompactWasteListMode =
-        _prefs.getBool(WasteagramStateContainer.prefsCompactWasteListMode);
+        _prefs.getBool(MyTieStateContainer.prefsCompactWasteListMode);
 
     setState(() {
       _isDarkMode = initialDarkMode is bool
           ? initialDarkMode
-          : WasteagramStateContainer.initDarkMode;
+          : MyTieStateContainer.initDarkMode;
       _isCompactWasteListMode = initialCompactWasteListMode is bool
           ? initialCompactWasteListMode
-          : WasteagramStateContainer.initCompactWasteListMode;
+          : MyTieStateContainer.initCompactWasteListMode;
     });
   }
 
   void toggleDarkMode() {
-    _prefs.setBool(WasteagramStateContainer.prefsDarkMode, !_isDarkMode);
+    _prefs.setBool(MyTieStateContainer.prefsDarkMode, !_isDarkMode);
     setState(() => _isDarkMode = !_isDarkMode);
   }
 
   void toggleAllUsersEntries() {
-    _prefs.setBool(
-        WasteagramStateContainer.prefsAllUsersEntries, !_allUsersEntries);
+    _prefs.setBool(MyTieStateContainer.prefsAllUsersEntries, !_allUsersEntries);
     setState(() => _allUsersEntries = !_allUsersEntries);
   }
 
   void toggleCompactWasteListMode() {
-    _prefs.setBool(WasteagramStateContainer.prefsCompactWasteListMode,
+    _prefs.setBool(MyTieStateContainer.prefsCompactWasteListMode,
         !_isCompactWasteListMode);
     setState(() => _isCompactWasteListMode = !_isCompactWasteListMode);
   }
 
   @override
   Widget build(BuildContext context) {
-    return _WasteagramContainer(
+    return _MyTieContainer(
       wasteagramState: this,
       isDarkMode: _isDarkMode,
       isCompactWasteListMode: _isCompactWasteListMode,
@@ -93,14 +91,14 @@ class WasteagramState extends State<WasteagramStateContainer> {
   }
 }
 
-class _WasteagramContainer extends InheritedWidget {
-  final WasteagramState wasteagramState;
+class _MyTieContainer extends InheritedWidget {
+  final MyTieState wasteagramState;
   final BlocProvider blocProvider;
   final bool isDarkMode;
   final bool isCompactWasteListMode;
   final bool allUsersEntries;
 
-  _WasteagramContainer({
+  _MyTieContainer({
     Key key,
     @required this.wasteagramState,
     @required Widget child,
@@ -111,7 +109,7 @@ class _WasteagramContainer extends InheritedWidget {
   }) : super(key: key, child: child);
 
   @override
-  bool updateShouldNotify(_WasteagramContainer oldWidget) {
+  bool updateShouldNotify(_MyTieContainer oldWidget) {
     return oldWidget.wasteagramState != this.wasteagramState ||
         oldWidget.isDarkMode != this.isDarkMode ||
         oldWidget.isCompactWasteListMode != this.isCompactWasteListMode ||

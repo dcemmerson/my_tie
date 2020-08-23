@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:my_tie/bloc/auth_bloc.dart';
 import 'package:my_tie/bloc/waste_bloc.dart';
-import 'package:my_tie/bloc/wasteagram_state.dart';
+import 'package:my_tie/bloc/my_tie_state.dart';
 import 'package:my_tie/widgets/waste_list_view/compact_list_tile.dart';
 import 'package:my_tie/widgets/waste_list_view/empty_post.dart';
 import 'package:my_tie/widgets/waste_list_view/expanded_list_tile.dart';
@@ -21,12 +21,12 @@ class _WasteItemsState extends State<WasteItems> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _wasteBloc = WasteagramStateContainer.of(context).blocProvider.wasteBloc;
-    _authBloc = WasteagramStateContainer.of(context).blocProvider.authBloc;
-    _allUserEntries = WasteagramStateContainer.of(context).allUsersEntries;
+    _wasteBloc = MyTieStateContainer.of(context).blocProvider.wasteBloc;
+    _authBloc = MyTieStateContainer.of(context).blocProvider.authBloc;
+    _allUserEntries = MyTieStateContainer.of(context).allUsersEntries;
 
     _isCompactListTileMode =
-        WasteagramStateContainer.of(context).isCompactWasteListMode;
+        MyTieStateContainer.of(context).isCompactWasteListMode;
   }
 
   Widget _buildList(String uid) {
