@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:my_tie/bloc/my_tie_state.dart';
 import 'package:my_tie/bloc/new_fly_bloc.dart';
+import 'package:my_tie/widgets/forms/new_fly_form/fly_styles_dropdown.dart';
 import 'package:my_tie/widgets/forms/new_fly_form/fly_types_dropdown.dart';
 
 enum DropdownType { FlyStyles, FlyTypes, Difficulties }
@@ -56,6 +57,7 @@ class _NewFlyFormState extends State<NewFlyForm> {
             child: Column(
               children: [
                 FlyTypesDropdown(),
+                FlyStylesDropdown(),
               ],
             )));
   }

@@ -14,12 +14,12 @@ enum FlyStyle {
   Other,
 }
 
-class FlyStylesRadio extends StatefulWidget {
+class FlyStylesDropdown extends StatefulWidget {
   @override
-  _FlyStylesRadioState createState() => _FlyStylesRadioState();
+  _FlyStylesDropdownState createState() => _FlyStylesDropdownState();
 }
 
-class _FlyStylesRadioState extends State<FlyStylesRadio> {
+class _FlyStylesDropdownState extends State<FlyStylesDropdown> {
   NewFlyBloc _newFlyBloc;
   FlyStyle _selectedFlyStyle;
 
@@ -52,31 +52,30 @@ class _FlyStylesRadioState extends State<FlyStylesRadio> {
     }
   }
 
-  void _flyTypeSelected(FlyStyle flyStype) =>
-      setState(() => _selectedFlyStyle = flyStype);
+  void _flyStyleSelected(FlyStyle flyStyle) =>
+      setState(() => _selectedFlyStyle = flyStyle);
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: _newFlyBloc.flyTypes.firstWhere((data) => data.size > 0),
+      future: _newFlyBloc.flyStyles.firstWhere((data) => data.size > 0),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
-        if (snapshot.hasError) return Text('Error in fly types');
+        if (snapshot.hasError) return Text('Error in fly styles');
 
         switch (snapshot.connectionState) {
           case ConnectionState.done:
-            List flyTypes = snapshot.data.documents[0].data()['fly_types'];
-
-            return Radio<FlyStyle>(
-              value: _selectedFlyStyle ?? FlyStyle.Other,
-              items: flyTypes.map<Radio<FlyStyle>>((type) {
-                return Radio<FlyStyle>(
-                  value: _getFlyType(type),
+            List flyStyles = snapshot.data.documents[0].data()['fly_styles'];
+            return DropdownButton<FlyStyle>(
+              value: _selectedFlyStyle ?? FlyStyle.Midge,
+              items: flyStyles.map<DropdownMenuItem<FlyStyle>>((style) {
+                return DropdownMenuItem<FlyStyle>(
+                  value: _getFlyType(style),
                   child: Text(
-                    type,
+                    style,
                   ),
                 );
               }).toList(),
-              onChanged: _flyTypeSelected,
+              onChanged: _flyStyleSelected,
             );
 
           case ConnectionState.none:

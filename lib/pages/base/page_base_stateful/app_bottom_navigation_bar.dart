@@ -1,50 +1,28 @@
 import 'package:flutter/material.dart';
-import 'package:my_tie/pages/bottom_navigation_based_pages/account_page.dart';
-import 'package:my_tie/pages/bottom_navigation_based_pages/home_page.dart';
-import 'package:my_tie/pages/bottom_navigation_based_pages/new_fly_page.dart';
+import 'package:my_tie/pages/base/page_base_stateful/page_home.dart';
 
-enum BottomNav { Home, NewTieFly, Account }
+typedef void SetBottomNavPageType(BottomNavPageType bottomNavPage);
 
-typedef void SetBody(Widget widget);
+class AppBottomNavigationBar extends StatelessWidget {
+  final SetBottomNavPageType setBottomNavPageType;
+  final BottomNavPageType bottomNavPageType;
 
-class AppBottomNavigationBar extends StatefulWidget {
-  final SetBody setBody;
-  final HomePage home = HomePage();
-  final AccountPage account = AccountPage();
-  final NewFlyPage newTieFly = NewFlyPage();
-
-  AppBottomNavigationBar({@required this.setBody});
-
-  @override
-  _AppBottomNavigationBarState createState() => _AppBottomNavigationBarState();
-}
-
-class _AppBottomNavigationBarState extends State<AppBottomNavigationBar> {
-  int _selectedIndex;
-
-  @override
-  void initState() {
-    super.initState();
-    _selectedIndex = 0;
-  }
+  AppBottomNavigationBar(
+      {@required this.setBottomNavPageType, @required this.bottomNavPageType});
 
   void _onItemTap(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-
-    switch (BottomNav.values[index]) {
-      case (BottomNav.Home):
-        widget.setBody(widget.home);
+    switch (BottomNavPageType.values[index]) {
+      case (BottomNavPageType.Home):
+        setBottomNavPageType(BottomNavPageType.Home);
         break;
-      case (BottomNav.Account):
-        widget.setBody(widget.account);
+      case (BottomNavPageType.Account):
+        setBottomNavPageType(BottomNavPageType.Account);
         break;
-      case (BottomNav.NewTieFly):
-        widget.setBody(widget.newTieFly);
+      case (BottomNavPageType.NewTieFly):
+        setBottomNavPageType(BottomNavPageType.NewTieFly);
         break;
       default:
-        widget.setBody(widget.home);
+        throw Error();
     }
   }
 
@@ -53,20 +31,20 @@ class _AppBottomNavigationBarState extends State<AppBottomNavigationBar> {
     return BottomNavigationBar(
       items: [
         BottomNavigationBarItem(
-          title: Text(widget.home.title),
+          title: Text('home'),
           icon: Icon(Icons.home),
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.add_box),
-          title: Text(widget.newTieFly.title),
+          title: Text('New Fly'),
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.account_box),
-          title: Text(widget.account.title),
+          title: Text('Account..'),
         ),
       ],
       selectedItemColor: Colors.blueAccent,
-      currentIndex: _selectedIndex,
+      currentIndex: bottomNavPageType.index,
       onTap: _onItemTap,
     );
   }
