@@ -18,6 +18,8 @@ class BottomNavPage {
 }
 
 class PageHome extends StatefulWidget {
+  final _pageTransitionDuration = Duration(milliseconds: 200);
+
   final _pages = [
     BottomNavPage(
       page: HomePage(),
@@ -60,11 +62,17 @@ class _PageHomeState extends State<PageHome> {
   void setSelectedPage(int index, {bool animate: true}) {
     if (animate) {
       _pageController.animateToPage(index,
-          curve: Curves.linear, duration: Duration(milliseconds: 100));
+          curve: Curves.linear, duration: widget._pageTransitionDuration);
     }
     setState(() {
       _selectedPageIndex = index;
     });
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
   }
 
   @override

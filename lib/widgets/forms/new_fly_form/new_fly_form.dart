@@ -1,19 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:my_tie/styles/styles.dart';
+import 'package:my_tie/widgets/forms/new_fly_form/fly_difficulty_dropdown.dart';
+import 'package:my_tie/widgets/forms/new_fly_form/fly_name_text_input.dart';
 
 import 'package:my_tie/widgets/forms/new_fly_form/fly_styles_dropdown.dart';
+import 'package:my_tie/widgets/forms/new_fly_form/fly_targets_dropdown.dart';
 import 'package:my_tie/widgets/forms/new_fly_form/fly_types_dropdown.dart';
 
 enum DropdownType { FlyStyles, FlyTypes, Difficulties }
 enum Difficulty { Easy, Medium, Hard }
 
 class NewFlyForm extends StatefulWidget {
+  final _spaceBetweenDropdowns = AppPadding.p6;
   @override
   _NewFlyFormState createState() => _NewFlyFormState();
 }
 
-class _NewFlyFormState extends State<NewFlyForm> {
-  final _formKey = new GlobalKey();
+class _NewFlyFormState extends State<NewFlyForm>
+    with AutomaticKeepAliveClientMixin {
+  final _formKey = new GlobalKey<FormBuilderState>();
   bool _formChanged = false;
+
+  @override
+  bool get wantKeepAlive => true;
 
   void _onFormChanged() {
     if (!_formChanged) {
@@ -46,15 +56,38 @@ class _NewFlyFormState extends State<NewFlyForm> {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-        child: Form(
-            key: _formKey,
-            onChanged: _onFormChanged,
-            onWillPop: _onWillPop,
-            child: Column(
-              children: [
-                FlyTypesDropdown(),
-                FlyStylesDropdown(),
-              ],
-            )));
+      child: FormBuilder(
+        key: _formKey,
+//        onChanged: _onFormChanged,
+        onWillPop: _onWillPop,
+        child: Padding(
+          padding: EdgeInsets.all(AppPadding.p2),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              FlyNameTextInput(),
+              SizedBox(height: widget._spaceBetweenDropdowns),
+              FlyDifficultyDropdown(),
+              SizedBox(height: widget._spaceBetweenDropdowns),
+              FlyTypesDropdown(),
+              SizedBox(height: widget._spaceBetweenDropdowns),
+              FlyStylesDropdown(),
+              SizedBox(height: widget._spaceBetweenDropdowns),
+              FlyTargetsDropdown(),
+              SizedBox(height: widget._spaceBetweenDropdowns),
+              Row(children: [
+                RaisedButton(
+                    onPressed: () {
+                      if (_formKey.currentState.saveAndValidate()) {
+                        print(_formKey.currentState.value);
+                      }
+                    },
+                    child: Text('Next'))
+              ]),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }

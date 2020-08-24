@@ -1,62 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
+
 import 'package:my_tie/bloc/my_tie_state.dart';
 import 'package:my_tie/bloc/new_fly_bloc.dart';
+import 'package:my_tie/models/fly_style.dart';
 
-enum FlyStyle {
-  Midge,
-  Caddis,
-  Mayfly,
-  Streamer,
-  Terrestrial,
-  Egg,
-  Attractor,
-  Foam,
-  Other,
-}
-
-class FlyStylesDropdown extends StatefulWidget {
-  @override
-  _FlyStylesDropdownState createState() => _FlyStylesDropdownState();
-}
-
-class _FlyStylesDropdownState extends State<FlyStylesDropdown> {
-  NewFlyBloc _newFlyBloc;
-  FlyStyle _selectedFlyStyle;
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    _newFlyBloc = MyTieStateContainer.of(context).blocProvider.newFlyBloc;
-  }
-
-  FlyStyle _getFlyType(String type) {
-    switch (type) {
-      case ('midge'):
-        return FlyStyle.Midge;
-      case ('caddis'):
-        return FlyStyle.Caddis;
-      case ('mayfly'):
-        return FlyStyle.Mayfly;
-      case ('streamer'):
-        return FlyStyle.Streamer;
-      case ('terrestrial'):
-        return FlyStyle.Terrestrial;
-      case ('egg'):
-        return FlyStyle.Egg;
-      case ('attractor'):
-        return FlyStyle.Attractor;
-      case ('foam'):
-        return FlyStyle.Foam;
-      default:
-        return FlyStyle.Other;
-    }
-  }
-
-  void _flyStyleSelected(FlyStyle flyStyle) =>
-      setState(() => _selectedFlyStyle = flyStyle);
+class FlyStylesDropdown extends StatelessWidget {
+  // final _underlineSuccess = Container(height: 2, color: AppColors.success);
+  // final _underlineError = Container(height: 2, color: AppColors.error);
 
   @override
   Widget build(BuildContext context) {
+    NewFlyBloc _newFlyBloc =
+        MyTieStateContainer.of(context).blocProvider.newFlyBloc;
     return FutureBuilder(
       future: _newFlyBloc.newFlyForm.firstWhere((data) => data.size > 0),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -65,17 +21,20 @@ class _FlyStylesDropdownState extends State<FlyStylesDropdown> {
         switch (snapshot.connectionState) {
           case ConnectionState.done:
             List flyStyles = snapshot.data.documents[0].data()['fly_styles'];
-            return DropdownButton<FlyStyle>(
-              value: _selectedFlyStyle ?? FlyStyle.Midge,
-              items: flyStyles.map<DropdownMenuItem<FlyStyle>>((style) {
-                return DropdownMenuItem<FlyStyle>(
-                  value: _getFlyType(style),
+            return FormBuilderDropdown(
+              attribute: 'Style',
+              decoration: const InputDecoration(
+                labelText: 'Style',
+              ),
+              items: flyStyles.map<DropdownMenuItem<FlyStyles>>((style) {
+                return DropdownMenuItem<FlyStyles>(
+                  value: FlyStyle.toEnum(style),
                   child: Text(
                     style,
                   ),
                 );
               }).toList(),
-              onChanged: _flyStyleSelected,
+              validators: [FormBuilderValidators.required()],
             );
 
           case ConnectionState.none:

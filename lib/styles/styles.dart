@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 class AppColors {
-  static const background = Color(0xF0F0F0F0);
+  static const background = const Color(0xF0F0F0F0);
+  static final success = Colors.green[400];
+  static final error = Colors.red[400];
 }
 
 class AppFonts {
@@ -30,5 +32,10 @@ class AppPadding {
   static const p9 = 30.0;
   static const p10 = 35.0;
   static const p11 = 40.0;
-  static const p12 = 450.0;
+  static const p12 = 45.0;
+}
+
+class AppTextStyles {
+  static const dropdown = const TextStyle(fontSize: 16);
+  static const dropdownLg = const TextStyle(fontSize: 20);
 }
