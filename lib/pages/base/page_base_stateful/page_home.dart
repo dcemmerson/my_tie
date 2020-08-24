@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:my_tie/bloc/my_tie_state.dart';
 import 'package:my_tie/pages/base/page_base_stateful/app_bottom_navigation_bar.dart';
 import 'package:my_tie/pages/bottom_navigation_based_pages/account_page.dart';
+import 'package:my_tie/pages/bottom_navigation_based_pages/bottom_nav_page_base.dart';
 import 'package:my_tie/pages/bottom_navigation_based_pages/home_page.dart';
 import 'package:my_tie/pages/bottom_navigation_based_pages/new_fly_page.dart';
 import 'package:my_tie/routes/routes.dart';
@@ -9,13 +10,27 @@ import 'package:my_tie/styles/theme_manager.dart';
 import 'package:my_tie/widgets/drawer/settings_drawer.dart';
 import 'package:my_tie/widgets/drawer/settings_drawer_icon.dart';
 
-enum BottomNavPageType { Home, NewTieFly, Account }
+class BottomNavPage {
+  final BottomNavPageBase page;
+  final Icon icon;
+
+  BottomNavPage({this.page, this.icon});
+}
 
 class PageHome extends StatefulWidget {
   final _pages = [
-    HomePage(),
-    NewFlyPage(),
-    AccountPage(),
+    BottomNavPage(
+      page: HomePage(),
+      icon: Icon(Icons.home),
+    ),
+    BottomNavPage(
+      page: NewFlyPage(),
+      icon: Icon(Icons.add_box),
+    ),
+    BottomNavPage(
+      page: AccountPage(),
+      icon: Icon(Icons.account_box),
+    ),
   ];
 
   @override
@@ -23,15 +38,15 @@ class PageHome extends StatefulWidget {
 }
 
 class _PageHomeState extends State<PageHome> {
-  BottomNavPageType _bottomNavPageType;
   PageController _pageController;
+  int _selectedPageIndex;
 
   ThemeManager themeManager;
 
   @override
   void initState() {
     super.initState();
-    _bottomNavPageType = BottomNavPageType.values[0];
+    _selectedPageIndex = 0;
     _pageController = PageController(initialPage: 1);
   }
 
@@ -42,13 +57,18 @@ class _PageHomeState extends State<PageHome> {
         ThemeManager(darkMode: MyTieStateContainer.of(context).isDarkMode);
   }
 
-  void setSelectedPage(BottomNavPageType bottomNavPageType,
-      {bool animate: true}) {
+  // void setSelectedPage(BottomNavPageType bottomNavPageType,
+  void setSelectedPage(int index, {bool animate: true}) {
     if (animate) {
-      _pageController.animateToPage(bottomNavPageType.index,
+      _pageController.animateToPage(index,
           curve: Curves.linear, duration: Duration(milliseconds: 100));
+
+      // _pageController.animateToPage(bottomNavPageType.index,
+      //     curve: Curves.linear, duration: Duration(milliseconds: 100));
     }
-    setState(() => _bottomNavPageType = bottomNavPageType);
+    setState(() {
+      _selectedPageIndex = index;
+    });
   }
 
   @override
@@ -59,7 +79,8 @@ class _PageHomeState extends State<PageHome> {
         appBar: AppBar(
           centerTitle: true,
           elevation: 0.0,
-          title: Text(widget._pages[_bottomNavPageType.index].title),
+          title: Text(widget._pages[_selectedPageIndex].page
+              .title) /* Text(widget._pages[_bottomNavPageType.index].title)*/,
           textTheme: Theme.of(context).primaryTextTheme,
           actions: [
             SettingsDrawerIcon(),
@@ -68,13 +89,14 @@ class _PageHomeState extends State<PageHome> {
         endDrawer: SettingsDrawer(),
         body: PageView(
           controller: _pageController,
-          onPageChanged: (index) =>
-              setSelectedPage(BottomNavPageType.values[index], animate: false),
-          children: widget._pages,
+          onPageChanged: (int index) => setSelectedPage(index, animate: false),
+          //setSelectedPage(BottomNavPageType.values[index], animate: false),
+          children: widget._pages.map((p) => p.page).toList(),
         ),
         bottomNavigationBar: AppBottomNavigationBar(
-          bottomNavPageType: _bottomNavPageType,
-          setBottomNavPageType: setSelectedPage,
+          selectedBottomAppBarIndex: _selectedPageIndex,
+          bottomNavPages: widget._pages,
+          setBottomNavPage: setSelectedPage,
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
         floatingActionButton: Semantics(

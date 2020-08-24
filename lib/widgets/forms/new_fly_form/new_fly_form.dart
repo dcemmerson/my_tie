@@ -43,10 +43,6 @@ class _NewFlyFormState extends State<NewFlyForm> {
             ));
   }
 
-  Widget _flyStyleDropdown() {}
-
-  Widget _flyDifficultyDropdown() {}
-
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(

@@ -1,51 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:my_tie/pages/base/page_base_stateful/page_home.dart';
 
-typedef void SetBottomNavPageType(BottomNavPageType bottomNavPage);
+typedef void SetBottomNavPage(int index);
 
 class AppBottomNavigationBar extends StatelessWidget {
-  final SetBottomNavPageType setBottomNavPageType;
-  final BottomNavPageType bottomNavPageType;
+  final SetBottomNavPage setBottomNavPage;
+  final int selectedBottomAppBarIndex;
+  final List<BottomNavPage> bottomNavPages;
 
   AppBottomNavigationBar(
-      {@required this.setBottomNavPageType, @required this.bottomNavPageType});
-
-  void _onItemTap(int index) {
-    switch (BottomNavPageType.values[index]) {
-      case (BottomNavPageType.Home):
-        setBottomNavPageType(BottomNavPageType.Home);
-        break;
-      case (BottomNavPageType.Account):
-        setBottomNavPageType(BottomNavPageType.Account);
-        break;
-      case (BottomNavPageType.NewTieFly):
-        setBottomNavPageType(BottomNavPageType.NewTieFly);
-        break;
-      default:
-        throw Error();
-    }
-  }
+      {@required this.setBottomNavPage,
+      @required this.selectedBottomAppBarIndex,
+      @required this.bottomNavPages});
 
   @override
   Widget build(BuildContext context) {
     return BottomNavigationBar(
-      items: [
-        BottomNavigationBarItem(
-          title: Text('home'),
-          icon: Icon(Icons.home),
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.add_box),
-          title: Text('New Fly'),
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.account_box),
-          title: Text('Account..'),
-        ),
-      ],
+      items: bottomNavPages
+          .map((p) => BottomNavigationBarItem(
+                title: Text(p.page.title),
+                icon: p.icon,
+              ))
+          .toList(),
       selectedItemColor: Colors.blueAccent,
-      currentIndex: bottomNavPageType.index,
-      onTap: _onItemTap,
+      currentIndex: selectedBottomAppBarIndex,
+      onTap: setBottomNavPage,
     );
   }
 }
