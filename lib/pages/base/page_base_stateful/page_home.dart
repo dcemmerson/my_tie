@@ -57,14 +57,10 @@ class _PageHomeState extends State<PageHome> {
         ThemeManager(darkMode: MyTieStateContainer.of(context).isDarkMode);
   }
 
-  // void setSelectedPage(BottomNavPageType bottomNavPageType,
   void setSelectedPage(int index, {bool animate: true}) {
     if (animate) {
       _pageController.animateToPage(index,
           curve: Curves.linear, duration: Duration(milliseconds: 100));
-
-      // _pageController.animateToPage(bottomNavPageType.index,
-      //     curve: Curves.linear, duration: Duration(milliseconds: 100));
     }
     setState(() {
       _selectedPageIndex = index;
@@ -79,8 +75,7 @@ class _PageHomeState extends State<PageHome> {
         appBar: AppBar(
           centerTitle: true,
           elevation: 0.0,
-          title: Text(widget._pages[_selectedPageIndex].page
-              .title) /* Text(widget._pages[_bottomNavPageType.index].title)*/,
+          title: Text(widget._pages[_selectedPageIndex].page.title),
           textTheme: Theme.of(context).primaryTextTheme,
           actions: [
             SettingsDrawerIcon(),
@@ -90,7 +85,6 @@ class _PageHomeState extends State<PageHome> {
         body: PageView(
           controller: _pageController,
           onPageChanged: (int index) => setSelectedPage(index, animate: false),
-          //setSelectedPage(BottomNavPageType.values[index], animate: false),
           children: widget._pages.map((p) => p.page).toList(),
         ),
         bottomNavigationBar: AppBottomNavigationBar(

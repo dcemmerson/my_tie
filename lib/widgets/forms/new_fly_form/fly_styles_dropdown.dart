@@ -58,7 +58,7 @@ class _FlyStylesDropdownState extends State<FlyStylesDropdown> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: _newFlyBloc.flyStyles.firstWhere((data) => data.size > 0),
+      future: _newFlyBloc.newFlyForm.firstWhere((data) => data.size > 0),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.hasError) return Text('Error in fly styles');
 

@@ -21,9 +21,9 @@ class _FlyTypesDropdownState extends State<FlyTypesDropdown> {
 
   FlyType _getFlyType(String type) {
     switch (type) {
-      case ('dry_fly'):
+      case ('dry fly'):
         return FlyType.Dry;
-      case ('wet_fly'):
+      case ('wet fly'):
         return FlyType.Wet;
       case ('nymph'):
         return FlyType.Nymph;
@@ -40,7 +40,7 @@ class _FlyTypesDropdownState extends State<FlyTypesDropdown> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: _newFlyBloc.flyTypes.firstWhere((data) => data.size > 0),
+      future: _newFlyBloc.newFlyForm.firstWhere((data) => data.size > 0),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.hasError) return Text('Error in fly types');
 
@@ -63,6 +63,7 @@ class _FlyTypesDropdownState extends State<FlyTypesDropdown> {
 
           case ConnectionState.none:
           case ConnectionState.waiting:
+
           case ConnectionState.active:
           default:
             return CircularProgressIndicator();
