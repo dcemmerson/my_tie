@@ -7,6 +7,7 @@ import 'package:my_tie/models/fly_difficulty.dart';
 import 'package:my_tie/models/fly_style.dart';
 import 'package:my_tie/models/fly_target.dart';
 import 'package:my_tie/models/fly_type.dart';
+import 'package:my_tie/models/new_fly_form_template.dart';
 import 'package:my_tie/styles/styles.dart';
 import 'package:my_tie/widgets/forms/new_fly_form/fly_difficulty_dropdown.dart';
 import 'package:my_tie/widgets/forms/new_fly_form/fly_name_text_input.dart';
@@ -29,16 +30,34 @@ class _NewFlyFormState extends State<NewFlyForm>
   final _formKey = new GlobalKey<FormBuilderState>();
   NewFlyBloc _newFlyBloc;
 
+  NewFlyFormTemplate _formTemplate;
+  Map _flyInProgress;
+
   bool _formChanged = false;
 
   @override
   bool get wantKeepAlive => true;
 
   @override
-  @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     _newFlyBloc = MyTieStateContainer.of(context).blocProvider.newFlyBloc;
+    if (_formTemplate == null) {
+      _fetchAttributes();
+    }
+    if (_flyInProgress == null) {
+      _fetchFlyInProgress();
+    }
+  }
+
+  void _fetchAttributes() async {
+    NewFlyFormTemplate formTemplate = await _newFlyBloc.newFlyForm;
+    setState(() => _formTemplate = formTemplate);
+  }
+
+  void _fetchFlyInProgress() async {
+    Map flyInProgress = (await _newFlyBloc.flyInProgress).data();
+    setState(() => _flyInProgress = flyInProgress);
   }
 
   void _onFormChanged() {
@@ -83,27 +102,6 @@ class _NewFlyFormState extends State<NewFlyForm>
     }
   }
 
-  Widget _buildForm() {
-    return FutureBuilder(
-      future: _newFlyBloc.newFlyForm,
-      builder: (BuildContext context, AsyncSnapshot snapshot) {
-        if (snapshot.hasError) return Text('Error in fly types');
-
-        switch (snapshot.connectionState) {
-          case ConnectionState.done:
-            Map flyAttributes = snapshot.data.documents[0].data();
-            return null;
-
-          case ConnectionState.none:
-          case ConnectionState.waiting:
-          case ConnectionState.active:
-          default:
-            return CircularProgressIndicator();
-        }
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -118,13 +116,26 @@ class _NewFlyFormState extends State<NewFlyForm>
             children: [
               FlyNameTextInput(),
               SizedBox(height: widget._spaceBetweenDropdowns),
-              FlyDifficultyDropdown(),
+              FlyDifficultyDropdown(
+                flyDifficulties: _flyInProgress != null
+                    ? _formTemplate.flyDifficulties
+                    : null,
+              ),
               SizedBox(height: widget._spaceBetweenDropdowns),
-              FlyTypesDropdown(),
+              FlyTypesDropdown(
+                flyTypes:
+                    _flyInProgress != null ? _formTemplate.flyTypes : null,
+              ),
               SizedBox(height: widget._spaceBetweenDropdowns),
-              FlyStylesDropdown(),
+              FlyStylesDropdown(
+                flyStyles:
+                    _flyInProgress != null ? _formTemplate.flyStyles : null,
+              ),
               SizedBox(height: widget._spaceBetweenDropdowns),
-              FlyTargetsDropdown(),
+              FlyTargetsDropdown(
+                flyTargets:
+                    _flyInProgress != null ? _formTemplate.flyTargets : null,
+              ),
               SizedBox(height: widget._spaceBetweenDropdowns),
               Row(children: [
                 RaisedButton(onPressed: _saveAndValidate, child: Text('Next'))

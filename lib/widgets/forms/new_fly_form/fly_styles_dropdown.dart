@@ -9,41 +9,52 @@ class FlyStylesDropdown extends StatelessWidget {
   // final _underlineSuccess = Container(height: 2, color: AppColors.success);
   // final _underlineError = Container(height: 2, color: AppColors.error);
 
+  final List<String> flyStyles;
+
+  FlyStylesDropdown({this.flyStyles});
+
+  Widget _buildDropdown() {
+    return FormBuilderDropdown(
+      attribute: 'flyStyle',
+      decoration: const InputDecoration(
+        labelText: 'Style',
+      ),
+      items: flyStyles.map<DropdownMenuItem<FlyStyles>>((style) {
+        return DropdownMenuItem<FlyStyles>(
+          value: FlyStyle.toEnum(style),
+          child: Text(
+            style,
+          ),
+        );
+      }).toList(),
+      validators: [FormBuilderValidators.required()],
+    );
+  }
+
+  Widget _buildLoading() {
+    return FormBuilderDropdown(
+      attribute: 'flyStyle',
+      decoration: const InputDecoration(
+        labelText: 'Style',
+      ),
+      items: [
+        DropdownMenuItem<String>(
+            child: Center(
+          child: CircularProgressIndicator(),
+        ))
+      ],
+      validators: [FormBuilderValidators.required()],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    NewFlyBloc _newFlyBloc =
-        MyTieStateContainer.of(context).blocProvider.newFlyBloc;
-    return FutureBuilder(
-      future: _newFlyBloc.newFlyForm,
-      builder: (BuildContext context, AsyncSnapshot snapshot) {
-        if (snapshot.hasError) return Text('Error in fly styles');
-
-        switch (snapshot.connectionState) {
-          case ConnectionState.done:
-            List flyStyles = snapshot.data.data()['fly_styles'];
-            return FormBuilderDropdown(
-              attribute: 'flyStyle',
-              decoration: const InputDecoration(
-                labelText: 'Style',
-              ),
-              items: flyStyles.map<DropdownMenuItem<FlyStyles>>((style) {
-                return DropdownMenuItem<FlyStyles>(
-                  value: FlyStyle.toEnum(style),
-                  child: Text(
-                    style,
-                  ),
-                );
-              }).toList(),
-              validators: [FormBuilderValidators.required()],
-            );
-
-          case ConnectionState.none:
-          case ConnectionState.waiting:
-          case ConnectionState.active:
-          default:
-            return CircularProgressIndicator();
-        }
-      },
-    );
+    print('building');
+    print(flyStyles);
+    if (flyStyles != null) {
+      return _buildDropdown();
+    } else {
+      return _buildLoading();
+    }
   }
 }
