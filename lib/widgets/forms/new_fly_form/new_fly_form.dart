@@ -1,5 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:my_tie/bloc/my_tie_state.dart';
+import 'package:my_tie/bloc/new_fly_bloc.dart';
+import 'package:my_tie/models/fly_attributes.dart';
+import 'package:my_tie/models/fly_difficulty.dart';
+import 'package:my_tie/models/fly_style.dart';
+import 'package:my_tie/models/fly_target.dart';
+import 'package:my_tie/models/fly_type.dart';
 import 'package:my_tie/styles/styles.dart';
 import 'package:my_tie/widgets/forms/new_fly_form/fly_difficulty_dropdown.dart';
 import 'package:my_tie/widgets/forms/new_fly_form/fly_name_text_input.dart';
@@ -20,10 +27,19 @@ class NewFlyForm extends StatefulWidget {
 class _NewFlyFormState extends State<NewFlyForm>
     with AutomaticKeepAliveClientMixin {
   final _formKey = new GlobalKey<FormBuilderState>();
+  NewFlyBloc _newFlyBloc;
+
   bool _formChanged = false;
 
   @override
   bool get wantKeepAlive => true;
+
+  @override
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _newFlyBloc = MyTieStateContainer.of(context).blocProvider.newFlyBloc;
+  }
 
   void _onFormChanged() {
     if (!_formChanged) {
@@ -79,7 +95,15 @@ class _NewFlyFormState extends State<NewFlyForm>
                 RaisedButton(
                     onPressed: () {
                       if (_formKey.currentState.saveAndValidate()) {
-                        print(_formKey.currentState.value);
+                        var inputs = _formKey.currentState.value;
+                        var flyAtributes = FlyAttributes(
+                          name: inputs['flyName'],
+                          difficulty: FlyDifficulty(inputs['flyDifficulty']),
+                          style: FlyStyle(inputs['flyStyle']),
+                          target: FlyTarget(inputs['flytarget']),
+                          type: FlyType(inputs['flyType']),
+                        );
+                        _newFlyBloc.newFlyAttributesSink.add(flyAtributes);
                       }
                     },
                     child: Text('Next'))

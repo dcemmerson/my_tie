@@ -19,7 +19,7 @@ class FlyTargetsDropdown extends StatelessWidget {
           case ConnectionState.done:
             List flyTargets = snapshot.data.documents[0].data()['fly_targets'];
             return FormBuilderDropdown(
-              attribute: 'Target Fish',
+              attribute: 'flyTarget',
               decoration: const InputDecoration(
                 labelText: 'Target Fish',
               ),

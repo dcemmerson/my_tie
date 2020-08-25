@@ -12,14 +12,50 @@ enum FlyStyles {
 }
 
 class FlyStyle {
-  final FlyStyles _style;
+  static const _midge = 'midge';
+  static const _caddis = 'caddis';
+  static const _mayfly = 'mayfly';
+  static const _streamer = 'streamer';
+  static const _terrestrial = 'terrestrial';
+  static const _egg = 'egg';
+  static const _worm = 'worm';
+  static const _attractor = 'attractor';
+  static const _foam = 'foam';
+  static const _other = 'other';
 
-  FlyStyle(String style) : _style = toEnum(style);
+  final FlyStyles style;
 
-  get style => _style;
+  FlyStyle(this.style);
 
-  static FlyStyles toEnum(String style) {
+  @override
+  String toString() {
     switch (style) {
+      case FlyStyles.Midge:
+        return _midge;
+      case FlyStyles.Caddis:
+        return _caddis;
+      case FlyStyles.Mayfly:
+        return _mayfly;
+      case FlyStyles.Streamer:
+        return _streamer;
+      case FlyStyles.Terrestrial:
+        return _terrestrial;
+      case FlyStyles.Egg:
+        return _egg;
+      case FlyStyles.Worm:
+        return _worm;
+      case FlyStyles.Attractor:
+        return _attractor;
+      case FlyStyles.Foam:
+        return _foam;
+      case FlyStyles.Other:
+      default:
+        return _other;
+    }
+  }
+
+  static FlyStyles toEnum(String sty) {
+    switch (sty) {
       case 'midge':
         return FlyStyles.Midge;
       case 'caddis':

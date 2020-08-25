@@ -1,14 +1,32 @@
-enum FlyTargets { Bass, Trout, Salmon, Other }
+enum FlyTargets { Bass, Salmon, Trout, Other }
 
 class FlyTarget {
-  final FlyTargets _targets;
+  static const _bass = 'bass';
+  static const _salmon = 'salmon';
+  static const _trout = 'trout';
+  static const _other = 'other';
 
-  FlyTarget(String target) : _targets = toEnum(target);
+  final FlyTargets target;
 
-  get target => _targets;
+  FlyTarget(this.target);
 
-  static FlyTargets toEnum(String target) {
+  @override
+  String toString() {
     switch (target) {
+      case FlyTargets.Bass:
+        return _bass;
+      case FlyTargets.Salmon:
+        return _salmon;
+      case FlyTargets.Trout:
+        return _trout;
+      case FlyTargets.Other:
+      default:
+        return _other;
+    }
+  }
+
+  static FlyTargets toEnum(String targ) {
+    switch (targ) {
       case 'bass':
         return FlyTargets.Bass;
       case 'trout':

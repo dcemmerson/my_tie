@@ -1,22 +1,43 @@
-enum FlyTypes { Nymph, WetFly, DryFly, Emerger, Other }
+enum FlyTypes { DryFly, Emerger, Nymph, WetFly, Other }
 
 class FlyType {
-  final FlyTypes _type;
+  static const _nymph = 'nymph';
+  static const _dryFly = 'dry fly';
+  static const _emerger = 'emerger';
+  static const _wefFly = 'wet fly';
+  static const _other = 'other';
 
-  FlyType(String type) : _type = toEnum(type);
+  final FlyTypes type;
 
-  get type => _type;
+  FlyType(this.type);
 
-  static FlyTypes toEnum(String style) {
-    switch (style) {
-      case 'nymph':
-        return FlyTypes.Nymph;
+  @override
+  String toString() {
+    switch (type) {
+      case FlyTypes.DryFly:
+        return _dryFly;
+      case FlyTypes.Emerger:
+        return _emerger;
+      case FlyTypes.Nymph:
+        return _nymph;
+      case FlyTypes.WetFly:
+        return _wefFly;
+      case FlyTypes.Other:
+      default:
+        return _other;
+    }
+  }
+
+  static FlyTypes toEnum(String typ) {
+    switch (typ) {
       case 'wet fly':
         return FlyTypes.WetFly;
       case 'dry fly':
         return FlyTypes.DryFly;
       case 'emerger':
         return FlyTypes.Emerger;
+      case 'nymph':
+        return FlyTypes.Nymph;
       default:
         return FlyTypes.Other;
     }

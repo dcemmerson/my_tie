@@ -26,7 +26,8 @@ void main() async {
   final authService = AuthService(remoteConfig: await initRemoteConfig());
   final authBloc = AuthBloc(authService);
   final newFlyService = NewFlyService();
-  final newFlyBloc = NewFlyBloc(newFlyService);
+  final newFlyBloc =
+      NewFlyBloc(newFlyService: newFlyService, authService: authService);
   final wasteService = WasteService();
   final wasteBloc = WasteBloc(wasteService);
 

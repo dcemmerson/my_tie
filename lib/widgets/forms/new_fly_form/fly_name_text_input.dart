@@ -5,7 +5,7 @@ class FlyNameTextInput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FormBuilderTextField(
-      attribute: "Fly Name",
+      attribute: "flyName",
       decoration: InputDecoration(labelText: "Fly Name"),
       validators: [
         FormBuilderValidators.required(),
