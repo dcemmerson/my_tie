@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:my_tie/models/fly.dart';
 import 'package:my_tie/models/fly_attributes.dart';
 import 'package:my_tie/models/new_fly_form_template.dart';
 import 'package:my_tie/services/network/auth_service.dart';
@@ -27,8 +28,14 @@ class NewFlyBloc {
     newFlyAttributesSink.stream.listen(_handleAddNewFlyAttributes);
   }
 
-  Future<DocumentSnapshot> get flyInProgress {
-    return newFlyService.getFlyInProgressDoc(authService.currentUser.uid);
+  Future<Fly> get flyInProgress async {
+    DocumentSnapshot snapshot =
+        await newFlyService.getFlyInProgressDoc(authService.currentUser.uid);
+
+    if (snapshot == null)
+      return Fly();
+    else
+      return Fly(attributes: FlyAttributes.fromDoc(snapshot?.data()));
   }
 
   Future<NewFlyFormTemplate> get newFlyForm async {

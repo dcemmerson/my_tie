@@ -5,10 +5,16 @@ class FlyAttributeDropdown extends StatelessWidget {
   // final _underlineSuccess = Container(height: 2, color: AppColors.success);
   // final _underlineError = Container(height: 2, color: AppColors.error);
   final List<String> flyProperties;
+  final String flyInProgressProperty;
   final String attribute;
   final String label;
 
-  FlyAttributeDropdown({this.flyProperties, this.attribute, this.label});
+  FlyAttributeDropdown({
+    this.flyProperties,
+    this.attribute,
+    this.label,
+    this.flyInProgressProperty,
+  });
 
   Widget _buildDropdown() {
     return FormBuilderDropdown(
@@ -28,28 +34,35 @@ class FlyAttributeDropdown extends StatelessWidget {
     );
   }
 
-  Widget _buildLoading() {
+  Widget _buildPrepopulatedDropdown() {
     return FormBuilderDropdown(
       attribute: attribute,
       decoration: InputDecoration(
         labelText: label,
       ),
-      items: [
-        DropdownMenuItem<String>(
-            child: Center(
-          child: CircularProgressIndicator(),
-        ))
-      ],
+      initialValue: flyInProgressProperty,
+      items: flyProperties.map<DropdownMenuItem<String>>((property) {
+        return DropdownMenuItem<String>(
+          value: property,
+          child: Text(
+            property,
+          ),
+        );
+      }).toList(),
       validators: [FormBuilderValidators.required()],
     );
   }
 
+  Widget _buildLoading() {
+    return Center(child: CircularProgressIndicator());
+  }
+
   @override
   Widget build(BuildContext context) {
-    if (flyProperties != null) {
-      return _buildDropdown();
+    if (flyProperties != null && flyInProgressProperty != null) {
+      return _buildPrepopulatedDropdown();
     } else {
-      return _buildLoading();
+      return _buildDropdown();
     }
   }
 }

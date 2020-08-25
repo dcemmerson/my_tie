@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:my_tie/bloc/my_tie_state.dart';
 import 'package:my_tie/bloc/new_fly_bloc.dart';
+import 'package:my_tie/models/db_names.dart';
+import 'package:my_tie/models/fly.dart';
 import 'package:my_tie/models/fly_attributes.dart';
 import 'package:my_tie/models/fly_difficulty.dart';
 import 'package:my_tie/models/fly_style.dart';
@@ -16,12 +18,6 @@ enum DropdownType { FlyStyles, FlyTypes, Difficulties }
 enum Difficulty { Easy, Medium, Hard }
 
 class NewFlyForm extends StatefulWidget {
-  final _flyName = 'flyName';
-  final _flyDifficulty = 'flyDifficulty';
-  final _flyStyle = 'flyStyle';
-  final _flyTarget = 'flyTarget';
-  final _flyType = 'flyType';
-
   final _spaceBetweenDropdowns = AppPadding.p6;
   @override
   _NewFlyFormState createState() => _NewFlyFormState();
@@ -33,7 +29,7 @@ class _NewFlyFormState extends State<NewFlyForm>
   NewFlyBloc _newFlyBloc;
 
   NewFlyFormTemplate _formTemplate;
-  Map _flyInProgress;
+  Fly _flyInProgress;
 
   bool _formChanged = false;
 
@@ -58,11 +54,12 @@ class _NewFlyFormState extends State<NewFlyForm>
   }
 
   void _fetchFlyInProgress() async {
-    Map flyInProgress = (await _newFlyBloc.flyInProgress).data();
+    Fly flyInProgress = await _newFlyBloc.flyInProgress;
+    print(flyInProgress);
     setState(() => _flyInProgress = flyInProgress);
   }
 
-  void _onFormChanged() {
+  void _onFormChanged(Map form) {
     if (!_formChanged) {
       setState(() => _formChanged = true);
     }
@@ -94,14 +91,20 @@ class _NewFlyFormState extends State<NewFlyForm>
     if (_formKey.currentState.saveAndValidate()) {
       var inputs = _formKey.currentState.value;
       var flyAtributes = FlyAttributes(
-        name: inputs[widget._flyName],
-        difficulty: FlyDifficulty.fromString(inputs[widget._flyDifficulty]),
-        style: FlyStyle.fromString(inputs[widget._flyStyle]),
-        target: FlyTarget.fromString(inputs[widget._flyTarget]),
-        type: FlyType.fromString(inputs[widget._flyType]),
+        name: inputs[DbNames.flyName],
+        difficulty: FlyDifficulty.fromString(inputs[DbNames.flyDifficulty]),
+        style: FlyStyle.fromString(inputs[DbNames.flyStyle]),
+        target: FlyTarget.fromString(inputs[DbNames.flyTarget]),
+        type: FlyType.fromString(inputs[DbNames.flyType]),
       );
       _newFlyBloc.newFlyAttributesSink.add(flyAtributes);
     }
+  }
+
+  Widget _buildLoading() {
+    return Center(
+      child: CircularProgressIndicator(),
+    );
   }
 
   @override
@@ -109,49 +112,63 @@ class _NewFlyFormState extends State<NewFlyForm>
     return SingleChildScrollView(
       child: FormBuilder(
         key: _formKey,
-//        onChanged: _onFormChanged,
+        onChanged: _onFormChanged,
         onWillPop: _onWillPop,
         child: Padding(
           padding: EdgeInsets.all(AppPadding.p2),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              FlyNameTextInput(),
-              SizedBox(height: widget._spaceBetweenDropdowns),
-              FlyAttributeDropdown(
-                attribute: widget._flyDifficulty,
-                label: 'Difficulty',
-                flyProperties: _flyInProgress != null
-                    ? _formTemplate.flyDifficulties
-                    : null,
-              ),
-              SizedBox(height: widget._spaceBetweenDropdowns),
-              FlyAttributeDropdown(
-                attribute: widget._flyType,
-                label: 'Type',
-                flyProperties:
-                    _flyInProgress != null ? _formTemplate.flyTypes : null,
-              ),
-              SizedBox(height: widget._spaceBetweenDropdowns),
-              FlyAttributeDropdown(
-                attribute: widget._flyStyle,
-                label: 'Style',
-                flyProperties:
-                    _flyInProgress != null ? _formTemplate.flyStyles : null,
-              ),
-              SizedBox(height: widget._spaceBetweenDropdowns),
-              FlyAttributeDropdown(
-                attribute: widget._flyTarget,
-                label: 'Target',
-                flyProperties:
-                    _flyInProgress != null ? _formTemplate.flyTargets : null,
-              ),
-              SizedBox(height: widget._spaceBetweenDropdowns),
-              Row(children: [
-                RaisedButton(onPressed: _saveAndValidate, child: Text('Next'))
-              ]),
-            ],
-          ),
+          child: _flyInProgress == null || _formTemplate == null
+              ? _buildLoading()
+              : Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    FlyNameTextInput(
+                        attribute: DbNames.flyName,
+                        label: 'Fly Name',
+                        flyInProgressName: _flyInProgress?.attributes?.name),
+                    SizedBox(height: widget._spaceBetweenDropdowns),
+                    FlyAttributeDropdown(
+                        attribute: DbNames.flyDifficulty,
+                        label: 'Difficulty',
+                        flyProperties: _flyInProgress != null
+                            ? _formTemplate.flyDifficulties
+                            : null,
+                        flyInProgressProperty:
+                            _flyInProgress?.attributes?.difficulty?.toString()),
+                    SizedBox(height: widget._spaceBetweenDropdowns),
+                    FlyAttributeDropdown(
+                        attribute: DbNames.flyType,
+                        label: 'Type',
+                        flyProperties: _flyInProgress != null
+                            ? _formTemplate.flyTypes
+                            : null,
+                        flyInProgressProperty:
+                            _flyInProgress?.attributes?.type?.toString()),
+                    SizedBox(height: widget._spaceBetweenDropdowns),
+                    FlyAttributeDropdown(
+                        attribute: DbNames.flyStyle,
+                        label: 'Style',
+                        flyProperties: _flyInProgress != null
+                            ? _formTemplate.flyStyles
+                            : null,
+                        flyInProgressProperty:
+                            _flyInProgress?.attributes?.style?.toString()),
+                    SizedBox(height: widget._spaceBetweenDropdowns),
+                    FlyAttributeDropdown(
+                      attribute: DbNames.flyTarget,
+                      label: 'Target',
+                      flyProperties: _flyInProgress != null
+                          ? _formTemplate.flyTargets
+                          : null,
+                      flyInProgressProperty:
+                          _flyInProgress?.attributes?.target?.toString(),
+                    ),
+                    SizedBox(height: widget._spaceBetweenDropdowns),
+                    Row(children: [
+                      RaisedButton(
+                          onPressed: _saveAndValidate, child: Text('Next'))
+                    ]),
+                  ],
+                ),
         ),
       ),
     );

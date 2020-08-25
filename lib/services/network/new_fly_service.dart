@@ -36,11 +36,11 @@ class NewFlyService {
         .collection(_flyInProgress)
         .doc(docId)
         .update({
-      'name': name,
-      'difficulty': difficulty,
-      'type': type,
-      'style': style,
-      'target': target
+      'fly_name': name,
+      'fly_difficulty': difficulty,
+      'fly_type': type,
+      'fly_style': style,
+      'fly_target': target
     });
   }
 
@@ -53,11 +53,11 @@ class NewFlyService {
       String target}) {
     return FirebaseFirestore.instance.collection(_flyInProgress).add({
       'uid': uid,
-      'name': name,
-      'difficulty': difficulty,
-      'type': type,
-      'style': style,
-      'target': target
+      'fly_name': name,
+      'fly_difficulty': difficulty,
+      'fly_type': type,
+      'fly_style': style,
+      'fly_target': target
     });
   }
 }
