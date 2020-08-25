@@ -15,15 +15,12 @@ class FlyDifficultyDropdown extends StatelessWidget {
         MyTieStateContainer.of(context).blocProvider.newFlyBloc;
 
     return FutureBuilder(
-      future: _newFlyBloc.newFlyForm.firstWhere((data) => data.size > 0),
+      future: _newFlyBloc.newFlyForm,
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.hasError) return Text('Error in fly styles');
-
         switch (snapshot.connectionState) {
           case ConnectionState.done:
-            List flyDifficulties =
-                snapshot.data.documents[0].data()['fly_difficulties'];
-            print(snapshot.data.documents[0].data());
+            List flyDifficulties = snapshot.data.data()['fly_difficulties'];
 
             return FormBuilderDropdown(
               attribute: 'flyDifficulty',

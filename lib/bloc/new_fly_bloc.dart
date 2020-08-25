@@ -4,7 +4,6 @@ import 'package:my_tie/models/fly_attributes.dart';
 import 'package:my_tie/services/network/auth_service.dart';
 
 import 'package:my_tie/services/network/new_fly_service.dart';
-import 'package:my_tie/widgets/bottom_navigation/new_fly.dart';
 import 'package:rxdart/rxdart.dart';
 
 class NewFlyBloc {
@@ -16,15 +15,23 @@ class NewFlyBloc {
       StreamController<FlyAttributes>();
 
   // Coming from firebase.
-  Stream<QuerySnapshot> get newFlyForm => _newFlyFormStreamController.stream;
-  StreamController<QuerySnapshot> _newFlyFormStreamController =
-      BehaviorSubject<QuerySnapshot>(seedValue: null);
+  // Stream<QuerySnapshot> get newFlyForm => _newFlyFormStreamController.stream;
+  // StreamController<QuerySnapshot> _newFlyFormStreamController =
+  //     BehaviorSubject<QuerySnapshot>(seedValue: null);
 
   NewFlyBloc({this.newFlyService, this.authService}) {
-    newFlyService.newFlyForm.listen(
-        (formTemplate) => _newFlyFormStreamController.add(formTemplate));
+    // newFlyService.newFlyForm.listen(
+    //     (formTemplate) => _newFlyFormStreamController.add(formTemplate));
 
     newFlyAttributesSink.stream.listen(_handleAddNewFlyAttributes);
+  }
+
+  Future<DocumentSnapshot> getFlyInProgress() {
+    return newFlyService.getFlyInProgressDoc(authService.currentUser.uid);
+  }
+
+  Future<DocumentSnapshot> get newFlyForm {
+    return newFlyService.newFlyForm;
   }
 
   Future _handleAddNewFlyAttributes(FlyAttributes item) async {
@@ -52,7 +59,7 @@ class NewFlyBloc {
   }
 
   close() {
-    _newFlyFormStreamController.close();
+//    _newFlyFormStreamController.close();
     newFlyAttributesSink.close();
   }
 }

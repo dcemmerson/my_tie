@@ -69,6 +69,41 @@ class _NewFlyFormState extends State<NewFlyForm>
     );
   }
 
+  void _saveAndValidate() {
+    if (_formKey.currentState.saveAndValidate()) {
+      var inputs = _formKey.currentState.value;
+      var flyAtributes = FlyAttributes(
+        name: inputs['flyName'],
+        difficulty: FlyDifficulty(inputs['flyDifficulty']),
+        style: FlyStyle(inputs['flyStyle']),
+        target: FlyTarget(inputs['flytarget']),
+        type: FlyType(inputs['flyType']),
+      );
+      _newFlyBloc.newFlyAttributesSink.add(flyAtributes);
+    }
+  }
+
+  Widget _buildForm() {
+    return FutureBuilder(
+      future: _newFlyBloc.newFlyForm,
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
+        if (snapshot.hasError) return Text('Error in fly types');
+
+        switch (snapshot.connectionState) {
+          case ConnectionState.done:
+            Map flyAttributes = snapshot.data.documents[0].data();
+            return null;
+
+          case ConnectionState.none:
+          case ConnectionState.waiting:
+          case ConnectionState.active:
+          default:
+            return CircularProgressIndicator();
+        }
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -92,21 +127,7 @@ class _NewFlyFormState extends State<NewFlyForm>
               FlyTargetsDropdown(),
               SizedBox(height: widget._spaceBetweenDropdowns),
               Row(children: [
-                RaisedButton(
-                    onPressed: () {
-                      if (_formKey.currentState.saveAndValidate()) {
-                        var inputs = _formKey.currentState.value;
-                        var flyAtributes = FlyAttributes(
-                          name: inputs['flyName'],
-                          difficulty: FlyDifficulty(inputs['flyDifficulty']),
-                          style: FlyStyle(inputs['flyStyle']),
-                          target: FlyTarget(inputs['flytarget']),
-                          type: FlyType(inputs['flyType']),
-                        );
-                        _newFlyBloc.newFlyAttributesSink.add(flyAtributes);
-                      }
-                    },
-                    child: Text('Next'))
+                RaisedButton(onPressed: _saveAndValidate, child: Text('Next'))
               ]),
             ],
           ),

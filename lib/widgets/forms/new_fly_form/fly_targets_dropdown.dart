@@ -11,13 +11,13 @@ class FlyTargetsDropdown extends StatelessWidget {
     NewFlyBloc _newFlyBloc =
         MyTieStateContainer.of(context).blocProvider.newFlyBloc;
     return FutureBuilder(
-      future: _newFlyBloc.newFlyForm.firstWhere((data) => data.size > 0),
+      future: _newFlyBloc.newFlyForm,
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.hasError) return Text('Error in fly targets');
 
         switch (snapshot.connectionState) {
           case ConnectionState.done:
-            List flyTargets = snapshot.data.documents[0].data()['fly_targets'];
+            List flyTargets = snapshot.data.data()['fly_targets'];
             return FormBuilderDropdown(
               attribute: 'flyTarget',
               decoration: const InputDecoration(

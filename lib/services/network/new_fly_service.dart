@@ -1,14 +1,19 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class NewFlyService {
+  static const _newFlyDocId = 'kb5Vyvj3idUBXB9vkDzd';
   static const _newFlyForm = 'new_fly_form';
   static const _flyInProgress = 'fly_in_progress';
 
-  Stream<QuerySnapshot> get newFlyForm {
-    return FirebaseFirestore.instance.collection(_newFlyForm).snapshots();
+  Future<DocumentSnapshot> get newFlyForm {
+    return FirebaseFirestore.instance
+        .collection(_newFlyForm)
+        .doc(_newFlyDocId)
+        .get();
+    // return FirebaseFirestore.instance.collection(_newFlyForm).snapshots();
   }
 
-  Future<QueryDocumentSnapshot> getFlyInProgressDoc(String uid) async {
+  Future<DocumentSnapshot> getFlyInProgressDoc(String uid) async {
     var snapshot = await FirebaseFirestore.instance
         .collection(_flyInProgress)
         .where('uid', isEqualTo: uid)
