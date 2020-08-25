@@ -1,29 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
-import 'package:my_tie/bloc/my_tie_state.dart';
-import 'package:my_tie/bloc/new_fly_bloc.dart';
-import 'package:my_tie/models/fly_style.dart';
-
-class FlyStylesDropdown extends StatelessWidget {
+class FlyAttributeDropdown extends StatelessWidget {
   // final _underlineSuccess = Container(height: 2, color: AppColors.success);
   // final _underlineError = Container(height: 2, color: AppColors.error);
+  final List<String> flyProperties;
+  final String attribute;
+  final String label;
 
-  final List<String> flyStyles;
-
-  FlyStylesDropdown({this.flyStyles});
+  FlyAttributeDropdown({this.flyProperties, this.attribute, this.label});
 
   Widget _buildDropdown() {
     return FormBuilderDropdown(
-      attribute: 'flyStyle',
-      decoration: const InputDecoration(
-        labelText: 'Style',
+      attribute: attribute,
+      decoration: InputDecoration(
+        labelText: label,
       ),
-      items: flyStyles.map<DropdownMenuItem<FlyStyles>>((style) {
-        return DropdownMenuItem<FlyStyles>(
-          value: FlyStyle.toEnum(style),
+      items: flyProperties.map<DropdownMenuItem<String>>((property) {
+        return DropdownMenuItem<String>(
+          value: property,
           child: Text(
-            style,
+            property,
           ),
         );
       }).toList(),
@@ -33,9 +30,9 @@ class FlyStylesDropdown extends StatelessWidget {
 
   Widget _buildLoading() {
     return FormBuilderDropdown(
-      attribute: 'flyStyle',
-      decoration: const InputDecoration(
-        labelText: 'Style',
+      attribute: attribute,
+      decoration: InputDecoration(
+        labelText: label,
       ),
       items: [
         DropdownMenuItem<String>(
@@ -49,9 +46,7 @@ class FlyStylesDropdown extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print('building');
-    print(flyStyles);
-    if (flyStyles != null) {
+    if (flyProperties != null) {
       return _buildDropdown();
     } else {
       return _buildLoading();

@@ -10,6 +10,7 @@ class FlyDifficulty {
 
 //  FlyDifficulty(String difficulty) : _difficulty = toEnum(difficulty);
   FlyDifficulty(this.difficulty);
+  FlyDifficulty.fromString(String dif) : difficulty = toEnum(dif);
 
   @override
   String toString() {

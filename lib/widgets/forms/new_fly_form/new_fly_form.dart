@@ -9,17 +9,19 @@ import 'package:my_tie/models/fly_target.dart';
 import 'package:my_tie/models/fly_type.dart';
 import 'package:my_tie/models/new_fly_form_template.dart';
 import 'package:my_tie/styles/styles.dart';
-import 'package:my_tie/widgets/forms/new_fly_form/fly_difficulty_dropdown.dart';
+import 'package:my_tie/widgets/forms/new_fly_form/fly_attribute_dropdown.dart';
 import 'package:my_tie/widgets/forms/new_fly_form/fly_name_text_input.dart';
-
-import 'package:my_tie/widgets/forms/new_fly_form/fly_styles_dropdown.dart';
-import 'package:my_tie/widgets/forms/new_fly_form/fly_targets_dropdown.dart';
-import 'package:my_tie/widgets/forms/new_fly_form/fly_types_dropdown.dart';
 
 enum DropdownType { FlyStyles, FlyTypes, Difficulties }
 enum Difficulty { Easy, Medium, Hard }
 
 class NewFlyForm extends StatefulWidget {
+  final _flyName = 'flyName';
+  final _flyDifficulty = 'flyDifficulty';
+  final _flyStyle = 'flyStyle';
+  final _flyTarget = 'flyTarget';
+  final _flyType = 'flyType';
+
   final _spaceBetweenDropdowns = AppPadding.p6;
   @override
   _NewFlyFormState createState() => _NewFlyFormState();
@@ -92,11 +94,11 @@ class _NewFlyFormState extends State<NewFlyForm>
     if (_formKey.currentState.saveAndValidate()) {
       var inputs = _formKey.currentState.value;
       var flyAtributes = FlyAttributes(
-        name: inputs['flyName'],
-        difficulty: FlyDifficulty(inputs['flyDifficulty']),
-        style: FlyStyle(inputs['flyStyle']),
-        target: FlyTarget(inputs['flytarget']),
-        type: FlyType(inputs['flyType']),
+        name: inputs[widget._flyName],
+        difficulty: FlyDifficulty.fromString(inputs[widget._flyDifficulty]),
+        style: FlyStyle.fromString(inputs[widget._flyStyle]),
+        target: FlyTarget.fromString(inputs[widget._flyTarget]),
+        type: FlyType.fromString(inputs[widget._flyType]),
       );
       _newFlyBloc.newFlyAttributesSink.add(flyAtributes);
     }
@@ -116,24 +118,32 @@ class _NewFlyFormState extends State<NewFlyForm>
             children: [
               FlyNameTextInput(),
               SizedBox(height: widget._spaceBetweenDropdowns),
-              FlyDifficultyDropdown(
-                flyDifficulties: _flyInProgress != null
+              FlyAttributeDropdown(
+                attribute: widget._flyDifficulty,
+                label: 'Difficulty',
+                flyProperties: _flyInProgress != null
                     ? _formTemplate.flyDifficulties
                     : null,
               ),
               SizedBox(height: widget._spaceBetweenDropdowns),
-              FlyTypesDropdown(
-                flyTypes:
+              FlyAttributeDropdown(
+                attribute: widget._flyType,
+                label: 'Type',
+                flyProperties:
                     _flyInProgress != null ? _formTemplate.flyTypes : null,
               ),
               SizedBox(height: widget._spaceBetweenDropdowns),
-              FlyStylesDropdown(
-                flyStyles:
+              FlyAttributeDropdown(
+                attribute: widget._flyStyle,
+                label: 'Style',
+                flyProperties:
                     _flyInProgress != null ? _formTemplate.flyStyles : null,
               ),
               SizedBox(height: widget._spaceBetweenDropdowns),
-              FlyTargetsDropdown(
-                flyTargets:
+              FlyAttributeDropdown(
+                attribute: widget._flyTarget,
+                label: 'Target',
+                flyProperties:
                     _flyInProgress != null ? _formTemplate.flyTargets : null,
               ),
               SizedBox(height: widget._spaceBetweenDropdowns),

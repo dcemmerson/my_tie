@@ -9,6 +9,7 @@ class FlyTarget {
   final FlyTargets target;
 
   FlyTarget(this.target);
+  FlyTarget.fromString(String tar) : target = toEnum(tar);
 
   @override
   String toString() {

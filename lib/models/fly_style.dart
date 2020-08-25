@@ -26,6 +26,7 @@ class FlyStyle {
   final FlyStyles style;
 
   FlyStyle(this.style);
+  FlyStyle.fromString(String sty) : style = toEnum(sty);
 
   @override
   String toString() {

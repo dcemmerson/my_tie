@@ -10,6 +10,7 @@ class FlyType {
   final FlyTypes type;
 
   FlyType(this.type);
+  FlyType.fromString(String typ) : type = toEnum(typ);
 
   @override
   String toString() {
