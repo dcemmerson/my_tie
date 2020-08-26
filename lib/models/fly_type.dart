@@ -31,14 +31,15 @@ class FlyType {
 
   static FlyTypes toEnum(String typ) {
     switch (typ) {
-      case 'wet fly':
+      case _wefFly:
         return FlyTypes.WetFly;
-      case 'dry fly':
+      case _dryFly:
         return FlyTypes.DryFly;
-      case 'emerger':
+      case _emerger:
         return FlyTypes.Emerger;
-      case 'nymph':
+      case _nymph:
         return FlyTypes.Nymph;
+      case _other:
       default:
         return FlyTypes.Other;
     }

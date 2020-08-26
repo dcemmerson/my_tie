@@ -8,7 +8,6 @@ class FlyDifficulty {
 
   final FlyDifficulties difficulty;
 
-//  FlyDifficulty(String difficulty) : _difficulty = toEnum(difficulty);
   FlyDifficulty(this.difficulty);
   FlyDifficulty.fromString(String dif) : difficulty = toEnum(dif);
 
@@ -23,21 +22,20 @@ class FlyDifficulty {
         return _hard;
       case FlyDifficulties.Other:
       default:
-        return _other;
+        return _easy;
     }
   }
 
   static FlyDifficulties toEnum(String dif) {
     switch (dif) {
-      case 'easy':
+      case _easy:
         return FlyDifficulties.Easy;
-      case 'medium':
+      case _medium:
         return FlyDifficulties.Medium;
-      case 'hard':
+      case _hard:
         return FlyDifficulties.Hard;
-      case 'other':
       default:
-        return FlyDifficulties.Other;
+        return FlyDifficulties.Easy;
     }
   }
 }

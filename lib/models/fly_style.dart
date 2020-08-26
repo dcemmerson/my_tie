@@ -57,23 +57,23 @@ class FlyStyle {
 
   static FlyStyles toEnum(String sty) {
     switch (sty) {
-      case 'midge':
+      case _midge:
         return FlyStyles.Midge;
-      case 'caddis':
+      case _caddis:
         return FlyStyles.Caddis;
-      case 'mayfly':
+      case _mayfly:
         return FlyStyles.Mayfly;
-      case 'streamer':
+      case _streamer:
         return FlyStyles.Streamer;
-      case 'terrestrial':
+      case _terrestrial:
         return FlyStyles.Terrestrial;
-      case 'egg':
+      case _egg:
         return FlyStyles.Egg;
-      case 'worm':
+      case _worm:
         return FlyStyles.Worm;
-      case 'attractor':
+      case _attractor:
         return FlyStyles.Attractor;
-      case 'foam':
+      case _attractor:
         return FlyStyles.Foam;
       default:
         return FlyStyles.Other;

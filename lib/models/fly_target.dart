@@ -28,11 +28,13 @@ class FlyTarget {
 
   static FlyTargets toEnum(String targ) {
     switch (targ) {
-      case 'bass':
+      case _bass:
         return FlyTargets.Bass;
-      case 'trout':
+      case _trout:
         return FlyTargets.Trout;
-      case 'salmon':
+      case _salmon:
+        return FlyTargets.Salmon;
+      case _other:
         return FlyTargets.Salmon;
       default:
         return FlyTargets.Other;
