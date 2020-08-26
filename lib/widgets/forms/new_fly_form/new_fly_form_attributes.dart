@@ -17,13 +17,13 @@ import 'package:my_tie/widgets/forms/new_fly_form/fly_name_text_input.dart';
 enum DropdownType { FlyStyles, FlyTypes, Difficulties }
 enum Difficulty { Easy, Medium, Hard }
 
-class NewFlyForm extends StatefulWidget {
+class NewFlyFormAttributes extends StatefulWidget {
   final _spaceBetweenDropdowns = AppPadding.p6;
   @override
-  _NewFlyFormState createState() => _NewFlyFormState();
+  _NewFlyFormAttributesState createState() => _NewFlyFormAttributesState();
 }
 
-class _NewFlyFormState extends State<NewFlyForm>
+class _NewFlyFormAttributesState extends State<NewFlyFormAttributes>
     with AutomaticKeepAliveClientMixin {
   final _formKey = new GlobalKey<FormBuilderState>();
   NewFlyBloc _newFlyBloc;

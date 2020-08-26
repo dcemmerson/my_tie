@@ -4,7 +4,7 @@ import 'package:my_tie/pages/base/page_base_stateful/app_bottom_navigation_bar.d
 import 'package:my_tie/pages/bottom_navigation_based_pages/account_page.dart';
 import 'package:my_tie/pages/bottom_navigation_based_pages/bottom_nav_page_base.dart';
 import 'package:my_tie/pages/bottom_navigation_based_pages/home_page.dart';
-import 'package:my_tie/pages/bottom_navigation_based_pages/new_fly_page.dart';
+import 'package:my_tie/navigators_nested/new_fly_navigator_entry.dart';
 import 'package:my_tie/routes/routes.dart';
 import 'package:my_tie/styles/theme_manager.dart';
 import 'package:my_tie/widgets/drawer/settings_drawer.dart';
@@ -26,7 +26,7 @@ class PageHome extends StatefulWidget {
       icon: Icon(Icons.home),
     ),
     BottomNavPage(
-      page: NewFlyPage(),
+      page: NewFlyNavigatorEntry(),
       icon: Icon(Icons.add_box),
     ),
     BottomNavPage(
@@ -49,12 +49,13 @@ class _PageHomeState extends State<PageHome> {
   void initState() {
     super.initState();
     _selectedPageIndex = 0;
-    _pageController = PageController(initialPage: 1);
+    _pageController = PageController(initialPage: 0);
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+
     themeManager =
         ThemeManager(darkMode: MyTieStateContainer.of(context).isDarkMode);
   }
