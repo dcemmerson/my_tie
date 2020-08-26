@@ -38,4 +38,6 @@ class AppPadding {
 class AppTextStyles {
   static const dropdown = const TextStyle(fontSize: 16);
   static const dropdownLg = const TextStyle(fontSize: 20);
+  static const header = const TextStyle(fontSize: AppFonts.h4);
+  static const subHeader = const TextStyle(fontSize: AppFonts.h6);
 }

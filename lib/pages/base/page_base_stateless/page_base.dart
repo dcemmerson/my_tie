@@ -12,8 +12,6 @@ enum PageType {
   WasteDetailPage,
   WastePostPage,
   AccountPage,
-  NewFlyStartPage,
-  NewFlyAttributesPage,
 }
 
 abstract class PageBase extends StatelessWidget {
@@ -57,14 +55,6 @@ abstract class PageBase extends StatelessWidget {
               child: Icon(Icons.add_a_photo),
             ),
           ),
-        ),
-      );
-    } else if (pageType == PageType.NewFlyStartPage) {
-      return Theme(
-        data: themeManager.themeData,
-        child: Scaffold(
-          endDrawer: SettingsDrawer(),
-          body: body,
         ),
       );
     } else {

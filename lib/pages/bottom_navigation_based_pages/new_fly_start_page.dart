@@ -7,7 +7,6 @@ class NewFlyStartPage extends BottomNavPageBase {
   static const _title = 'New Tie Fly';
   static const route = 'new_fly_start';
 
-  @override
   get title => _title;
 
   @override

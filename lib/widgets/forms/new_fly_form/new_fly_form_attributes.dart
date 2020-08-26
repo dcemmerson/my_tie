@@ -10,6 +10,7 @@ import 'package:my_tie/models/fly_style.dart';
 import 'package:my_tie/models/fly_target.dart';
 import 'package:my_tie/models/fly_type.dart';
 import 'package:my_tie/models/new_fly_form_template.dart';
+import 'package:my_tie/routes/routes.dart';
 import 'package:my_tie/styles/styles.dart';
 import 'package:my_tie/widgets/forms/new_fly_form/fly_attribute_dropdown.dart';
 import 'package:my_tie/widgets/forms/new_fly_form/fly_name_text_input.dart';
@@ -165,7 +166,12 @@ class _NewFlyFormAttributesState extends State<NewFlyFormAttributes>
                     SizedBox(height: widget._spaceBetweenDropdowns),
                     Row(children: [
                       RaisedButton(
-                          onPressed: _saveAndValidate, child: Text('Next'))
+                        child: Text('Next'),
+                        onPressed: () {
+                          _saveAndValidate();
+                          Routes.newFlyMaterialsPage(context);
+                        },
+                      )
                     ]),
                   ],
                 ),

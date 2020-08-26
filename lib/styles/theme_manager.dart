@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_tie/styles/styles.dart';
 
 class ThemeManager {
   final bool darkMode;
@@ -9,6 +10,7 @@ class ThemeManager {
       primaryColor: Colors.blueGrey[600],
       accentColor: Colors.blueGrey[400],
       disabledColor: Colors.grey[700],
+//      appBarTheme: AppBarTheme(iconTheme: IconThemeData(size: AppFonts.h6)),
 
       // Define the default font family.
       fontFamily: 'Ubuntu',
@@ -27,7 +29,7 @@ class ThemeManager {
       primaryColor: Colors.orange,
       accentColor: Colors.orange[800],
       disabledColor: Colors.grey[800],
-
+      appBarTheme: AppBarTheme(iconTheme: IconThemeData(size: AppFonts.h6)),
       // Define the default font family.
       fontFamily: 'Ubuntu',
 

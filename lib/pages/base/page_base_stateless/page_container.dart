@@ -35,12 +35,6 @@ class PageContainer extends PageBase {
       case PageType.AccountPage:
         page = AccountPage();
         break;
-      case PageType.NewFlyStartPage:
-        page = NewFlyStartPage();
-        break;
-      case PageType.NewFlyAttributesPage:
-        page = NewFlyAttributesPage();
-        break;
       default:
         page = WasteListPage();
     }
@@ -63,10 +57,7 @@ class PageContainer extends PageBase {
         return AccountPage.title;
       case PageType.WastePostPage:
         return WastePostPage.title;
-      case PageType.NewFlyStartPage:
-        return NewFlyStartPage.route;
-      case PageType.NewFlyAttributesPage:
-        return NewFlyAttributesPage.route;
+
       default:
         return WastePostPage.title;
     }

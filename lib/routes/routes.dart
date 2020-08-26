@@ -4,11 +4,14 @@ import 'package:my_tie/models/wasted_item.dart';
 import 'package:my_tie/pages/base/page_base_stateful/page_home.dart';
 import 'package:my_tie/pages/base/page_base_stateless/page_base.dart';
 import 'package:my_tie/pages/base/page_base_stateless/page_container.dart';
+import 'package:my_tie/pages/base/page_base_stateless/subpage_base.dart';
+import 'package:my_tie/pages/base/page_base_stateless/subpage_container.dart';
 import 'package:my_tie/pages/bottom_navigation_based_pages/new_fly_start_page.dart';
 
 import 'package:my_tie/pages/route_based_pages/account_page.dart';
 import 'package:my_tie/pages/route_based_pages/home_page.dart';
 import 'package:my_tie/pages/route_based_pages/new_fly_pages/new_fly_attributes_page.dart';
+import 'package:my_tie/pages/route_based_pages/new_fly_pages/new_fly_materials_page.dart';
 import 'package:my_tie/pages/route_based_pages/waste_detail_page.dart';
 import 'package:my_tie/pages/route_based_pages/waste_list_page.dart';
 import 'package:my_tie/pages/route_based_pages/waste_post_page.dart';
@@ -25,10 +28,12 @@ class Routes {
         RouteGuard(child: PageContainer(pageType: PageType.WasteDetailPage)),
     WastePostPage.route: (context) =>
         RouteGuard(child: PageContainer(pageType: PageType.WastePostPage)),
-    NewFlyStartPage.route: (context) =>
-        RouteGuard(child: PageContainer(pageType: PageType.NewFlyStartPage)),
+    NewFlyStartPage.route: (context) => RouteGuard(
+        child: SubPageContainer(subPageType: SubPageType.NewFlyStartPage)),
     NewFlyAttributesPage.route: (context) => RouteGuard(
-        child: PageContainer(pageType: PageType.NewFlyAttributesPage)),
+        child: SubPageContainer(subPageType: SubPageType.NewFlyAttributesPage)),
+    NewFlyMaterialsPage.route: (context) => RouteGuard(
+        child: SubPageContainer(subPageType: SubPageType.NewFlyMaterialsPage)),
   };
 
   static Future wastePage(BuildContext context) {
@@ -50,5 +55,9 @@ class Routes {
 
   static Future newFlyAttributesPage(BuildContext context) {
     return Navigator.pushNamed(context, NewFlyAttributesPage.route);
+  }
+
+  static Future newFlyMaterialsPage(BuildContext context) {
+    return Navigator.pushNamed(context, NewFlyMaterialsPage.route);
   }
 }
