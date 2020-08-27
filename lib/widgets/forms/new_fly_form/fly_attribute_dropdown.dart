@@ -53,10 +53,6 @@ class FlyAttributeDropdown extends StatelessWidget {
     );
   }
 
-  Widget _buildLoading() {
-    return Center(child: CircularProgressIndicator());
-  }
-
   @override
   Widget build(BuildContext context) {
     if (flyProperties != null && flyInProgressProperty != null) {
