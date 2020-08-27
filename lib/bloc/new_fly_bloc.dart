@@ -1,8 +1,7 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:my_tie/models/fly.dart';
-import 'package:my_tie/models/fly_attributes.dart';
-import 'package:my_tie/models/fly_form_material.dart';
+import 'package:my_tie/models/fly_attribute.dart';
 import 'package:my_tie/models/fly_material.dart';
 import 'package:my_tie/models/new_fly_form_transfer.dart';
 import 'package:my_tie/models/new_fly_form_template.dart';
@@ -15,45 +14,38 @@ class NewFlyBloc {
   final AuthService authService;
 
   // Coming from app.
-  StreamController<FlyAttributes> newFlyAttributesSink =
-      StreamController<FlyAttributes>();
+  StreamController<List<FlyAttribute>> newFlyAttributesSink =
+      StreamController<List<FlyAttribute>>();
   StreamController<FlyMaterial> newFlyMaterialsSink =
       StreamController<FlyMaterial>();
 
   // Going to app.
-  // StreamController<List<FlyFormMaterial>> _flyFormMaterials =
-  //     StreamController<List<FlyFormMaterial>>.broadcast();
   StreamController<NewFlyFormTransfer> _flyFormMaterialTransfer =
       StreamController<NewFlyFormTransfer>.broadcast();
 
-  // Coming from firebase.
   NewFlyBloc({this.newFlyService, this.authService}) {
-    // newFlyService.newFlyForm.listen(
-    //     (formTemplate) => _newFlyFormStreamController.add(formTemplate));
-
     newFlyAttributesSink.stream.listen(_handleAddNewFlyAttributes);
     newFlyMaterialsSink.stream.listen(_handleAddNewFlyMaterials);
-//    flyMaterialsSink.stream.listen(_handleFlyMaterialsSink);
   }
 
-  Future<Fly> get flyInProgress async {
+  Future<Fly> get _flyInProgress async {
     DocumentSnapshot snapshot =
         await newFlyService.getFlyInProgressDoc(authService.currentUser.uid);
 
     if (snapshot == null)
       return Fly();
     else
-      return Fly(attributes: FlyAttributes.fromDoc(snapshot?.data()));
+      return Fly(); //Fly(attributes: FlyAttribute.fromDoc(snapshot?.data()));
   }
 
-  Future<NewFlyFormTemplate> get newFlyForm async {
+  Future<NewFlyFormTemplate> get _newFlyFormTemplate async {
     DocumentSnapshot snapshot = await newFlyService.newFlyForm;
     return NewFlyFormTemplate.fromDoc(snapshot.data());
   }
 
-  Stream<NewFlyFormTransfer> get flyFormMaterials {
-    Future<NewFlyFormTemplate> fftm = newFlyForm;
-    Future<Fly> fly = flyInProgress;
+  Stream<NewFlyFormTransfer> get newFlyForm {
+    Future<NewFlyFormTemplate> fftm = _newFlyFormTemplate;
+    Future<Fly> fly = _flyInProgress;
 
     Future.wait([fftm, fly]).then((List f) {
       _flyFormMaterialTransfer.add(
@@ -86,26 +78,23 @@ class NewFlyBloc {
     // }
   }
 
-  Future _handleAddNewFlyAttributes(FlyAttributes item) async {
+  Future _handleAddNewFlyAttributes(List<FlyAttribute> flyAttributes) async {
     QueryDocumentSnapshot document =
         await newFlyService.getFlyInProgressDoc(authService.currentUser.uid);
+
+    Map<String, String> formAttributeData = {};
+    flyAttributes.forEach((flyAttribute) =>
+        formAttributeData = {...formAttributeData, ...flyAttribute.toMap()});
+
     if (document == null) {
       return newFlyService.addNewFlyAttributesDoc(
         uid: authService.currentUser.uid,
-        name: item.name,
-        difficulty: item.difficulty.toString(),
-        type: item.type.toString(),
-        style: item.style.toString(),
-        target: item.target.toString(),
+        attributes: formAttributeData,
       );
     } else {
       return newFlyService.updateFlyAttributes(
         docId: document.id,
-        name: item.name,
-        difficulty: item.difficulty.toString(),
-        type: item.type.toString(),
-        style: item.style.toString(),
-        target: item.target.toString(),
+        attributes: formAttributeData,
       );
     }
   }

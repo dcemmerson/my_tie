@@ -1,7 +1,7 @@
-import 'fly_attributes.dart';
+import 'fly_attribute.dart';
 
 class Fly {
-  final FlyAttributes attributes;
+  final FlyAttribute attributes;
 
   Fly({this.attributes});
 }

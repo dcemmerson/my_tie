@@ -10,7 +10,6 @@ class NewFlyService {
         .collection(_newFlyForm)
         .doc(_newFlyDocId)
         .get();
-    // return FirebaseFirestore.instance.collection(_newFlyForm).snapshots();
   }
 
   Future<DocumentSnapshot> getFlyInProgressDoc(String uid) async {
@@ -42,38 +41,23 @@ class NewFlyService {
 
   Future updateFlyAttributes({
     String docId,
-    String name,
-    String difficulty,
-    String type,
-    String style,
-    String target,
+    Map<String, String> attributes,
   }) async {
-    return FirebaseFirestore.instance
-        .collection(_flyInProgress)
-        .doc(docId)
-        .update({
-      'fly_name': name,
-      'fly_difficulty': difficulty,
-      'fly_type': type,
-      'fly_style': style,
-      'fly_target': target,
-    });
+    return FirebaseFirestore.instance.collection(_flyInProgress).doc(docId).set(
+      {
+        'attributes': attributes,
+      },
+      SetOptions(merge: true),
+    );
   }
 
-  Future addNewFlyAttributesDoc(
-      {String uid,
-      String name,
-      String difficulty,
-      String type,
-      String style,
-      String target}) {
+  Future addNewFlyAttributesDoc({
+    String uid,
+    Map<String, String> attributes,
+  }) {
     return FirebaseFirestore.instance.collection(_flyInProgress).add({
       'uid': uid,
-      'fly_name': name,
-      'fly_difficulty': difficulty,
-      'fly_type': type,
-      'fly_style': style,
-      'fly_target': target
+      'attributes': attributes,
     });
   }
 }

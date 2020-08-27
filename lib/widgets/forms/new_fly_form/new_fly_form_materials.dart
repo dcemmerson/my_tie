@@ -1,15 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+
 import 'package:my_tie/bloc/my_tie_state.dart';
 import 'package:my_tie/bloc/new_fly_bloc.dart';
-import 'package:my_tie/models/db_names.dart';
-import 'package:my_tie/models/fly_attributes.dart';
-import 'package:my_tie/models/fly_difficulty.dart';
 import 'package:my_tie/models/fly_material.dart';
 import 'package:my_tie/models/new_fly_form_transfer.dart';
-import 'package:my_tie/models/fly_style.dart';
-import 'package:my_tie/models/fly_target.dart';
-import 'package:my_tie/models/fly_type.dart';
 import 'package:my_tie/models/form_page_number.dart';
 import 'package:my_tie/routes/routes.dart';
 
@@ -128,7 +123,7 @@ class _NewFlyFormMaterialsState extends State<NewFlyFormMaterials>
         child: Padding(
           padding: EdgeInsets.all(AppPadding.p2),
           child: StreamBuilder(
-              stream: _newFlyBloc.flyFormMaterials,
+              stream: _newFlyBloc.newFlyForm,
               builder: (context, AsyncSnapshot<NewFlyFormTransfer> snapshot) {
                 print(snapshot.connectionState);
                 if (snapshot.hasError) return Text('error occurred');
