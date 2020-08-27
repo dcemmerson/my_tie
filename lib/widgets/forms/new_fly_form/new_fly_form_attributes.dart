@@ -74,18 +74,17 @@ class _NewFlyFormAttributesState extends State<NewFlyFormAttributes>
     );
   }
 
-  void _saveAndValidate() {
+  bool _saveAndValidate() {
     if (_formKey.currentState.saveAndValidate()) {
       var inputs = _formKey.currentState.value;
+      List<FlyAttribute> flyAttributes = [];
+      inputs.forEach(
+          (k, v) => flyAttributes.add(FlyAttribute(name: k, value: v)));
 
-      if (_formKey.currentState.saveAndValidate()) {
-        List<FlyAttribute> flyAttributes = [];
-        inputs.forEach(
-            (k, v) => flyAttributes.add(FlyAttribute(property: k, value: v)));
-
-        _newFlyBloc.newFlyAttributesSink.add(flyAttributes);
-      }
+      _newFlyBloc.newFlyAttributesSink.add(flyAttributes);
+      return true;
     }
+    return false;
   }
 
   Widget _buildLoading() {
@@ -101,21 +100,26 @@ class _NewFlyFormAttributesState extends State<NewFlyFormAttributes>
         attribute: ffa.name,
         label: ffa.name,
         flyProperties: ffa.properties,
-        // flyInProgressProperty:
-        //     _flyInProgress?.attributes?.difficulty?.toString(),
+        flyInProgressProperty:
+            flyFormTransfer.flyInProgress.getAttribute(ffa.name).toString(),
       );
     }).toList();
+  }
+
+  Widget _buildNameInput(String name) {
+    return FlyNameTextInput(
+      attribute: DbNames.flyName,
+      label: 'Fly Name',
+      flyInProgressName: name,
+    );
   }
 
   Widget _buildForm(NewFlyFormTransfer flyFormTransfer) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        FlyNameTextInput(
-          attribute: DbNames.flyName,
-          label: 'Fly Name',
-          // flyInProgressName: _flyInProgress?.attributes?.name
-        ),
+        _buildNameInput(
+            flyFormTransfer.flyInProgress.getAttribute(DbNames.flyName)),
         SizedBox(height: widget._spaceBetweenDropdowns),
         ..._buildDropdowns(flyFormTransfer),
         SizedBox(height: widget._spaceBetweenDropdowns),
@@ -123,8 +127,7 @@ class _NewFlyFormAttributesState extends State<NewFlyFormAttributes>
           RaisedButton(
             child: Text('Next'),
             onPressed: () {
-              _saveAndValidate();
-              Routes.newFlyMaterialsPage(context);
+              if (_saveAndValidate()) Routes.newFlyMaterialsPage(context);
             },
           )
         ]),

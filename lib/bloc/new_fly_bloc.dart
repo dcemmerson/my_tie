@@ -35,7 +35,9 @@ class NewFlyBloc {
     if (snapshot == null)
       return Fly();
     else
-      return Fly(); //Fly(attributes: FlyAttribute.fromDoc(snapshot?.data()));
+      return Fly(
+          attrs: snapshot?.data()['attributes'],
+          mats: snapshot?.data()['materials']);
   }
 
   Future<NewFlyFormTemplate> get _newFlyFormTemplate async {
@@ -58,18 +60,7 @@ class NewFlyBloc {
   Future _handleAddNewFlyMaterials(FlyMaterial material) async {
     QueryDocumentSnapshot document =
         await newFlyService.getFlyInProgressDoc(authService.currentUser.uid);
-    // print(material);
-    // return;
-    // if (document == null) {
-    //   return newFlyService.addNewFlyMaterialsInProgressDoc(
-    //     uid: authService.currentUser.uid,
-    //     name: item.name,
-    //     difficulty: item.difficulty.toString(),
-    //     type: item.type.toString(),
-    //     style: item.style.toString(),
-    //     target: item.target.toString(),
-    //   );
-    // } else {
+
     return newFlyService.updateFlyMaterialsInProgress(
       docId: document.id,
       name: material.name,

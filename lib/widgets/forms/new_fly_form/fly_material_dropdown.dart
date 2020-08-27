@@ -1,26 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:my_tie/models/fly.dart';
 import 'package:my_tie/models/fly_form_material.dart';
 import 'package:my_tie/styles/styles.dart';
 
 class FlyMaterialDropdown extends StatelessWidget {
   final FlyFormMaterial flyMaterials;
-  final String flyInProgressProperty;
+  final Fly fly;
 
   FlyMaterialDropdown({
     this.flyMaterials,
-    this.flyInProgressProperty,
+    this.fly,
   });
 
   List<Widget> _buildDropdown() {
     var dropdowns = List<Widget>();
 
-    flyMaterials.properties.forEach((String material, List<String> values) {
+    flyMaterials.properties.forEach((String materialType, List<String> values) {
+      final String initialValue =
+          fly.getMaterial(flyMaterials.name, materialType);
       dropdowns.add(FormBuilderDropdown(
         allowClear: true,
-        attribute: material,
+        attribute: materialType,
+        initialValue: values.contains(initialValue) ? initialValue : null,
         decoration: InputDecoration(
-          labelText: material,
+          labelText: materialType,
         ),
         items: values.map<DropdownMenuItem<String>>((String value) {
           return DropdownMenuItem<String>(

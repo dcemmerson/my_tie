@@ -3,7 +3,9 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 
 import 'package:my_tie/bloc/my_tie_state.dart';
 import 'package:my_tie/bloc/new_fly_bloc.dart';
+import 'package:my_tie/models/fly.dart';
 import 'package:my_tie/models/fly_material.dart';
+import 'package:my_tie/models/new_fly_form_template.dart';
 import 'package:my_tie/models/new_fly_form_transfer.dart';
 import 'package:my_tie/models/form_page_number.dart';
 import 'package:my_tie/routes/routes.dart';
@@ -86,14 +88,18 @@ class _NewFlyFormMaterialsState extends State<NewFlyFormMaterials>
   }
 
   Widget _buildForm(NewFlyFormTransfer flyFormTransfer) {
+    final Fly fly = flyFormTransfer.flyInProgress;
+    final NewFlyFormTemplate flyFormTemplate =
+        flyFormTransfer.newFlyFormTemplate;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         SizedBox(height: widget._spaceBetweenDropdowns),
         FlyMaterialDropdown(
-          flyMaterials: flyFormTransfer
-              .newFlyFormTemplate.flyFormMaterials[_formPageNumber.pageNumber],
-          flyInProgressProperty: null,
+          flyMaterials:
+              flyFormTemplate.flyFormMaterials[_formPageNumber.pageNumber],
+          fly: fly,
         ),
         SizedBox(height: widget._spaceBetweenDropdowns),
         Row(children: [
@@ -114,7 +120,6 @@ class _NewFlyFormMaterialsState extends State<NewFlyFormMaterials>
 
   @override
   Widget build(BuildContext context) {
-    print('builldding');
     return SingleChildScrollView(
       child: FormBuilder(
         key: _formKey,
@@ -125,7 +130,6 @@ class _NewFlyFormMaterialsState extends State<NewFlyFormMaterials>
           child: StreamBuilder(
               stream: _newFlyBloc.newFlyForm,
               builder: (context, AsyncSnapshot<NewFlyFormTransfer> snapshot) {
-                print(snapshot.connectionState);
                 if (snapshot.hasError) return Text('error occurred');
                 switch (snapshot.connectionState) {
                   case (ConnectionState.done):
