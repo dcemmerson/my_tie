@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:my_tie/models/fly.dart';
 import 'package:my_tie/models/fly_attributes.dart';
 import 'package:my_tie/models/fly_form_material.dart';
+import 'package:my_tie/models/fly_material.dart';
 import 'package:my_tie/models/new_fly_form_transfer.dart';
 import 'package:my_tie/models/new_fly_form_template.dart';
 import 'package:my_tie/services/network/auth_service.dart';
@@ -16,10 +17,12 @@ class NewFlyBloc {
   // Coming from app.
   StreamController<FlyAttributes> newFlyAttributesSink =
       StreamController<FlyAttributes>();
+  StreamController<FlyMaterial> newFlyMaterialsSink =
+      StreamController<FlyMaterial>();
 
   // Going to app.
-  StreamController<List<FlyFormMaterial>> _flyFormMaterials =
-      StreamController<List<FlyFormMaterial>>.broadcast();
+  // StreamController<List<FlyFormMaterial>> _flyFormMaterials =
+  //     StreamController<List<FlyFormMaterial>>.broadcast();
   StreamController<NewFlyFormTransfer> _flyFormMaterialTransfer =
       StreamController<NewFlyFormTransfer>.broadcast();
 
@@ -29,11 +32,9 @@ class NewFlyBloc {
     //     (formTemplate) => _newFlyFormStreamController.add(formTemplate));
 
     newFlyAttributesSink.stream.listen(_handleAddNewFlyAttributes);
-
+    newFlyMaterialsSink.stream.listen(_handleAddNewFlyMaterials);
 //    flyMaterialsSink.stream.listen(_handleFlyMaterialsSink);
   }
-
-  void _handleFlyMaterialsSink(FlyFormMaterial l) {}
 
   Future<Fly> get flyInProgress async {
     DocumentSnapshot snapshot =
@@ -60,6 +61,29 @@ class NewFlyBloc {
     });
 
     return _flyFormMaterialTransfer.stream;
+  }
+
+  Future _handleAddNewFlyMaterials(FlyMaterial material) async {
+    QueryDocumentSnapshot document =
+        await newFlyService.getFlyInProgressDoc(authService.currentUser.uid);
+    // print(material);
+    // return;
+    // if (document == null) {
+    //   return newFlyService.addNewFlyMaterialsInProgressDoc(
+    //     uid: authService.currentUser.uid,
+    //     name: item.name,
+    //     difficulty: item.difficulty.toString(),
+    //     type: item.type.toString(),
+    //     style: item.style.toString(),
+    //     target: item.target.toString(),
+    //   );
+    // } else {
+    return newFlyService.updateFlyMaterialsInProgress(
+      docId: document.id,
+      name: material.name,
+      properties: material.properties,
+    );
+    // }
   }
 
   Future _handleAddNewFlyAttributes(FlyAttributes item) async {
@@ -89,5 +113,6 @@ class NewFlyBloc {
   void close() {
 //    _newFlyFormStreamController.close();
     newFlyAttributesSink.close();
+    newFlyMaterialsSink.close();
   }
 }

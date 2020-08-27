@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_tie/models/form_page_number.dart';
 
 import 'package:my_tie/models/wasted_item.dart';
 import 'package:my_tie/pages/base/page_base_stateful/page_home.dart';
@@ -57,7 +58,9 @@ class Routes {
     return Navigator.pushNamed(context, NewFlyAttributesPage.route);
   }
 
-  static Future newFlyMaterialsPage(BuildContext context) {
-    return Navigator.pushNamed(context, NewFlyMaterialsPage.route);
+  static Future newFlyMaterialsPage(BuildContext context,
+      {FormPageNumber pageNumber}) {
+    return Navigator.pushNamed(context, NewFlyMaterialsPage.route,
+        arguments: pageNumber);
   }
 }

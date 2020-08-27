@@ -2,9 +2,10 @@ class FlyMaterial {
   final String name;
   final Map<String, String> properties;
 
-  FlyMaterial(this.name, Map doc) : properties = _toStringStringMap(doc);
+  FlyMaterial({this.name, Map props}) : properties = _toStringStringMap(props);
 
-  static Map<String, String> _toStringStringMap(Map doc) {
-    return doc.map((key, value) => MapEntry(key.toString(), value.toString()));
+  static Map<String, String> _toStringStringMap(Map props) {
+    return props
+        .map((key, value) => MapEntry(key.toString(), value.toString()));
   }
 }

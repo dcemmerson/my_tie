@@ -5,6 +5,7 @@ import 'package:my_tie/bloc/new_fly_bloc.dart';
 import 'package:my_tie/models/db_names.dart';
 import 'package:my_tie/models/fly_attributes.dart';
 import 'package:my_tie/models/fly_difficulty.dart';
+import 'package:my_tie/models/fly_material.dart';
 import 'package:my_tie/models/new_fly_form_transfer.dart';
 import 'package:my_tie/models/fly_style.dart';
 import 'package:my_tie/models/fly_target.dart';
@@ -71,17 +72,15 @@ class _NewFlyFormMaterialsState extends State<NewFlyFormMaterials>
     );
   }
 
-  void _saveAndValidate() {
+  void _saveAndValidate(String material) {
     if (_formKey.currentState.saveAndValidate()) {
       var inputs = _formKey.currentState.value;
-      var flyAtributes = FlyAttributes(
-        name: inputs[DbNames.flyName],
-        difficulty: FlyDifficulty.fromString(inputs[DbNames.flyDifficulty]),
-        style: FlyStyle.fromString(inputs[DbNames.flyStyle]),
-        target: FlyTarget.fromString(inputs[DbNames.flyTarget]),
-        type: FlyType.fromString(inputs[DbNames.flyType]),
+
+      var flyMaterials = FlyMaterial(
+        name: material,
+        props: inputs.map((k, v) => MapEntry(k, v)),
       );
-      _newFlyBloc.newFlyAttributesSink.add(flyAtributes);
+      _newFlyBloc.newFlyMaterialsSink.add(flyMaterials);
     }
   }
 
@@ -106,8 +105,11 @@ class _NewFlyFormMaterialsState extends State<NewFlyFormMaterials>
           RaisedButton(
             child: Text('Next'),
             onPressed: () {
-              _saveAndValidate();
-              Routes.newFlyMaterialsPage(context);
+              _saveAndValidate(flyFormTransfer.newFlyFormTemplate
+                  .flyFormMaterials[_formPageNumber.pageNumber].name);
+              Routes.newFlyMaterialsPage(context,
+                  pageNumber: FormPageNumber(
+                      pageNumber: _formPageNumber.pageNumber + 1));
             },
           )
         ]),

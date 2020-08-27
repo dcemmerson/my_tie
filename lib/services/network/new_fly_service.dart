@@ -25,13 +25,29 @@ class NewFlyService {
       return null;
   }
 
-  Future updateFlyAttributes(
-      {String docId,
-      String name,
-      String difficulty,
-      String type,
-      String style,
-      String target}) async {
+  Future updateFlyMaterialsInProgress({
+    String docId,
+    String name,
+    Map<String, String> properties,
+  }) async {
+    return FirebaseFirestore.instance.collection(_flyInProgress).doc(docId).set(
+      {
+        'materials': {
+          name: properties,
+        }
+      },
+      SetOptions(merge: true),
+    );
+  }
+
+  Future updateFlyAttributes({
+    String docId,
+    String name,
+    String difficulty,
+    String type,
+    String style,
+    String target,
+  }) async {
     return FirebaseFirestore.instance
         .collection(_flyInProgress)
         .doc(docId)
@@ -40,7 +56,7 @@ class NewFlyService {
       'fly_difficulty': difficulty,
       'fly_type': type,
       'fly_style': style,
-      'fly_target': target
+      'fly_target': target,
     });
   }
 
