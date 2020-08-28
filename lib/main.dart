@@ -7,7 +7,7 @@ import 'package:my_tie/bloc/auth_bloc.dart';
 import 'package:my_tie/bloc/bloc_provider.dart';
 import 'package:my_tie/bloc/new_fly_bloc.dart';
 import 'package:my_tie/bloc/waste_bloc.dart';
-import 'package:my_tie/bloc/my_tie_state.dart';
+import 'package:my_tie/bloc/state/my_tie_state.dart';
 import 'package:my_tie/services/network/auth_service.dart';
 import 'package:my_tie/services/network/new_fly_service.dart';
 import 'package:my_tie/services/network/waste_service.dart';

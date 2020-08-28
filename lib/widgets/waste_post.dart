@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:location/location.dart';
 import 'package:my_tie/bloc/waste_bloc.dart';
-import 'package:my_tie/bloc/my_tie_state.dart';
+import 'package:my_tie/bloc/state/my_tie_state.dart';
 import 'package:my_tie/services/hardware/image_picker_manager.dart';
 import 'package:my_tie/services/hardware/location_manager.dart';
 import 'package:my_tie/styles/styles.dart';

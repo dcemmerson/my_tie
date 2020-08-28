@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:my_tie/bloc/my_tie_state.dart';
+import 'package:my_tie/bloc/state/my_tie_state.dart';
 import 'package:my_tie/routes/routes.dart';
 import 'package:my_tie/styles/theme_manager.dart';
 import 'package:my_tie/widgets/drawer/settings_drawer.dart';

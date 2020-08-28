@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
-import 'package:my_tie/bloc/my_tie_state.dart';
+import 'package:my_tie/bloc/state/my_tie_state.dart';
 import 'package:my_tie/bloc/new_fly_bloc.dart';
 import 'package:my_tie/models/fly.dart';
 import 'package:my_tie/models/fly_material.dart';
@@ -110,7 +110,9 @@ class _NewFlyFormMaterialsState extends State<NewFlyFormMaterials>
                   .flyFormMaterials[_formPageNumber.pageNumber].name);
               Routes.newFlyMaterialsPage(context,
                   pageNumber: FormPageNumber(
-                      pageNumber: _formPageNumber.pageNumber + 1));
+                    pageNumber: _formPageNumber.pageNumber + 1,
+                    pageCount: flyFormTemplate.flyFormMaterials.length,
+                  ));
             },
           )
         ]),

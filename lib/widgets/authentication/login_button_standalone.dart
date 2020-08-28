@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:my_tie/bloc/auth_bloc.dart';
-import 'package:my_tie/bloc/my_tie_state.dart';
+import 'package:my_tie/bloc/state/my_tie_state.dart';
 import 'package:my_tie/styles/styles.dart';
 
 class LoginButtonStandalone extends StatefulWidget {

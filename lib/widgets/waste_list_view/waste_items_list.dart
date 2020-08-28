@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:my_tie/bloc/auth_bloc.dart';
 import 'package:my_tie/bloc/waste_bloc.dart';
-import 'package:my_tie/bloc/my_tie_state.dart';
+import 'package:my_tie/bloc/state/my_tie_state.dart';
 import 'package:my_tie/widgets/waste_list_view/compact_list_tile.dart';
 import 'package:my_tie/widgets/waste_list_view/empty_post.dart';
 import 'package:my_tie/widgets/waste_list_view/expanded_list_tile.dart';

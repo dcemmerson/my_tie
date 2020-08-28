@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:my_tie/bloc/my_tie_state.dart';
+import 'package:my_tie/bloc/state/my_tie_state.dart';
 import 'package:my_tie/pages/base/page_base_stateless/page_base.dart';
 import 'package:my_tie/pages/base/page_base_stateless/page_container.dart';
 

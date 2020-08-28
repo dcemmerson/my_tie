@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:my_tie/bloc/my_tie_state.dart';
+import 'package:my_tie/bloc/state/my_tie_state.dart';
 import 'package:my_tie/bloc/new_fly_bloc.dart';
 import 'package:my_tie/models/db_names.dart';
 import 'package:my_tie/models/fly.dart';
@@ -11,6 +11,7 @@ import 'package:my_tie/models/fly_material.dart';
 import 'package:my_tie/models/fly_style.dart';
 import 'package:my_tie/models/fly_target.dart';
 import 'package:my_tie/models/fly_type.dart';
+import 'package:my_tie/models/form_page_number.dart';
 import 'package:my_tie/models/new_fly_form_template.dart';
 import 'package:my_tie/models/new_fly_form_transfer.dart';
 import 'package:my_tie/routes/routes.dart';
@@ -35,6 +36,7 @@ class _NewFlyFormAttributesState extends State<NewFlyFormAttributes>
   NewFlyFormTemplate _formTemplate;
   Fly _flyInProgress;
 
+  FormPageNumber _formPageNumber;
   bool _formChanged = false;
 
   @override
@@ -44,6 +46,8 @@ class _NewFlyFormAttributesState extends State<NewFlyFormAttributes>
   void didChangeDependencies() {
     super.didChangeDependencies();
     _newFlyBloc = MyTieStateContainer.of(context).blocProvider.newFlyBloc;
+    _formPageNumber =
+        ModalRoute.of(context).settings.arguments ?? FormPageNumber();
   }
 
   void _onFormChanged(Map form) {
@@ -114,6 +118,14 @@ class _NewFlyFormAttributesState extends State<NewFlyFormAttributes>
     );
   }
 
+  void goToNextPage(NewFlyFormTemplate nfft) {
+    Routes.newFlyMaterialsPage(context,
+        pageNumber: FormPageNumber(
+          pageNumber: _formPageNumber.pageNumber + 1,
+          pageCount: nfft.flyFormMaterials.length,
+        ));
+  }
+
   Widget _buildForm(NewFlyFormTransfer flyFormTransfer) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -127,7 +139,9 @@ class _NewFlyFormAttributesState extends State<NewFlyFormAttributes>
           RaisedButton(
             child: Text('Next'),
             onPressed: () {
-              if (_saveAndValidate()) Routes.newFlyMaterialsPage(context);
+              if (_saveAndValidate()) {
+                goToNextPage(flyFormTransfer.newFlyFormTemplate);
+              }
             },
           )
         ]),
