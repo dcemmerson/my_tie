@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:my_tie/bloc/state/my_tie_state.dart';
-import 'package:my_tie/routes/routes.dart';
 import 'package:my_tie/styles/theme_manager.dart';
 import 'package:my_tie/widgets/drawer/settings_drawer.dart';
 import 'package:my_tie/widgets/drawer/settings_drawer_icon.dart';
@@ -51,7 +50,8 @@ abstract class PageBase extends StatelessWidget {
             hint: 'Add new waste post',
             child: FloatingActionButton(
               key: Key('addWastePost'),
-              onPressed: () => Routes.addWastedPost(context),
+              onPressed: () => print('unimplemented'),
+              /* Routes.addWastedPost(context),*/
               child: Icon(Icons.add_a_photo),
             ),
           ),

@@ -6,8 +6,6 @@ import 'package:my_tie/pages/bottom_navigation_based_pages/new_fly_start_page.da
 import 'package:my_tie/pages/route_based_pages/new_fly_pages/new_fly_attributes_page.dart';
 import 'package:my_tie/pages/route_based_pages/new_fly_pages/new_fly_materials_page.dart';
 
-import 'package:my_tie/pages/route_based_pages/waste_post_page.dart';
-
 class SubPageContainer extends SubPageBase {
   final SubPageType _subPageType;
 
@@ -47,7 +45,7 @@ class SubPageContainer extends SubPageBase {
       case SubPageType.NewFlyMaterialsPage:
         return NewFlyMaterialsPage.title;
       default:
-        return WastePostPage.title;
+        return NewFlyMaterialsPage.title;
     }
   }
 

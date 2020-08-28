@@ -7,10 +7,6 @@ import 'package:my_tie/models/fly.dart';
 import 'package:my_tie/models/fly_attribute.dart';
 import 'package:my_tie/models/fly_difficulty.dart';
 import 'package:my_tie/models/fly_form_attribute.dart';
-import 'package:my_tie/models/fly_material.dart';
-import 'package:my_tie/models/fly_style.dart';
-import 'package:my_tie/models/fly_target.dart';
-import 'package:my_tie/models/fly_type.dart';
 import 'package:my_tie/models/form_page_number.dart';
 import 'package:my_tie/models/new_fly_form_template.dart';
 import 'package:my_tie/models/new_fly_form_transfer.dart';
@@ -32,9 +28,6 @@ class _NewFlyFormAttributesState extends State<NewFlyFormAttributes>
     with AutomaticKeepAliveClientMixin {
   final _formKey = new GlobalKey<FormBuilderState>();
   NewFlyBloc _newFlyBloc;
-
-  NewFlyFormTemplate _formTemplate;
-  Fly _flyInProgress;
 
   FormPageNumber _formPageNumber;
   bool _formChanged = false;

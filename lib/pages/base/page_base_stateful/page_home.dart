@@ -5,7 +5,6 @@ import 'package:my_tie/pages/bottom_navigation_based_pages/account_page.dart';
 import 'package:my_tie/pages/bottom_navigation_based_pages/bottom_nav_page_base.dart';
 import 'package:my_tie/pages/bottom_navigation_based_pages/home_page.dart';
 import 'package:my_tie/navigators_nested/new_fly_navigator_entry.dart';
-import 'package:my_tie/routes/routes.dart';
 import 'package:my_tie/styles/theme_manager.dart';
 import 'package:my_tie/widgets/drawer/settings_drawer.dart';
 import 'package:my_tie/widgets/drawer/settings_drawer_icon.dart';
@@ -109,7 +108,8 @@ class _PageHomeState extends State<PageHome> {
           hint: 'Add new waste post',
           child: FloatingActionButton(
               key: Key('addWastePost'),
-              onPressed: () => Routes.addWastedPost(context),
+              onPressed: () => print('unimplemented'),
+              /* Routes.addWastedPost(context), */
               child: Icon(Icons.add_a_photo)),
         ),
       ),
