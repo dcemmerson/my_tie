@@ -1,3 +1,9 @@
+/// filename: db_names.dart
+/// last modified: 08/29/2020
+/// description: Static class containing the string names which fields are
+///   defined as in firestore. Use throughout app to avoid littering string
+///   names in app code.
+
 class DbNames {
   static const attributes = 'attributes';
   static const materials = 'materials';

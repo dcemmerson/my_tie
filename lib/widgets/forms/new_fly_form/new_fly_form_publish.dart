@@ -1,3 +1,9 @@
+/// filename: new_fly_form_publish.dart
+/// description: Entry widget containg final page for using adding a new fly,
+///   before publishing. Allows user to review all fly attributes and materials,
+///   as well as provides functionallity to go back and edit that specific
+///   property.
+
 import 'package:flutter/material.dart';
 
 import 'package:my_tie/bloc/state/my_tie_state.dart';
@@ -8,6 +14,7 @@ import 'package:my_tie/models/new_fly_form_template.dart';
 import 'package:my_tie/models/new_fly_form_transfer.dart';
 
 import 'package:my_tie/styles/styles.dart';
+import 'package:my_tie/styles/theme_manager.dart';
 
 class NewFlyFormPublish extends StatefulWidget {
   final _spaceBetweenDropdowns = AppPadding.p6;
@@ -21,6 +28,8 @@ class NewFlyFormPublish extends StatefulWidget {
 
 class _NewFlyFormPublishState extends State<NewFlyFormPublish>
     with SingleTickerProviderStateMixin {
+  Widget _attributesHeader;
+  Widget _materialsHeader;
   AnimationController _controller;
   List<Animation<Offset>> _offsetAnimations = [];
 
@@ -29,6 +38,8 @@ class _NewFlyFormPublishState extends State<NewFlyFormPublish>
   @override
   void initState() {
     super.initState();
+
+    // Animation related
     _controller =
         AnimationController(duration: widget._animationDuration, vsync: this)
           ..forward();
@@ -37,6 +48,28 @@ class _NewFlyFormPublishState extends State<NewFlyFormPublish>
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+
+    // Font related
+    _attributesHeader = Container(
+        padding: EdgeInsets.all(AppPadding.p2),
+        child: Opacity(
+            opacity: 0.9,
+            child: Text('Attributes',
+                style: TextStyle(
+                  fontSize: AppFonts.h3,
+                  color: Theme.of(context).colorScheme.secondaryVariant,
+                  decoration: TextDecoration.underline,
+                ))));
+    _materialsHeader = Container(
+        padding: EdgeInsets.all(AppPadding.p2),
+        child: Opacity(
+            opacity: 0.9,
+            child: Text('Materials',
+                style: TextStyle(
+                  fontSize: AppFonts.h3,
+                  color: Theme.of(context).colorScheme.secondaryVariant,
+                  decoration: TextDecoration.underline,
+                ))));
 
     _newFlyBloc = MyTieStateContainer.of(context).blocProvider.newFlyBloc;
   }
@@ -63,6 +96,13 @@ class _NewFlyFormPublishState extends State<NewFlyFormPublish>
     }
   }
 
+  /// name: _buildAttributes
+  /// description: Build Card widget with fly in progress attributes to paint
+  ///   on screen for user. We take the NewFlyFormTransfer object, which contains
+  ///   the fly in progress and the fly form template. Find the attribute fields
+  ///   in fly form template (eg ['difficulty', 'type', 'style', etc]), then
+  ///   search the fly in progress for these matching attribute values and place
+  ///   in Text widgets.
   Widget _buildAttributes(NewFlyFormTransfer nfft) {
     return Card(
       color: Theme.of(context).colorScheme.surface,
@@ -73,40 +113,77 @@ class _NewFlyFormPublishState extends State<NewFlyFormPublish>
           Text(nfft.flyInProgress.getAttribute(DbNames.flyName),
               style: AppTextStyles.header),
           ...nfft.newFlyFormTemplate.flyFormAttributes
-              .map((FlyFormAttribute attr) {
-            return Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  Text(attr.name, style: AppTextStyles.subHeader),
-                  Text(nfft.flyInProgress.getAttribute(attr.name) ?? 'None',
-                      style: AppTextStyles.subHeader),
-                ]);
-          }).toList()
+              .map((FlyFormAttribute attr) => Row(
+                      // mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        Expanded(
+                            child: Container(
+                                alignment: Alignment.center,
+                                child: Text(attr.name,
+                                    style: AppTextStyles.subHeader))),
+                        Expanded(
+                            child: Container(
+                                alignment: Alignment.center,
+                                child: Text(
+                                    nfft.flyInProgress
+                                            .getAttribute(attr.name) ??
+                                        'None',
+                                    style: AppTextStyles.subHeader))),
+                      ]))
+              .toList()
         ]),
       ),
     );
   }
 
+  /// name: _buildMaterials
+  /// description: Similar to _buildAttributes.
+  ///   Build Card widget with fly in progress materials to paint
+  ///   on screen for user. We take the NewFlyFormTransfer object, which contains
+  ///   the fly in progress and the fly form template. Find the material fields
+  ///   in fly form template (eg ['color', 'type', 'style', etc]), then
+  ///   search the fly in progress for these matching material values and place
+  ///   in Text widgets.
   Widget _buildMaterials(NewFlyFormTransfer nfft) {
     calculateAnimationOffsets(nfft.newFlyFormTemplate);
     List<Widget> rows = [];
 
     nfft.newFlyFormTemplate.flyFormMaterials.forEach((mat) {
+      // Add Rows of Text widgets to nextRow, then append nextRow inside
+      //  a Card widget.
       List<Row> nextRow = [];
 
+      //  Material name, for example furs, yarns, threads, etc
       nextRow.add(Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [Text(mat.name, style: AppTextStyles.header)]));
 
+      //  Now add each material property in a row to nextRow, for example
+      //  Row(children: [Text('color'), Text('red')]) would be a single row entry.
       mat.properties.forEach((k, v) {
         nextRow.add(
           Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
-            Text(k, style: AppTextStyles.subHeader),
-            Text(nfft.flyInProgress.getMaterial(mat.name, k) ?? 'None selected',
-                style: AppTextStyles.subHeader),
+            Expanded(
+              child: Container(
+                alignment: Alignment.center,
+                child: Text(k, style: AppTextStyles.subHeader),
+              ),
+            ),
+            Expanded(
+              child: Container(
+                alignment: Alignment.center,
+                child: Text(
+                    nfft.flyInProgress.getMaterial(mat.name, k) ??
+                        'None selected',
+                    style: AppTextStyles.subHeader),
+              ),
+            ),
           ]),
         );
       });
+
+      //  Now build actual card widget with all the previous rows as descendents,
+      //  all wrapped in an animation to show card transitioning on screen.
       rows.add(SlideTransition(
         position: _offsetAnimations.removeAt(0),
         child: Card(
@@ -120,7 +197,6 @@ class _NewFlyFormPublishState extends State<NewFlyFormPublish>
           ),
         ),
       ));
-      //mat.name => text widget (eg Furs)
     });
 
     return Column(
@@ -128,16 +204,15 @@ class _NewFlyFormPublishState extends State<NewFlyFormPublish>
     );
   }
 
-  List<Widget> _buildFlyFormPreview(NewFlyFormTransfer nfft) {
-    return [_buildAttributes(nfft), _buildMaterials(nfft)];
-  }
-
   Widget _buildForm(NewFlyFormTransfer flyFormTransfer) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         SizedBox(height: widget._spaceBetweenDropdowns),
-        ..._buildFlyFormPreview(flyFormTransfer),
+        _attributesHeader,
+        _buildAttributes(flyFormTransfer),
+        _materialsHeader,
+        _buildMaterials(flyFormTransfer),
         Row(children: [
           Expanded(
             child: Container(

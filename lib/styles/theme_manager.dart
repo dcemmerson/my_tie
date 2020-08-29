@@ -1,3 +1,8 @@
+/// filename: theme_manager.dart
+/// last modified: 08/29/2020
+/// description: ThemeManager class contains app level specifics for defining
+///   theme colors for both dark and light mode.
+
 import 'package:flutter/material.dart';
 
 class ThemeManager {
@@ -5,7 +10,7 @@ class ThemeManager {
 
   ThemeData _themeLight = ThemeData(
     // Define the default brightness and colors.
-//    buttonColor: ,
+    //    buttonColor: ,
     buttonTheme: ButtonThemeData(
       buttonColor: Colors.blueGrey[700],
       textTheme: ButtonTextTheme.primary,
@@ -14,7 +19,6 @@ class ThemeManager {
     primaryColor: Colors.blueGrey[600],
     accentColor: Colors.blueGrey[300],
     disabledColor: Colors.grey[700],
-
 //      appBarTheme: AppBarTheme(iconTheme: IconThemeData(size: AppFonts.h6)),
 
     // Define the default font family.

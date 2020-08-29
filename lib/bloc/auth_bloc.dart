@@ -1,3 +1,10 @@
+/// filename: auth_bloc.dart
+/// description: BLoC related to authentication. This class is responsible for
+///   communicating between AuthService class (which communicates with
+///   Firestore) and our app. Class used to authenticate user using variety of
+///   auth patterns (gmail, github, etc), as well as providing access throughout
+///   app (via inherited widget setup in MyTieStateContainer).
+
 import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
