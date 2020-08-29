@@ -24,8 +24,15 @@ class Fly {
     return flyMaterials;
   }
 
-  String getAttribute(String name) =>
-      attributes.firstWhere((attr) => attr.name == name).value;
+  String getAttribute(String name) {
+    var attrFound =
+        attributes.firstWhere((attr) => attr.name == name, orElse: () => null);
+
+    if (attrFound != null) {
+      return attrFound.value;
+    }
+    return null;
+  }
 
   String getMaterial(String matName, String materialAttribute) {
     var matFound =

@@ -69,7 +69,7 @@ class _NewFlyFormMaterialsState extends State<NewFlyFormMaterials>
     );
   }
 
-  void _saveAndValidate(String material) {
+  bool _saveAndValidate(String material) {
     if (_formKey.currentState.saveAndValidate()) {
       var inputs = _formKey.currentState.value;
 
@@ -78,13 +78,30 @@ class _NewFlyFormMaterialsState extends State<NewFlyFormMaterials>
         props: inputs.map((k, v) => MapEntry(k, v)),
       );
       _newFlyBloc.newFlyMaterialsSink.add(flyMaterials);
+      return true;
     }
+    return false;
   }
 
   Widget _buildLoading() {
     return Center(
       child: CircularProgressIndicator(),
     );
+  }
+
+  void goToNextPage(NewFlyFormTemplate nfft) {
+    if (_formPageNumber.pageNumber < nfft.flyFormMaterials.length - 1) {
+      Routes.newFlyMaterialsPage(
+        context,
+        pageNumber: FormPageNumber(
+          pageNumber: _formPageNumber.pageNumber + 1,
+          pageCount: nfft.flyFormMaterials.length,
+        ),
+      );
+    } else {
+      // End of form reached.
+      Routes.newFlyPublishPage(context);
+    }
   }
 
   Widget _buildForm(NewFlyFormTransfer flyFormTransfer) {
@@ -106,13 +123,10 @@ class _NewFlyFormMaterialsState extends State<NewFlyFormMaterials>
           RaisedButton(
             child: Text('Next'),
             onPressed: () {
-              _saveAndValidate(flyFormTransfer.newFlyFormTemplate
-                  .flyFormMaterials[_formPageNumber.pageNumber].name);
-              Routes.newFlyMaterialsPage(context,
-                  pageNumber: FormPageNumber(
-                    pageNumber: _formPageNumber.pageNumber + 1,
-                    pageCount: flyFormTemplate.flyFormMaterials.length,
-                  ));
+              if (_saveAndValidate(flyFormTransfer.newFlyFormTemplate
+                  .flyFormMaterials[_formPageNumber.pageNumber].name)) {
+                goToNextPage(flyFormTransfer.newFlyFormTemplate);
+              }
             },
           )
         ]),

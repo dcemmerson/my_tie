@@ -8,4 +8,8 @@ class FlyMaterial {
     return props
         .map((key, value) => MapEntry(key.toString(), value.toString()));
   }
+
+  String getProperty(String prop) {
+    return properties[prop];
+  }
 }

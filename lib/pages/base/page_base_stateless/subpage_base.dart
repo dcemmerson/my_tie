@@ -9,6 +9,7 @@ enum SubPageType {
   NewFlyStartPage,
   NewFlyAttributesPage,
   NewFlyMaterialsPage,
+  NewFlyPublishPage,
 }
 
 abstract class SubPageBase extends StatelessWidget {
