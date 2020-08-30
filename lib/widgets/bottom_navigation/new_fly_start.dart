@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:my_tie/routes/routes.dart';
+import 'package:my_tie/routes/fly_form_routes.dart';
 
 class NewFlyStart extends StatelessWidget {
   @override
@@ -7,7 +7,7 @@ class NewFlyStart extends StatelessWidget {
     return Center(
       child: RaisedButton(
         child: Text('ehllo'),
-        onPressed: () => Routes.newFlyAttributesPage(context),
+        onPressed: () => FlyFormRoutes.newFlyAttributesPage(context),
       ),
     );
 

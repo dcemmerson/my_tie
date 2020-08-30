@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_tie/bloc/state/fly_form_state.dart';
 import 'package:my_tie/navigators_nested/new_fly_navigator.dart';
 import 'package:my_tie/pages/bottom_navigation_based_pages/bottom_nav_page_base.dart';
 
@@ -11,6 +12,6 @@ class NewFlyNavigatorEntry extends BottomNavPageBase {
 
   @override
   Widget build(BuildContext context) {
-    return NewFlyNavigator();
+    return FlyFormStateContainer(child: NewFlyNavigator());
   }
 }

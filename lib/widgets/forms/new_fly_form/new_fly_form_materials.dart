@@ -1,5 +1,12 @@
+/// filename: new_fly_form_materials.dart
+/// last modified: 08/30/2020
+/// description: Entry widget used to allow user to choose materials necessary
+///   to construct fly. Same widget used for any material, but this widget
+///   will add necessary dropdown menus, populated with possible values.
+
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:my_tie/bloc/state/fly_form_state.dart';
 
 import 'package:my_tie/bloc/state/my_tie_state.dart';
 import 'package:my_tie/bloc/new_fly_bloc.dart';
@@ -8,7 +15,7 @@ import 'package:my_tie/models/fly_material.dart';
 import 'package:my_tie/models/new_fly_form_template.dart';
 import 'package:my_tie/models/new_fly_form_transfer.dart';
 import 'package:my_tie/models/form_page_number.dart';
-import 'package:my_tie/routes/routes.dart';
+import 'package:my_tie/routes/fly_form_routes.dart';
 
 import 'package:my_tie/styles/styles.dart';
 
@@ -27,6 +34,7 @@ class _NewFlyFormMaterialsState extends State<NewFlyFormMaterials>
 
   NewFlyBloc _newFlyBloc;
   FormPageNumber _formPageNumber;
+  bool _showSkipToEnd;
 
   bool _formChanged = false;
 
@@ -39,6 +47,7 @@ class _NewFlyFormMaterialsState extends State<NewFlyFormMaterials>
     _formPageNumber =
         ModalRoute.of(context).settings.arguments ?? FormPageNumber();
     _newFlyBloc = MyTieStateContainer.of(context).blocProvider.newFlyBloc;
+    _showSkipToEnd = FlyFormStateContainer.of(context).isSkippableToEnd;
   }
 
   void _onFormChanged(Map form) {
@@ -89,21 +98,6 @@ class _NewFlyFormMaterialsState extends State<NewFlyFormMaterials>
     );
   }
 
-  void goToNextPage(NewFlyFormTemplate nfft) {
-    if (_formPageNumber.pageNumber < nfft.flyFormMaterials.length - 1) {
-      Routes.newFlyMaterialsPage(
-        context,
-        pageNumber: FormPageNumber(
-          pageNumber: _formPageNumber.pageNumber + 1,
-          pageCount: nfft.flyFormMaterials.length,
-        ),
-      );
-    } else {
-      // End of form reached.
-      Routes.newFlyPublishPage(context);
-    }
-  }
-
   Widget _buildForm(NewFlyFormTransfer flyFormTransfer) {
     final Fly fly = flyFormTransfer.flyInProgress;
     final NewFlyFormTemplate flyFormTemplate =
@@ -125,10 +119,28 @@ class _NewFlyFormMaterialsState extends State<NewFlyFormMaterials>
             onPressed: () {
               if (_saveAndValidate(flyFormTransfer.newFlyFormTemplate
                   .flyFormMaterials[_formPageNumber.pageNumber].name)) {
-                goToNextPage(flyFormTransfer.newFlyFormTemplate);
+                FlyFormRoutes.goToNextPage(
+                    context: context,
+                    newFlyFormTemplate: flyFormTransfer.newFlyFormTemplate,
+                    formPageNumber: _formPageNumber);
               }
             },
-          )
+          ),
+          !_showSkipToEnd
+              ? SizedBox(height: 0, width: 0)
+              : RaisedButton(
+                  child: Text('Skip to end'),
+                  onPressed: () {
+                    if (_saveAndValidate(flyFormTransfer.newFlyFormTemplate
+                        .flyFormMaterials[_formPageNumber.pageNumber].name)) {
+                      FlyFormRoutes.skipToEnd(
+                        context: context,
+                        formPageNumber: _formPageNumber,
+                        newFlyFormTemplate: flyFormTransfer.newFlyFormTemplate,
+                      );
+                    }
+                  },
+                )
         ]),
       ],
     );

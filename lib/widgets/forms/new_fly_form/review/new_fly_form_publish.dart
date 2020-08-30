@@ -8,19 +8,29 @@ import 'package:flutter/material.dart';
 
 import 'package:my_tie/bloc/state/my_tie_state.dart';
 import 'package:my_tie/bloc/new_fly_bloc.dart';
-import 'package:my_tie/models/db_names.dart';
-import 'package:my_tie/models/fly_form_attribute.dart';
+
 import 'package:my_tie/models/new_fly_form_template.dart';
 import 'package:my_tie/models/new_fly_form_transfer.dart';
 
 import 'package:my_tie/styles/styles.dart';
-import 'package:my_tie/styles/theme_manager.dart';
+
+import 'attribute_review.dart';
 
 class NewFlyFormPublish extends StatefulWidget {
   final _spaceBetweenDropdowns = AppPadding.p6;
   final _animationDuration = const Duration(milliseconds: 500);
   final _initDist = -1.0;
   final _offsetDelta = -1.0;
+
+  static void popToPage(
+      {@required int pageCount,
+      @required int popToPage,
+      @required BuildContext ctx}) {
+    int pagesToPop = pageCount - popToPage;
+    for (int i = 0; i < pagesToPop; i++) {
+      Navigator.of(ctx).pop();
+    }
+  }
 
   @override
   _NewFlyFormPublishState createState() => _NewFlyFormPublishState();
@@ -96,46 +106,6 @@ class _NewFlyFormPublishState extends State<NewFlyFormPublish>
     }
   }
 
-  /// name: _buildAttributes
-  /// description: Build Card widget with fly in progress attributes to paint
-  ///   on screen for user. We take the NewFlyFormTransfer object, which contains
-  ///   the fly in progress and the fly form template. Find the attribute fields
-  ///   in fly form template (eg ['difficulty', 'type', 'style', etc]), then
-  ///   search the fly in progress for these matching attribute values and place
-  ///   in Text widgets.
-  Widget _buildAttributes(NewFlyFormTransfer nfft) {
-    return Card(
-      color: Theme.of(context).colorScheme.surface,
-      margin: EdgeInsets.fromLTRB(0, AppPadding.p2, 0, AppPadding.p4),
-      child: Padding(
-        padding: EdgeInsets.fromLTRB(0, AppPadding.p2, 0, AppPadding.p4),
-        child: Column(children: [
-          Text(nfft.flyInProgress.getAttribute(DbNames.flyName),
-              style: AppTextStyles.header),
-          ...nfft.newFlyFormTemplate.flyFormAttributes
-              .map((FlyFormAttribute attr) => Row(
-                      // mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        Expanded(
-                            child: Container(
-                                alignment: Alignment.center,
-                                child: Text(attr.name,
-                                    style: AppTextStyles.subHeader))),
-                        Expanded(
-                            child: Container(
-                                alignment: Alignment.center,
-                                child: Text(
-                                    nfft.flyInProgress
-                                            .getAttribute(attr.name) ??
-                                        'None',
-                                    style: AppTextStyles.subHeader))),
-                      ]))
-              .toList()
-        ]),
-      ),
-    );
-  }
-
   /// name: _buildMaterials
   /// description: Similar to _buildAttributes.
   ///   Build Card widget with fly in progress materials to paint
@@ -154,9 +124,9 @@ class _NewFlyFormPublishState extends State<NewFlyFormPublish>
       List<Row> nextRow = [];
 
       //  Material name, for example furs, yarns, threads, etc
-      nextRow.add(Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [Text(mat.name, style: AppTextStyles.header)]));
+      nextRow.add(Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+        Text(mat.name, style: AppTextStyles.header),
+      ]));
 
       //  Now add each material property in a row to nextRow, for example
       //  Row(children: [Text('color'), Text('red')]) would be a single row entry.
@@ -210,7 +180,7 @@ class _NewFlyFormPublishState extends State<NewFlyFormPublish>
       children: [
         SizedBox(height: widget._spaceBetweenDropdowns),
         _attributesHeader,
-        _buildAttributes(flyFormTransfer),
+        AttributeReview(newFlyFormTransfer: flyFormTransfer),
         _materialsHeader,
         _buildMaterials(flyFormTransfer),
         Row(children: [

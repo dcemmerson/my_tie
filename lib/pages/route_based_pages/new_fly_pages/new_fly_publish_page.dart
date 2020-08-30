@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:my_tie/widgets/forms/new_fly_form/new_fly_form_publish.dart';
+import 'package:my_tie/widgets/forms/new_fly_form/review/new_fly_form_publish.dart';
 
 class NewFlyPublishPage extends StatelessWidget {
   static const title = 'Publish Fly';

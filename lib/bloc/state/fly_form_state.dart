@@ -19,15 +19,17 @@ class FlyFormStateContainer extends StatefulWidget {
 }
 
 class NewFlyState extends State<FlyFormStateContainer> {
-  int pageCount;
-  int currentPage;
+  bool _isSkippableToEnd = false;
+
+  get isSkippableToEnd => _isSkippableToEnd;
+  set isSkippableToEnd(bool isSkippable) =>
+      setState(() => _isSkippableToEnd = isSkippable);
 
   @override
   Widget build(BuildContext context) {
     return _NewFlyContainer(
       flyFormState: this,
-      currentPage: currentPage,
-      pageCount: pageCount,
+      isSkippableToEnd: _isSkippableToEnd,
       child: widget.child,
     );
   }
@@ -35,21 +37,18 @@ class NewFlyState extends State<FlyFormStateContainer> {
 
 class _NewFlyContainer extends InheritedWidget {
   final NewFlyState flyFormState;
-  final int pageCount;
-  final int currentPage;
+  final bool isSkippableToEnd;
 
   _NewFlyContainer({
     Key key,
     @required this.flyFormState,
     @required Widget child,
-    @required this.currentPage,
-    @required this.pageCount,
+    @required this.isSkippableToEnd,
   }) : super(key: key, child: child);
 
   @override
   bool updateShouldNotify(_NewFlyContainer oldWidget) {
     return oldWidget.flyFormState != this.flyFormState ||
-        oldWidget.pageCount != this.pageCount ||
-        oldWidget.currentPage != this.currentPage;
+        oldWidget.isSkippableToEnd != this.isSkippableToEnd;
   }
 }

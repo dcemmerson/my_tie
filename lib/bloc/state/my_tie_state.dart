@@ -30,12 +30,12 @@ class MyTieStateContainer extends StatefulWidget {
 class MyTieState extends State<MyTieStateContainer> {
   SharedPreferences _prefs;
   BlocProvider get blocProvider => widget.blocProvider;
-  int _newFlyFormPageCount = -1;
+  // int _newFlyFormPageCount = -1;
   bool _isDarkMode = false;
   bool _isCompactWasteListMode = true;
   bool _allUsersEntries = true;
 
-  get pageCount => _newFlyFormPageCount;
+  // get pageCount => _newFlyFormPageCount;
   get isDarkMode => _isDarkMode;
   get isCompactWasteListMode => _isCompactWasteListMode;
   get allUsersEntries => _allUsersEntries;
@@ -63,12 +63,6 @@ class MyTieState extends State<MyTieStateContainer> {
     });
   }
 
-  void setNewFlyFormCount(int count) {
-    if (_newFlyFormPageCount != count) {
-      setState(() => _newFlyFormPageCount = count);
-    }
-  }
-
   void toggleDarkMode() {
     _prefs.setBool(MyTieStateContainer.prefsDarkMode, !_isDarkMode);
     setState(() => _isDarkMode = !_isDarkMode);
@@ -89,7 +83,7 @@ class MyTieState extends State<MyTieStateContainer> {
   Widget build(BuildContext context) {
     return _MyTieContainer(
       wasteagramState: this,
-      newFlyFormPageCount: _newFlyFormPageCount,
+      // newFlyFormPageCount: _newFlyFormPageCount,
       isDarkMode: _isDarkMode,
       isCompactWasteListMode: _isCompactWasteListMode,
       allUsersEntries: _allUsersEntries,
@@ -102,7 +96,7 @@ class MyTieState extends State<MyTieStateContainer> {
 class _MyTieContainer extends InheritedWidget {
   final MyTieState wasteagramState;
   final BlocProvider blocProvider;
-  final int newFlyFormPageCount;
+  // final int newFlyFormPageCount;
   final bool isDarkMode;
   final bool isCompactWasteListMode;
   final bool allUsersEntries;
@@ -111,7 +105,7 @@ class _MyTieContainer extends InheritedWidget {
     Key key,
     @required Widget child,
     @required this.wasteagramState,
-    @required this.newFlyFormPageCount,
+    // @required this.newFlyFormPageCount,
     @required this.blocProvider,
     @required this.isDarkMode,
     @required this.allUsersEntries,

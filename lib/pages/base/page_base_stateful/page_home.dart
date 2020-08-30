@@ -1,3 +1,8 @@
+/// filename: page_home.dart
+/// last modified: 08/30/2020
+/// description: Main page entry point base for app. This page contains the
+///   bottom app bar, and logic for which swipeable page to display to user.
+
 import 'package:flutter/material.dart';
 import 'package:my_tie/bloc/state/my_tie_state.dart';
 import 'package:my_tie/pages/base/page_base_stateful/app_bottom_navigation_bar.dart';

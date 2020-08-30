@@ -1,22 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:my_tie/bloc/state/fly_form_state.dart';
 import 'package:my_tie/bloc/state/my_tie_state.dart';
 import 'package:my_tie/bloc/new_fly_bloc.dart';
 import 'package:my_tie/models/db_names.dart';
-import 'package:my_tie/models/fly.dart';
 import 'package:my_tie/models/fly_attribute.dart';
-import 'package:my_tie/models/fly_difficulty.dart';
 import 'package:my_tie/models/fly_form_attribute.dart';
 import 'package:my_tie/models/form_page_number.dart';
 import 'package:my_tie/models/new_fly_form_template.dart';
 import 'package:my_tie/models/new_fly_form_transfer.dart';
-import 'package:my_tie/routes/routes.dart';
+import 'package:my_tie/routes/fly_form_routes.dart';
 import 'package:my_tie/styles/styles.dart';
 import 'package:my_tie/widgets/forms/new_fly_form/fly_attribute_dropdown.dart';
 import 'package:my_tie/widgets/forms/new_fly_form/fly_name_text_input.dart';
-
-enum DropdownType { FlyStyles, FlyTypes, Difficulties }
-enum Difficulty { Easy, Medium, Hard }
 
 class NewFlyFormAttributes extends StatefulWidget {
   final _spaceBetweenDropdowns = AppPadding.p6;
@@ -28,6 +24,7 @@ class _NewFlyFormAttributesState extends State<NewFlyFormAttributes>
     with AutomaticKeepAliveClientMixin {
   final _formKey = new GlobalKey<FormBuilderState>();
   NewFlyBloc _newFlyBloc;
+  bool _showSkipToEnd;
 
   FormPageNumber _formPageNumber;
   bool _formChanged = false;
@@ -39,6 +36,8 @@ class _NewFlyFormAttributesState extends State<NewFlyFormAttributes>
   void didChangeDependencies() {
     super.didChangeDependencies();
     _newFlyBloc = MyTieStateContainer.of(context).blocProvider.newFlyBloc;
+    _showSkipToEnd = FlyFormStateContainer.of(context).isSkippableToEnd;
+
     _formPageNumber =
         ModalRoute.of(context).settings.arguments ?? FormPageNumber();
   }
@@ -111,14 +110,6 @@ class _NewFlyFormAttributesState extends State<NewFlyFormAttributes>
     );
   }
 
-  void goToNextPage(NewFlyFormTemplate nfft) {
-    Routes.newFlyMaterialsPage(context,
-        pageNumber: FormPageNumber(
-          pageNumber: _formPageNumber.pageNumber + 1,
-          pageCount: nfft.flyFormMaterials.length,
-        ));
-  }
-
   Widget _buildForm(NewFlyFormTransfer flyFormTransfer) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -133,10 +124,27 @@ class _NewFlyFormAttributesState extends State<NewFlyFormAttributes>
             child: Text('Next'),
             onPressed: () {
               if (_saveAndValidate()) {
-                goToNextPage(flyFormTransfer.newFlyFormTemplate);
+                FlyFormRoutes.goToNextPage(
+                    context: context,
+                    formPageNumber: _formPageNumber,
+                    newFlyFormTemplate: flyFormTransfer.newFlyFormTemplate);
               }
             },
-          )
+          ),
+          !_showSkipToEnd
+              ? SizedBox(height: 0, width: 0)
+              : RaisedButton(
+                  child: Text('Skip to end'),
+                  onPressed: () {
+                    if (_saveAndValidate()) {
+                      FlyFormRoutes.skipToEnd(
+                        context: context,
+                        formPageNumber: _formPageNumber,
+                        newFlyFormTemplate: flyFormTransfer.newFlyFormTemplate,
+                      );
+                    }
+                  },
+                )
         ]),
       ],
     );
