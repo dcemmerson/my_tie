@@ -39,12 +39,12 @@ class FlyFormRoutes {
     @required FormPageNumber formPageNumber,
   }) {
     if (formPageNumber.pageNumber <
-        newFlyFormTemplate.flyFormMaterials.length - 1) {
+        newFlyFormTemplate.flyFormMaterials.length) {
       FlyFormRoutes.newFlyMaterialsPage(
         context,
         pageNumber: FormPageNumber(
           pageNumber: formPageNumber.pageNumber + 1,
-          pageCount: newFlyFormTemplate.flyFormMaterials.length,
+          pageCount: newFlyFormTemplate.flyFormMaterials.length + 1,
         ),
       );
     } else {
@@ -63,7 +63,8 @@ class FlyFormRoutes {
     @required FormPageNumber formPageNumber,
   }) {
     int pagesToSkip = (newFlyFormTemplate.flyFormMaterials.length) -
-        formPageNumber.pageNumber;
+        formPageNumber.pageNumber +
+        1;
 
     // Now push all form related pages onto stack, followed by pushing the
     //  form review/publish page on.

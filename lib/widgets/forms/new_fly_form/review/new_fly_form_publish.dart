@@ -15,12 +15,10 @@ import 'package:my_tie/models/new_fly_form_transfer.dart';
 import 'package:my_tie/styles/styles.dart';
 
 import 'attribute_review.dart';
+import 'material_review.dart';
 
 class NewFlyFormPublish extends StatefulWidget {
   final _spaceBetweenDropdowns = AppPadding.p6;
-  final _animationDuration = const Duration(milliseconds: 500);
-  final _initDist = -1.0;
-  final _offsetDelta = -1.0;
 
   static void popToPage(
       {@required int pageCount,
@@ -36,24 +34,11 @@ class NewFlyFormPublish extends StatefulWidget {
   _NewFlyFormPublishState createState() => _NewFlyFormPublishState();
 }
 
-class _NewFlyFormPublishState extends State<NewFlyFormPublish>
-    with SingleTickerProviderStateMixin {
+class _NewFlyFormPublishState extends State<NewFlyFormPublish> {
   Widget _attributesHeader;
   Widget _materialsHeader;
-  AnimationController _controller;
-  List<Animation<Offset>> _offsetAnimations = [];
 
   NewFlyBloc _newFlyBloc;
-
-  @override
-  void initState() {
-    super.initState();
-
-    // Animation related
-    _controller =
-        AnimationController(duration: widget._animationDuration, vsync: this)
-          ..forward();
-  }
 
   @override
   void didChangeDependencies() {
@@ -95,85 +80,6 @@ class _NewFlyFormPublishState extends State<NewFlyFormPublish>
     print('ended');
   }
 
-  void calculateAnimationOffsets(NewFlyFormTemplate template) {
-    double offset = widget._initDist;
-    for (int i = 0; i < template.flyFormMaterials.length; i++) {
-      _offsetAnimations.add(Tween<Offset>(
-              begin: Offset(offset, 0), end: Offset.zero)
-          .animate(CurvedAnimation(parent: _controller, curve: Curves.linear)));
-
-      offset += widget._offsetDelta;
-    }
-  }
-
-  /// name: _buildMaterials
-  /// description: Similar to _buildAttributes.
-  ///   Build Card widget with fly in progress materials to paint
-  ///   on screen for user. We take the NewFlyFormTransfer object, which contains
-  ///   the fly in progress and the fly form template. Find the material fields
-  ///   in fly form template (eg ['color', 'type', 'style', etc]), then
-  ///   search the fly in progress for these matching material values and place
-  ///   in Text widgets.
-  Widget _buildMaterials(NewFlyFormTransfer nfft) {
-    calculateAnimationOffsets(nfft.newFlyFormTemplate);
-    List<Widget> rows = [];
-
-    nfft.newFlyFormTemplate.flyFormMaterials.forEach((mat) {
-      // Add Rows of Text widgets to nextRow, then append nextRow inside
-      //  a Card widget.
-      List<Row> nextRow = [];
-
-      //  Material name, for example furs, yarns, threads, etc
-      nextRow.add(Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-        Text(mat.name, style: AppTextStyles.header),
-      ]));
-
-      //  Now add each material property in a row to nextRow, for example
-      //  Row(children: [Text('color'), Text('red')]) would be a single row entry.
-      mat.properties.forEach((k, v) {
-        nextRow.add(
-          Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
-            Expanded(
-              child: Container(
-                alignment: Alignment.center,
-                child: Text(k, style: AppTextStyles.subHeader),
-              ),
-            ),
-            Expanded(
-              child: Container(
-                alignment: Alignment.center,
-                child: Text(
-                    nfft.flyInProgress.getMaterial(mat.name, k) ??
-                        'None selected',
-                    style: AppTextStyles.subHeader),
-              ),
-            ),
-          ]),
-        );
-      });
-
-      //  Now build actual card widget with all the previous rows as descendents,
-      //  all wrapped in an animation to show card transitioning on screen.
-      rows.add(SlideTransition(
-        position: _offsetAnimations.removeAt(0),
-        child: Card(
-          color: Theme.of(context).colorScheme.surface,
-          margin: EdgeInsets.fromLTRB(0, AppPadding.p2, 0, AppPadding.p4),
-          child: Padding(
-            padding: EdgeInsets.fromLTRB(0, AppPadding.p2, 0, AppPadding.p4),
-            child: Column(
-              children: nextRow,
-            ),
-          ),
-        ),
-      ));
-    });
-
-    return Column(
-      children: rows,
-    );
-  }
-
   Widget _buildForm(NewFlyFormTransfer flyFormTransfer) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -182,7 +88,7 @@ class _NewFlyFormPublishState extends State<NewFlyFormPublish>
         _attributesHeader,
         AttributeReview(newFlyFormTransfer: flyFormTransfer),
         _materialsHeader,
-        _buildMaterials(flyFormTransfer),
+        MaterialReview(newFlyFormTransfer: flyFormTransfer),
         Row(children: [
           Expanded(
             child: Container(
@@ -213,9 +119,12 @@ class _NewFlyFormPublishState extends State<NewFlyFormPublish>
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: StreamBuilder(
-          stream: _newFlyBloc.newFlyForm,
+          stream: _newFlyBloc.newFlyFormStreams,
           builder: (context, AsyncSnapshot<NewFlyFormTransfer> snapshot) {
-            if (snapshot.hasError) return Text('error occurred');
+            if (snapshot.hasError) {
+              print(snapshot.error);
+              return Text('error occurred');
+            }
             switch (snapshot.connectionState) {
               case (ConnectionState.done):
               case (ConnectionState.active):

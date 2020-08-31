@@ -24,6 +24,20 @@ class NewFlyService {
       return null;
   }
 
+  Stream<DocumentSnapshot> get newFlyFormStream {
+    return FirebaseFirestore.instance
+        .collection(_newFlyForm)
+        .doc(_newFlyDocId)
+        .snapshots();
+  }
+
+  Stream<QuerySnapshot> getFlyInProgressDocStream(String uid) {
+    return FirebaseFirestore.instance
+        .collection(_flyInProgress)
+        .where('uid', isEqualTo: uid)
+        .snapshots();
+  }
+
   Future updateFlyMaterialsInProgress({
     String docId,
     String name,

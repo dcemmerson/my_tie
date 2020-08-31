@@ -11,6 +11,7 @@ import 'package:my_tie/models/new_fly_form_template.dart';
 import 'package:my_tie/models/new_fly_form_transfer.dart';
 import 'package:my_tie/routes/fly_form_routes.dart';
 import 'package:my_tie/styles/styles.dart';
+import 'package:my_tie/widgets/forms/forward_buttons.dart';
 import 'package:my_tie/widgets/forms/new_fly_form/fly_attribute_dropdown.dart';
 import 'package:my_tie/widgets/forms/new_fly_form/fly_name_text_input.dart';
 
@@ -119,33 +120,11 @@ class _NewFlyFormAttributesState extends State<NewFlyFormAttributes>
         SizedBox(height: widget._spaceBetweenDropdowns),
         ..._buildDropdowns(flyFormTransfer),
         SizedBox(height: widget._spaceBetweenDropdowns),
-        Row(children: [
-          RaisedButton(
-            child: Text('Next'),
-            onPressed: () {
-              if (_saveAndValidate()) {
-                FlyFormRoutes.goToNextPage(
-                    context: context,
-                    formPageNumber: _formPageNumber,
-                    newFlyFormTemplate: flyFormTransfer.newFlyFormTemplate);
-              }
-            },
-          ),
-          !_showSkipToEnd
-              ? SizedBox(height: 0, width: 0)
-              : RaisedButton(
-                  child: Text('Skip to end'),
-                  onPressed: () {
-                    if (_saveAndValidate()) {
-                      FlyFormRoutes.skipToEnd(
-                        context: context,
-                        formPageNumber: _formPageNumber,
-                        newFlyFormTemplate: flyFormTransfer.newFlyFormTemplate,
-                      );
-                    }
-                  },
-                )
-        ]),
+        ForwardButtons(
+          flyFormTransfer: flyFormTransfer,
+          formPageNumber: _formPageNumber,
+          saveAndValidate: () => _saveAndValidate(),
+        ),
       ],
     );
   }

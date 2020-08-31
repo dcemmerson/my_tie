@@ -26,7 +26,6 @@ class AttributeReview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(Theme.of(context).iconTheme.size);
     return Card(
       color: Theme.of(context).colorScheme.surface,
       margin: EdgeInsets.fromLTRB(0, AppPadding.p2, 0, AppPadding.p4),
@@ -45,7 +44,7 @@ class AttributeReview extends StatelessWidget {
                   ctx: context,
                   pageCount:
                       nfft.newFlyFormTemplate.flyFormMaterials.length + 1,
-                  popToPage: pageNumber),
+                  popToPage: pageNumber - 1),
               icon: Icon(
                 Icons.edit,
                 semanticLabel: _semanticLabel,

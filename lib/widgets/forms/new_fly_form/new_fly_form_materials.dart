@@ -19,6 +19,7 @@ import 'package:my_tie/routes/fly_form_routes.dart';
 
 import 'package:my_tie/styles/styles.dart';
 
+import '../forward_buttons.dart';
 import 'fly_material_dropdown.dart';
 
 class NewFlyFormMaterials extends StatefulWidget {
@@ -109,39 +110,17 @@ class _NewFlyFormMaterialsState extends State<NewFlyFormMaterials>
         SizedBox(height: widget._spaceBetweenDropdowns),
         FlyMaterialDropdown(
           flyMaterials:
-              flyFormTemplate.flyFormMaterials[_formPageNumber.pageNumber],
+              flyFormTemplate.flyFormMaterials[_formPageNumber.pageNumber - 1],
           fly: fly,
         ),
         SizedBox(height: widget._spaceBetweenDropdowns),
-        Row(children: [
-          RaisedButton(
-            child: Text('Next'),
-            onPressed: () {
-              if (_saveAndValidate(flyFormTransfer.newFlyFormTemplate
-                  .flyFormMaterials[_formPageNumber.pageNumber].name)) {
-                FlyFormRoutes.goToNextPage(
-                    context: context,
-                    newFlyFormTemplate: flyFormTransfer.newFlyFormTemplate,
-                    formPageNumber: _formPageNumber);
-              }
-            },
-          ),
-          !_showSkipToEnd
-              ? SizedBox(height: 0, width: 0)
-              : RaisedButton(
-                  child: Text('Skip to end'),
-                  onPressed: () {
-                    if (_saveAndValidate(flyFormTransfer.newFlyFormTemplate
-                        .flyFormMaterials[_formPageNumber.pageNumber].name)) {
-                      FlyFormRoutes.skipToEnd(
-                        context: context,
-                        formPageNumber: _formPageNumber,
-                        newFlyFormTemplate: flyFormTransfer.newFlyFormTemplate,
-                      );
-                    }
-                  },
-                )
-        ]),
+        ForwardButtons(
+            flyFormTransfer: flyFormTransfer,
+            formPageNumber: _formPageNumber,
+            saveAndValidate: () => _saveAndValidate(flyFormTransfer
+                .newFlyFormTemplate
+                .flyFormMaterials[_formPageNumber.pageNumber - 1]
+                .name)),
       ],
     );
   }

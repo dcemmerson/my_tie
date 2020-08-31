@@ -11,20 +11,21 @@ class NewFlyFormTemplate {
         this.flyFormMaterials = _toMaterialList(doc[DbNames.materials]);
 
   static List<FlyFormAttribute> _toAttributesList(Map doc) {
-    var flyFormMaterials = List<FlyFormAttribute>();
+    var ffa = List<FlyFormAttribute>();
     doc.forEach((key, value) {
-      flyFormMaterials.add(FlyFormAttribute(key.toString(), value));
+      ffa.add(FlyFormAttribute(key.toString(), value));
     });
 
-    return flyFormMaterials;
+    return ffa;
   }
 
   static List<FlyFormMaterial> _toMaterialList(Map doc) {
-    var flyFormMaterials = List<FlyFormMaterial>();
+    var ffm = List<FlyFormMaterial>();
     doc.forEach((key, value) {
-      flyFormMaterials.add(FlyFormMaterial(key.toString(), doc));
+      ffm.add(FlyFormMaterial(key.toString(), doc));
     });
 
-    return flyFormMaterials;
+    ffm.sort((a, b) => a.name.compareTo(b.name));
+    return ffm;
   }
 }
