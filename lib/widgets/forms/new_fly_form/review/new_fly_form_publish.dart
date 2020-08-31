@@ -119,7 +119,7 @@ class _NewFlyFormPublishState extends State<NewFlyFormPublish> {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: StreamBuilder(
-          stream: _newFlyBloc.newFlyFormStreams,
+          stream: _newFlyBloc.newFlyForm,
           builder: (context, AsyncSnapshot<NewFlyFormTransfer> snapshot) {
             if (snapshot.hasError) {
               print(snapshot.error);

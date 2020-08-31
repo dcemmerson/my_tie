@@ -12,8 +12,8 @@ import 'package:my_tie/models/new_fly_form_transfer.dart';
 import 'package:my_tie/routes/fly_form_routes.dart';
 import 'package:my_tie/styles/styles.dart';
 import 'package:my_tie/widgets/forms/forward_buttons.dart';
-import 'package:my_tie/widgets/forms/new_fly_form/fly_attribute_dropdown.dart';
-import 'package:my_tie/widgets/forms/new_fly_form/fly_name_text_input.dart';
+import 'package:my_tie/widgets/forms/new_fly_form/attributes/fly_attribute_dropdown.dart';
+import 'package:my_tie/widgets/forms/new_fly_form/attributes/fly_name_text_input.dart';
 
 class NewFlyFormAttributes extends StatefulWidget {
   final _spaceBetweenDropdowns = AppPadding.p6;

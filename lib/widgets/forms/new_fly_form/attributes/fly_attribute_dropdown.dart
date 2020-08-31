@@ -1,5 +1,7 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:my_tie/widgets/forms/new_fly_form/field_long_press_wrapper.dart';
 
 class FlyAttributeDropdown extends StatelessWidget {
   // final _underlineSuccess = Container(height: 2, color: AppColors.success);
@@ -55,10 +57,15 @@ class FlyAttributeDropdown extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Widget child;
     if (flyProperties != null && flyInProgressProperty != null) {
-      return _buildPrepopulatedDropdown();
+      child = _buildPrepopulatedDropdown();
     } else {
-      return _buildDropdown();
+      child = _buildDropdown();
     }
+    return FieldLongPressWrapper(
+      label: label,
+      child: child,
+    );
   }
 }

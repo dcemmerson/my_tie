@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:my_tie/widgets/forms/new_fly_form/new_fly_form_materials.dart';
+import 'package:my_tie/widgets/forms/new_fly_form/materials/new_fly_form_materials.dart';
 
 class NewFlyMaterialsPage extends StatelessWidget {
   static const title = 'Fly Materials';
