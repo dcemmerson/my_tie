@@ -1,14 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class NewFlyService {
-  static const _newFlyDocId = 'kb5Vyvj3idUBXB9vkDzd';
+  static const _newFlyFormDocId = 'kb5Vyvj3idUBXB9vkDzd';
   static const _newFlyForm = 'new_fly_form';
+  static const _newFlyFormIncoming = 'new_fly_form_incoming';
   static const _flyInProgress = 'fly_in_progress';
 
   Future<DocumentSnapshot> get newFlyForm {
     return FirebaseFirestore.instance
         .collection(_newFlyForm)
-        .doc(_newFlyDocId)
+        .doc(_newFlyFormDocId)
         .get();
   }
 
@@ -27,7 +28,9 @@ class NewFlyService {
   Stream<DocumentSnapshot> get newFlyFormStream {
     return FirebaseFirestore.instance
         .collection(_newFlyForm)
-        .doc(_newFlyDocId)
+        //      .orderBy('last_modified')
+//        .limit(1)
+        .doc(_newFlyFormDocId)
         .snapshots();
   }
 
@@ -63,6 +66,17 @@ class NewFlyService {
       },
       SetOptions(merge: true),
     );
+  }
+
+  Future addAtributeToFormTemplate(
+      {String uid, String attribute, String value}) {
+    print('send');
+    return FirebaseFirestore.instance
+        .collection(_newFlyFormIncoming)
+        .doc(uid)
+        .set({
+      'attributes': {attribute: value}
+    }, SetOptions(merge: true));
   }
 
   Future addNewFlyAttributesDoc({

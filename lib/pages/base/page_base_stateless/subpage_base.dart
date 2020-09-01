@@ -10,6 +10,7 @@ enum SubPageType {
   NewFlyAttributesPage,
   NewFlyMaterialsPage,
   NewFlyPublishPage,
+  AddNewAttributePage,
 }
 
 abstract class SubPageBase extends StatelessWidget {
@@ -38,7 +39,11 @@ abstract class SubPageBase extends StatelessWidget {
   }
 
   String getFormProgress(BuildContext context) {
-    FormPageNumber fpn = ModalRoute.of(context).settings.arguments;
+    // Check that the arg passed if of type FormPageNumber. Usually will be,
+    //  but if user is adding a new attribute or material to db, then we won't
+    //  have passed a FormPageNumber arg in.
+    var arg = ModalRoute.of(context).settings.arguments;
+    FormPageNumber fpn = (arg is FormPageNumber) ? arg : null;
     int currPage = (fpn?.pageNumber ?? 0) + 1;
     int pageCount = fpn?.pageCount ?? 0;
 

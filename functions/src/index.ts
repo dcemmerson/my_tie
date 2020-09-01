@@ -1,17 +1,34 @@
 import * as functions from 'firebase-functions';
+import * as admin from 'firebase-admin';
+admin.initializeApp();
+const db = admin.firestore();
 
-// // Start writing Firebase Functions
-// // https://firebase.google.com/docs/functions/typescript
-//
-// export const helloWorld = functions.https.onRequest((request, response) => {
-//   functions.logger.info("Hello logs!", {structuredData: true});
-//   response.send("Hello from Firebase!");
-// });
+/// name: addToNewFlyFormTemplate
+/// description: Cloud function used to add an attribute or material property
+///   to the currently existing newFlyFormTemplate doc.
+///   1. Select the latest updated new_fly_form doc.
+///   2. Set the last_modified and updated_by fields apprpriately, and 
+///     add to new_fly_form as a new doc.
+///   3. Merge the value which we are adding to the appropriate nested field.
+exports.addToNewFlyFormTemplate = functions.firestore.document('/new_fly_form_incoming/{docId}')
+  .onWrite(async (change, context) => {
+    const newFlyFormTemplate = 'new_fly_form';
 
-exports.addUidToFlyInProgress = functions.firestore
-    .document('fly_in_progress/{doc-id}')
-    .onWrite((change, context) => {
-        const uid = context.auth?.uid;
-        if(uid === null) return;
-        return change.after.ref.update({uid: uid});
-    });
+    const prevDoc = await db.collection(newFlyFormTemplate)
+      .orderBy('last_modified', 'desc').limit(1).get();
+    const prevTemplateData = prevDoc.docs[0].data();
+    prevTemplateData.last_modified = new Date();
+
+    // Enforced by our security rules, docId is this user's id.
+    prevTemplateData.updated_by = change.before.id;
+
+    const newFormTemplateDoc = await db.collection(newFlyFormTemplate).add(prevTemplateData);
+    const updateData = change.before.data()?.attributes;
+    return db.collection(newFlyFormTemplate).doc(newFormTemplateDoc.id)
+      .update({
+        ['attributes.' + Object.keys(updateData)[0]]:
+          admin.firestore.FieldValue.arrayUnion(Object.values(updateData)[0]),
+      });
+    // return db.collection(newFlyFormTemplate).doc(newDoc.id)
+    //   .set({ 'attributes': updateData }, {merge: true});
+  });

@@ -64,8 +64,10 @@ class FlyAttributeDropdown extends StatelessWidget {
       child = _buildDropdown();
     }
     return FieldLongPressWrapper(
+      properties: flyProperties,
       label: label,
       child: child,
+      context: context,
     );
   }
 }

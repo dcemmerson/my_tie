@@ -8,6 +8,7 @@
 
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:my_tie/models/bloc_related/add_attribute.dart';
 import 'package:my_tie/models/db_names.dart';
 import 'package:my_tie/models/fly.dart';
 import 'package:my_tie/models/fly_attribute.dart';
@@ -24,6 +25,8 @@ class NewFlyBloc {
   final AuthService authService;
 
   // Coming from app.
+  StreamController<AddAttribute> addAttributeSink =
+      StreamController<AddAttribute>();
   StreamController<List<FlyAttribute>> newFlyAttributesSink =
       StreamController<List<FlyAttribute>>();
   StreamController<FlyMaterial> newFlyMaterialsSink =
@@ -34,6 +37,7 @@ class NewFlyBloc {
   NewFlyBloc({this.newFlyService, this.authService}) {
     newFlyAttributesSink.stream.listen(_handleAddNewFlyAttributes);
     newFlyMaterialsSink.stream.listen(_handleAddNewFlyMaterials);
+    addAttributeSink.stream.listen(_handleAddAttributeToFormTemplate);
   }
 
   Stream<NewFlyFormTransfer> get newFlyForm {
@@ -53,6 +57,15 @@ class NewFlyBloc {
         );
       },
     );
+  }
+
+  Future _handleAddAttributeToFormTemplate(AddAttribute addAttribute) {
+    newFlyService.addAtributeToFormTemplate(
+      uid: authService.currentUser.uid,
+      attribute: addAttribute.attribute,
+      value: addAttribute.newValue,
+    );
+    return null;
   }
 
   Future _handleAddNewFlyMaterials(FlyMaterial material) async {
