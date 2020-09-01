@@ -75,6 +75,7 @@ class _AddNewPropertyState extends State<AddNewProperty> {
             ),
           );
       }
+
       return true;
     }
     return false;

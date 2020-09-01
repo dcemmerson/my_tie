@@ -1,5 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'package:my_tie/models/arguments/add_attribute_argument.dart';
 import 'package:my_tie/models/arguments/add_property_argument.dart';
 import 'package:my_tie/routes/fly_form_routes.dart';
 
@@ -31,8 +30,10 @@ class FieldLongPressWrapper extends StatelessWidget {
   void _materialOnPressed(BuildContext context) {
     Navigator.of(context).pop();
     FlyFormRoutes.addPropertyToFormTemplate(parentContext,
-        addPropertyArgument:
-            AddPropertyArgument(name: materialName, property: label));
+        addPropertyArgument: AddPropertyArgument(
+            name: materialName,
+            property: label,
+            addPropertyType: AddPropertyType.Material));
   }
 
   void _handleOnPressed(BuildContext context) {

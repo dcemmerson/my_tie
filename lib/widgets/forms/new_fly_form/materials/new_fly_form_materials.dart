@@ -104,6 +104,10 @@ class _NewFlyFormMaterialsState extends State<NewFlyFormMaterials>
         flyFormTransfer.newFlyFormTemplate;
 
     return Column(
+      //  Must use a key here to disconnect old widget when re-rendering based
+      //  on new doc in firestore being fed to streambuilder, otherwise we will
+      //  encounter an exception.
+      key: UniqueKey(),
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         SizedBox(height: widget._spaceBetweenDropdowns),
@@ -124,7 +128,6 @@ class _NewFlyFormMaterialsState extends State<NewFlyFormMaterials>
     );
   }
 
-  @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: FormBuilder(

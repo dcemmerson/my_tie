@@ -24,7 +24,7 @@ exports.addToNewFlyFormTemplate = functions.firestore.document('/new_fly_form_in
 
     const newFormTemplateDoc = await db.collection(newFlyFormTemplate).add(prevTemplateData);
 
-    if (change.after.data()?.attributes) {
+    if (change.after.data()?.attributes) { // Path to add attributes.
       const updateData = change.after.data()?.attributes;
       await db.collection(newFlyFormTemplate).doc(newFormTemplateDoc.id)
         .update({
@@ -32,16 +32,29 @@ exports.addToNewFlyFormTemplate = functions.firestore.document('/new_fly_form_in
             admin.firestore.FieldValue.arrayUnion(Object.values(updateData)[0]),
         });
 
-        return db.collection('new_fly_form_incoming').doc(change.after.id).delete();
+      return db.collection('new_fly_form_incoming').doc(change.after.id).delete();
     }
-    else if(change.after.data()?.materials){
-      console.log('material path');
-      return null;
+    else if (change.after.data()?.materials) { // Path to add materials.
+      // change.after.data()?.materials looks something like:
+      // {beads: {color: green}}
+      const updateData : {[key: string]: {[val: string]: string}} = change.after.data()?.materials;
+
+      // keyTL would be 'beads'
+      const keyTL : string =  Object.keys(updateData)[0];
+      //  keyBL would be 'color'
+      const keyBL : string = String(Object.keys(updateData[keyTL])[0]);
+      const val : string = updateData[keyTL][keyBL];
+
+      await db.collection(newFlyFormTemplate).doc(newFormTemplateDoc.id)
+        .update({
+          ['materials.' + keyTL + '.' + keyBL]:
+            admin.firestore.FieldValue.arrayUnion(val),
+        });
+
+      return db.collection('new_fly_form_incoming').doc(change.after.id).delete();
     }
     else {
-      // update material
-      console.log('path');
-
+      // Path to prevent infinite loop.
       return null;
     }
 

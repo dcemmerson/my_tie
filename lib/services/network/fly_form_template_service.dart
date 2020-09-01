@@ -15,8 +15,19 @@ class FlyFormTemplateService {
 
   Future addMaterialToFormTemplate(
       {String uid, String material, String property, String value}) {
-    print('abc');
-    return null;
+    print('add material');
+    print(uid);
+    print(material);
+    print(property);
+    print(value);
+    return FirebaseFirestore.instance
+        .collection(_newFlyFormIncoming)
+        .doc(uid)
+        .set({
+      'materials': {
+        material: {property: value}
+      }
+    });
   }
 
   Future addAttributeToFormTemplate(
@@ -26,6 +37,6 @@ class FlyFormTemplateService {
         .doc(uid)
         .set({
       'attributes': {attribute: value}
-    }, SetOptions(merge: true));
+    });
   }
 }
