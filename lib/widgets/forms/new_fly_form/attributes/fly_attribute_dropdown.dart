@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:my_tie/models/arguments/add_property_argument.dart';
 import 'package:my_tie/widgets/forms/new_fly_form/field_long_press_wrapper.dart';
 
 class FlyAttributeDropdown extends StatelessWidget {
@@ -64,6 +65,7 @@ class FlyAttributeDropdown extends StatelessWidget {
       child = _buildDropdown();
     }
     return FieldLongPressWrapper(
+      wrapperType: AddPropertyType.Attribute,
       properties: flyProperties,
       label: label,
       child: child,

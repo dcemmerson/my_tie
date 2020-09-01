@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:my_tie/bloc/state/fly_form_state.dart';
 import 'package:my_tie/models/arguments/add_attribute_argument.dart';
+import 'package:my_tie/models/arguments/add_property_argument.dart';
 import 'package:my_tie/models/form_page_number.dart';
 import 'package:my_tie/models/new_fly_form_template.dart';
 
 import 'package:my_tie/pages/base/page_base_stateless/subpage_base.dart';
 import 'package:my_tie/pages/base/page_base_stateless/subpage_container.dart';
 import 'package:my_tie/pages/route_based_pages/new_fly_pages/add_new_attribute_page.dart';
+import 'package:my_tie/pages/route_based_pages/new_fly_pages/add_new_property_page.dart';
 
 import 'package:my_tie/pages/route_based_pages/new_fly_pages/new_fly_attributes_page.dart';
 import 'package:my_tie/pages/route_based_pages/new_fly_pages/new_fly_materials_page.dart';
@@ -23,6 +25,8 @@ class FlyFormRoutes {
         child: SubPageContainer(subPageType: SubPageType.NewFlyPublishPage)),
     AddNewAttributePage.route: (context) => RouteGuard(
         child: SubPageContainer(subPageType: SubPageType.AddNewAttributePage)),
+    AddNewPropertyPage.route: (context) => RouteGuard(
+        child: SubPageContainer(subPageType: SubPageType.AddNewPropertyPage)),
   };
 
   static Future newFlyAttributesPage(BuildContext context) =>
@@ -37,6 +41,11 @@ class FlyFormRoutes {
           {AddAttributeArgument addAttributeArgument}) =>
       Navigator.pushNamed(context, AddNewAttributePage.route,
           arguments: addAttributeArgument);
+
+  static Future addPropertyToFormTemplate(BuildContext context,
+          {AddPropertyArgument addPropertyArgument}) =>
+      Navigator.pushNamed(context, AddNewPropertyPage.route,
+          arguments: addPropertyArgument);
 
   static Future newFlyPublishPage(BuildContext context) =>
       Navigator.pushNamed(context, NewFlyPublishPage.route);

@@ -12,10 +12,12 @@ import 'package:flutter/material.dart';
 import 'package:my_tie/pages/base/page_base_stateless/subpage_base.dart';
 import 'package:my_tie/pages/bottom_navigation_based_pages/new_fly_start_page.dart';
 import 'package:my_tie/pages/route_based_pages/new_fly_pages/add_new_attribute_page.dart';
+import 'package:my_tie/pages/route_based_pages/new_fly_pages/add_new_property_page.dart';
 
 import 'package:my_tie/pages/route_based_pages/new_fly_pages/new_fly_attributes_page.dart';
 import 'package:my_tie/pages/route_based_pages/new_fly_pages/new_fly_materials_page.dart';
 import 'package:my_tie/pages/route_based_pages/new_fly_pages/new_fly_publish_page.dart';
+import 'package:my_tie/widgets/forms/new_fly_form/form_edit_database/add_new_property.dart';
 
 class SubPageContainer extends SubPageBase {
   final SubPageType _subPageType;
@@ -43,6 +45,9 @@ class SubPageContainer extends SubPageBase {
       case SubPageType.AddNewAttributePage:
         page = AddNewAttributePage();
         break;
+      case SubPageType.AddNewPropertyPage:
+        page = AddNewPropertyPage();
+        break;
       default:
         page = NewFlyStartPage();
     }
@@ -65,6 +70,8 @@ class SubPageContainer extends SubPageBase {
         return NewFlyPublishPage.title;
       case SubPageType.AddNewAttributePage:
         return AddNewAttributePage.title;
+      case SubPageType.AddNewPropertyPage:
+        return AddNewPropertyPage.title;
       default:
         return NewFlyMaterialsPage.title;
     }

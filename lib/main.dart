@@ -5,10 +5,12 @@ import 'package:flutter/services.dart';
 import 'package:my_tie/app.dart';
 import 'package:my_tie/bloc/auth_bloc.dart';
 import 'package:my_tie/bloc/bloc_provider.dart';
+import 'package:my_tie/bloc/edit_new_fly_template_bloc.dart';
 import 'package:my_tie/bloc/new_fly_bloc.dart';
 import 'package:my_tie/bloc/waste_bloc.dart';
 import 'package:my_tie/bloc/state/my_tie_state.dart';
 import 'package:my_tie/services/network/auth_service.dart';
+import 'package:my_tie/services/network/fly_form_template_service.dart';
 import 'package:my_tie/services/network/new_fly_service.dart';
 import 'package:my_tie/services/network/waste_service.dart';
 
@@ -25,9 +27,17 @@ void main() async {
 
   final authService = AuthService(remoteConfig: await initRemoteConfig());
   final authBloc = AuthBloc(authService);
+
+  final flyFormTemplateService = FlyFormTemplateService();
+  final editNewFlyTemplateBloc = EditNewFlyTemplateBloc(
+      authService: authService, flyFormTemplateService: flyFormTemplateService);
+
   final newFlyService = NewFlyService();
-  final newFlyBloc =
-      NewFlyBloc(newFlyService: newFlyService, authService: authService);
+
+  final newFlyBloc = NewFlyBloc(
+      newFlyService: newFlyService,
+      authService: authService,
+      flyFormTemplateService: flyFormTemplateService);
   final wasteService = WasteService();
   final wasteBloc = WasteBloc(wasteService);
 
@@ -36,6 +46,7 @@ void main() async {
         authBloc: authBloc,
         newFlyBloc: newFlyBloc,
         wasteBloc: wasteBloc,
+        editNewFlyTemplateBloc: editNewFlyTemplateBloc,
       ),
       child: WasteagramApp()));
 }

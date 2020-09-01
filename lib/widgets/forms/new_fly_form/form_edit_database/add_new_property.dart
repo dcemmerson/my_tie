@@ -1,22 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:my_tie/bloc/edit_new_fly_template_bloc.dart';
-import 'package:my_tie/bloc/new_fly_bloc.dart';
 import 'package:my_tie/bloc/state/my_tie_state.dart';
-import 'package:my_tie/models/arguments/add_attribute_argument.dart';
+import 'package:my_tie/models/arguments/add_property_argument.dart';
 import 'package:my_tie/models/bloc_related/add_attribute.dart';
+import 'package:my_tie/models/bloc_related/add_material.dart';
 import 'package:my_tie/styles/styles.dart';
 
-class AddNewAttribute extends StatefulWidget {
+class AddNewProperty extends StatefulWidget {
   @override
-  _AddNewAttributeState createState() => _AddNewAttributeState();
+  _AddNewPropertyState createState() => _AddNewPropertyState();
 }
 
-class _AddNewAttributeState extends State<AddNewAttribute> {
+class _AddNewPropertyState extends State<AddNewProperty> {
   final _formKey = new GlobalKey<FormBuilderState>();
-  AddAttributeArgument _addAttributeArgument;
+  AddPropertyArgument _addPropertyArgument;
   EditNewFlyTemplateBloc _editNewFlyTemplateBloc;
-
   bool _formChanged = false;
 
   @override
@@ -24,7 +23,7 @@ class _AddNewAttributeState extends State<AddNewAttribute> {
     super.didChangeDependencies();
     _editNewFlyTemplateBloc =
         MyTieStateContainer.of(context).blocProvider.editNewFlyTemplateBloc;
-    _addAttributeArgument = ModalRoute.of(context).settings.arguments;
+    _addPropertyArgument = ModalRoute.of(context).settings.arguments;
   }
 
   void _onFormChanged() {
@@ -58,12 +57,24 @@ class _AddNewAttributeState extends State<AddNewAttribute> {
   bool _saveAndValidate() {
     if (_formKey.currentState.saveAndValidate()) {
       var inputs = _formKey.currentState.value;
-      _editNewFlyTemplateBloc.addAttributeSink.add(
-        AddAttribute(
-          attribute: _addAttributeArgument.name,
-          newValue: inputs[_addAttributeArgument.name],
-        ),
-      );
+      switch (_addPropertyArgument.addPropertyType) {
+        case AddPropertyType.Attribute:
+          _editNewFlyTemplateBloc.addAttributeSink.add(
+            AddAttribute(
+              attribute: _addPropertyArgument.name,
+              newValue: inputs[_addPropertyArgument.name],
+            ),
+          );
+          break;
+        case AddPropertyType.Material:
+          _editNewFlyTemplateBloc.addMaterialSink.add(
+            AddMaterial(
+              materialName: _addPropertyArgument.name,
+              property: _addPropertyArgument.property,
+              newValue: inputs[_addPropertyArgument.name],
+            ),
+          );
+      }
       return true;
     }
     return false;
@@ -79,19 +90,21 @@ class _AddNewAttributeState extends State<AddNewAttribute> {
         child: Padding(
           padding: EdgeInsets.all(AppPadding.p2),
           child: Column(children: [
-            Text('Enter new ${_addAttributeArgument.name}',
+            Text(
+                'Enter new ${_addPropertyArgument.name} ${_addPropertyArgument.property ?? ''}',
                 style: AppTextStyles.header),
             FormBuilderTextField(
               onChanged: (val) => _onFormChanged(),
               autofocus: true,
-              attribute: _addAttributeArgument.name,
+              attribute: _addPropertyArgument.name,
               validators: [
                 FormBuilderValidators.required(),
                 FormBuilderValidators.minLength(2),
                 FormBuilderValidators.maxLength(80)
               ],
-              decoration:
-                  InputDecoration(labelText: _addAttributeArgument.name),
+              decoration: InputDecoration(
+                  labelText:
+                      '${_addPropertyArgument.name} ${_addPropertyArgument.property ?? ''}'),
             ),
             Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
               RaisedButton(

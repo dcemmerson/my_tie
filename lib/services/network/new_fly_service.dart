@@ -1,17 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class NewFlyService {
-  static const _newFlyFormDocId = 'kb5Vyvj3idUBXB9vkDzd';
   static const _newFlyForm = 'new_fly_form';
   static const _newFlyFormIncoming = 'new_fly_form_incoming';
   static const _flyInProgress = 'fly_in_progress';
-
-  // Future<DocumentSnapshot> get newFlyForm {
-  //   return FirebaseFirestore.instance
-  //       .collection(_newFlyForm)
-  //       .doc(_newFlyFormDocId)
-  //       .get();
-  // }
 
   Future<DocumentSnapshot> getFlyInProgressDoc(String uid) async {
     var snapshot = await FirebaseFirestore.instance
@@ -25,14 +17,14 @@ class NewFlyService {
       return null;
   }
 
-  Stream<QuerySnapshot> get newFlyFormStream {
-    return FirebaseFirestore.instance
-        .collection(_newFlyForm)
-        .orderBy('last_modified', descending: true)
-        .limit(1)
-        // .doc(_newFlyFormDocId)
-        .snapshots();
-  }
+  // Stream<QuerySnapshot> get newFlyFormStream {
+  //   return FirebaseFirestore.instance
+  //       .collection(_newFlyForm)
+  //       .orderBy('last_modified', descending: true)
+  //       .limit(1)
+  //       // .doc(_newFlyFormDocId)
+  //       .snapshots();
+  // }
 
   Stream<QuerySnapshot> getFlyInProgressDocStream(String uid) {
     return FirebaseFirestore.instance
@@ -68,15 +60,15 @@ class NewFlyService {
     );
   }
 
-  Future addAtributeToFormTemplate(
-      {String uid, String attribute, String value}) {
-    return FirebaseFirestore.instance
-        .collection(_newFlyFormIncoming)
-        .doc(uid)
-        .set({
-      'attributes': {attribute: value}
-    }, SetOptions(merge: true));
-  }
+  // Future addAtributeToFormTemplate(
+  //     {String uid, String attribute, String value}) {
+  //   return FirebaseFirestore.instance
+  //       .collection(_newFlyFormIncoming)
+  //       .doc(uid)
+  //       .set({
+  //     'attributes': {attribute: value}
+  //   }, SetOptions(merge: true));
+  // }
 
   Future addNewFlyAttributesDoc({
     String uid,
