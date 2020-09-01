@@ -111,6 +111,10 @@ class _NewFlyFormAttributesState extends State<NewFlyFormAttributes>
 
   Widget _buildForm(NewFlyFormTransfer flyFormTransfer) {
     return Column(
+      //  Must use a key here to disconnect old widget when re-rendering based
+      //  on new doc in firestore being fed to streambuilder, otherwise we will
+      //  encounter an exception.
+      key: UniqueKey(),
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         _buildNameInput(

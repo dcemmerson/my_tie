@@ -61,7 +61,7 @@ class _AddNewPropertyState extends State<AddNewProperty> {
         case AddPropertyType.Attribute:
           _editNewFlyTemplateBloc.addAttributeSink.add(
             AddAttribute(
-              attribute: _addPropertyArgument.name,
+              attribute: _addPropertyArgument.property,
               newValue: inputs[_addPropertyArgument.name],
             ),
           );

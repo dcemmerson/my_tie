@@ -25,15 +25,24 @@ class FieldLongPressWrapper extends StatelessWidget {
     //     addAttributeArgument: AddAttributeArgument(
     //       name: label,
     //     ));
+    FlyFormRoutes.addPropertyToFormTemplate(
+      parentContext,
+      addPropertyArgument: AddPropertyArgument(
+          name: materialName,
+          property: label,
+          addPropertyType: AddPropertyType.Attribute),
+    );
   }
 
   void _materialOnPressed(BuildContext context) {
     Navigator.of(context).pop();
-    FlyFormRoutes.addPropertyToFormTemplate(parentContext,
-        addPropertyArgument: AddPropertyArgument(
-            name: materialName,
-            property: label,
-            addPropertyType: AddPropertyType.Material));
+    FlyFormRoutes.addPropertyToFormTemplate(
+      parentContext,
+      addPropertyArgument: AddPropertyArgument(
+          name: materialName,
+          property: label,
+          addPropertyType: AddPropertyType.Material),
+    );
   }
 
   void _handleOnPressed(BuildContext context) {
