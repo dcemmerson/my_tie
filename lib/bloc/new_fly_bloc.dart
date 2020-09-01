@@ -43,17 +43,18 @@ class NewFlyBloc {
   Stream<NewFlyFormTransfer> get newFlyForm {
     Stream<QuerySnapshot> flyInProgress =
         newFlyService.getFlyInProgressDocStream(authService.currentUser.uid);
-    Stream<DocumentSnapshot> flyTemplateDoc = newFlyService.newFlyFormStream;
+    Stream<QuerySnapshot> flyTemplateDoc = newFlyService.newFlyFormStream;
 
     return CombineLatestStream.combine2(
       flyInProgress,
       flyTemplateDoc,
-      (QuerySnapshot flyDoc, DocumentSnapshot nfftDoc) {
+      (QuerySnapshot flyDoc, QuerySnapshot nfftDoc) {
         return NewFlyFormTransfer(
           flyInProgress: Fly(
               attrs: flyDoc.docs[0]?.data()[DbNames.attributes],
               mats: flyDoc.docs[0]?.data()[DbNames.materials]),
-          newFlyFormTemplate: NewFlyFormTemplate.fromDoc(nfftDoc.data()),
+          newFlyFormTemplate:
+              NewFlyFormTemplate.fromDoc(nfftDoc.docs[0].data()),
         );
       },
     );

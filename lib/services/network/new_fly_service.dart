@@ -6,12 +6,12 @@ class NewFlyService {
   static const _newFlyFormIncoming = 'new_fly_form_incoming';
   static const _flyInProgress = 'fly_in_progress';
 
-  Future<DocumentSnapshot> get newFlyForm {
-    return FirebaseFirestore.instance
-        .collection(_newFlyForm)
-        .doc(_newFlyFormDocId)
-        .get();
-  }
+  // Future<DocumentSnapshot> get newFlyForm {
+  //   return FirebaseFirestore.instance
+  //       .collection(_newFlyForm)
+  //       .doc(_newFlyFormDocId)
+  //       .get();
+  // }
 
   Future<DocumentSnapshot> getFlyInProgressDoc(String uid) async {
     var snapshot = await FirebaseFirestore.instance
@@ -25,12 +25,12 @@ class NewFlyService {
       return null;
   }
 
-  Stream<DocumentSnapshot> get newFlyFormStream {
+  Stream<QuerySnapshot> get newFlyFormStream {
     return FirebaseFirestore.instance
         .collection(_newFlyForm)
-        //      .orderBy('last_modified')
-//        .limit(1)
-        .doc(_newFlyFormDocId)
+        .orderBy('last_modified', descending: true)
+        .limit(1)
+        // .doc(_newFlyFormDocId)
         .snapshots();
   }
 
@@ -70,7 +70,6 @@ class NewFlyService {
 
   Future addAtributeToFormTemplate(
       {String uid, String attribute, String value}) {
-    print('send');
     return FirebaseFirestore.instance
         .collection(_newFlyFormIncoming)
         .doc(uid)

@@ -20,15 +20,29 @@ exports.addToNewFlyFormTemplate = functions.firestore.document('/new_fly_form_in
     prevTemplateData.last_modified = new Date();
 
     // Enforced by our security rules, docId is this user's id.
-    prevTemplateData.updated_by = change.before.id;
+    prevTemplateData.updated_by = change.after.id;
 
     const newFormTemplateDoc = await db.collection(newFlyFormTemplate).add(prevTemplateData);
-    const updateData = change.before.data()?.attributes;
-    return db.collection(newFlyFormTemplate).doc(newFormTemplateDoc.id)
-      .update({
-        ['attributes.' + Object.keys(updateData)[0]]:
-          admin.firestore.FieldValue.arrayUnion(Object.values(updateData)[0]),
-      });
-    // return db.collection(newFlyFormTemplate).doc(newDoc.id)
-    //   .set({ 'attributes': updateData }, {merge: true});
+
+    if (change.after.data()?.attributes) {
+      const updateData = change.after.data()?.attributes;
+      await db.collection(newFlyFormTemplate).doc(newFormTemplateDoc.id)
+        .update({
+          ['attributes.' + Object.keys(updateData)[0]]:
+            admin.firestore.FieldValue.arrayUnion(Object.values(updateData)[0]),
+        });
+
+        return db.collection('new_fly_form_incoming').doc(change.after.id).delete();
+    }
+    else if(change.after.data()?.materials){
+      console.log('material path');
+      return null;
+    }
+    else {
+      // update material
+      console.log('path');
+
+      return null;
+    }
+
   });
