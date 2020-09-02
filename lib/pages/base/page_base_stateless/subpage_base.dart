@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my_tie/bloc/state/fly_form_state.dart';
 import 'package:my_tie/bloc/state/my_tie_state.dart';
-import 'package:my_tie/models/form_page_number.dart';
 import 'package:my_tie/styles/styles.dart';
 import 'package:my_tie/styles/theme_manager.dart';
 
@@ -39,20 +38,20 @@ abstract class SubPageBase extends StatelessWidget {
     }
   }
 
-  String getFormProgress(BuildContext context) {
-    // Check that the arg passed if of type FormPageNumber. Usually will be,
-    //  but if user is adding a new attribute or material to db, then we won't
-    //  have passed a FormPageNumber arg in.
-    var arg = ModalRoute.of(context).settings.arguments;
-    FormPageNumber fpn = (arg is FormPageNumber) ? arg : null;
-    int currPage = (fpn?.pageNumber ?? 0) + 1;
-    int pageCount = fpn?.pageCount ?? 0;
+  // String getFormProgress(BuildContext context) {
+  //   // Check that the arg passed if of type FormPageNumber. Usually will be,
+  //   //  but if user is adding a new attribute or material to db, then we won't
+  //   //  have passed a FormPageNumber arg in.
+  //   var arg = ModalRoute.of(context).settings.arguments;
+  //   FormPageNumber fpn = (arg is FormPageNumber) ? arg : null;
+  //   int currPage = (fpn?.pageNumber ?? 0) + 1;
+  //   int pageCount = fpn?.pageCount ?? 0;
 
-    if (pageCount > 0) {
-      return currPage.toString() + ' / ' + pageCount.toString();
-    }
-    return '';
-  }
+  //   if (pageCount > 0) {
+  //     return currPage.toString() + ' / ' + pageCount.toString();
+  //   }
+  //   return '';
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -77,12 +76,12 @@ abstract class SubPageBase extends StatelessWidget {
             centerTitle: true,
             elevation: 0.0,
             leading: _subNavPopButton(context),
-            actions: [
-              Padding(
-                  padding:
-                      EdgeInsets.fromLTRB(0, AppPadding.p1, AppPadding.p1, 0),
-                  child: Text(getFormProgress(context))),
-            ],
+            // actions: [
+            //   Padding(
+            //       padding:
+            //           EdgeInsets.fromLTRB(0, AppPadding.p1, AppPadding.p1, 0),
+            //       child: Text(getFormProgress(context))),
+            // ],
 
             // iconTheme: themeManager.themeData.appSubBarTheme.actionsIconTheme,
             primary: false,

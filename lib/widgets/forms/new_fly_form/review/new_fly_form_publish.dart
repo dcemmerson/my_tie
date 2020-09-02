@@ -9,7 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:my_tie/bloc/state/my_tie_state.dart';
 import 'package:my_tie/bloc/new_fly_bloc.dart';
 
-import 'package:my_tie/models/new_fly_form_template.dart';
 import 'package:my_tie/models/new_fly_form_transfer.dart';
 
 import 'package:my_tie/styles/styles.dart';
@@ -19,16 +18,6 @@ import 'material_review.dart';
 
 class NewFlyFormPublish extends StatefulWidget {
   final _spaceBetweenDropdowns = AppPadding.p6;
-
-  static void popToPage(
-      {@required int pageCount,
-      @required int popToPage,
-      @required BuildContext ctx}) {
-    int pagesToPop = pageCount - popToPage;
-    for (int i = 0; i < pagesToPop; i++) {
-      Navigator.of(ctx).pop();
-    }
-  }
 
   @override
   _NewFlyFormPublishState createState() => _NewFlyFormPublishState();
@@ -75,11 +64,6 @@ class _NewFlyFormPublishState extends State<NewFlyFormPublish> {
     );
   }
 
-  void goToNextPage(NewFlyFormTemplate nfft) {
-    // End of form reached.
-    print('ended');
-  }
-
   Widget _buildForm(NewFlyFormTransfer flyFormTransfer) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -104,9 +88,7 @@ class _NewFlyFormPublishState extends State<NewFlyFormPublish> {
                   ),
                   Icon(Icons.cloud_upload),
                 ]),
-                onPressed: () {
-                  goToNextPage(flyFormTransfer.newFlyFormTemplate);
-                },
+                onPressed: () => print('save not implemented yet...'),
               ),
             ),
           ),
@@ -119,7 +101,7 @@ class _NewFlyFormPublishState extends State<NewFlyFormPublish> {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: StreamBuilder(
-          stream: _newFlyBloc.newFlyForm,
+          stream: _newFlyBloc.newFlyFormReview,
           builder: (context, AsyncSnapshot<NewFlyFormTransfer> snapshot) {
             if (snapshot.hasError) {
               print(snapshot.error);

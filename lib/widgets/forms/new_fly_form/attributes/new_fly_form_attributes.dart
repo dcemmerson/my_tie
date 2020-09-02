@@ -4,12 +4,12 @@ import 'package:my_tie/bloc/state/fly_form_state.dart';
 import 'package:my_tie/bloc/state/my_tie_state.dart';
 import 'package:my_tie/bloc/new_fly_bloc.dart';
 import 'package:my_tie/models/db_names.dart';
+import 'package:my_tie/models/fly.dart';
 import 'package:my_tie/models/fly_attribute.dart';
 import 'package:my_tie/models/fly_form_attribute.dart';
 import 'package:my_tie/models/form_page_number.dart';
 import 'package:my_tie/models/new_fly_form_transfer.dart';
 import 'package:my_tie/styles/styles.dart';
-import 'package:my_tie/widgets/forms/forward_buttons.dart';
 import 'package:my_tie/widgets/forms/new_fly_form/attributes/fly_attribute_dropdown.dart';
 import 'package:my_tie/widgets/forms/new_fly_form/attributes/fly_name_text_input.dart';
 
@@ -43,7 +43,7 @@ class _NewFlyFormAttributesState extends State<NewFlyFormAttributes>
 
   void _onFormChanged(Map form) {
     if (!_formChanged) {
-      setState(() => _formChanged = true);
+      _formChanged = true;
     }
   }
 
@@ -71,12 +71,11 @@ class _NewFlyFormAttributesState extends State<NewFlyFormAttributes>
 
   bool _saveAndValidate() {
     if (_formKey.currentState.saveAndValidate()) {
-      var inputs = _formKey.currentState.value;
-      List<FlyAttribute> flyAttributes = [];
-      inputs.forEach(
-          (k, v) => flyAttributes.add(FlyAttribute(name: k, value: v)));
+      Map inputs = _formKey.currentState.value;
 
-      _newFlyBloc.newFlyAttributesSink.add(flyAttributes);
+      Fly flyInProgress = Fly(flyName: inputs[DbNames.flyName], attrs: inputs);
+
+      _newFlyBloc.newFlyAttributesSink.add(flyInProgress);
       return true;
     }
     return false;
@@ -96,7 +95,7 @@ class _NewFlyFormAttributesState extends State<NewFlyFormAttributes>
         label: ffa.name,
         flyProperties: ffa.properties,
         flyInProgressProperty:
-            flyFormTransfer.flyInProgress.getAttribute(ffa.name).toString(),
+            flyFormTransfer.flyInProgress.getAttribute(ffa.name),
       );
     }).toList();
   }
@@ -117,15 +116,17 @@ class _NewFlyFormAttributesState extends State<NewFlyFormAttributes>
       key: UniqueKey(),
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        _buildNameInput(
-            flyFormTransfer.flyInProgress.getAttribute(DbNames.flyName)),
+        _buildNameInput(flyFormTransfer.flyInProgress.flyName),
         SizedBox(height: widget._spaceBetweenDropdowns),
         ..._buildDropdowns(flyFormTransfer),
         SizedBox(height: widget._spaceBetweenDropdowns),
-        ForwardButtons(
-          flyFormTransfer: flyFormTransfer,
-          formPageNumber: _formPageNumber,
-          saveAndValidate: () => _saveAndValidate(),
+        RaisedButton(
+          onPressed: () {
+            if (_saveAndValidate()) {
+              Navigator.of(context).pop();
+            }
+          },
+          child: Text('Save'),
         ),
       ],
     );
@@ -144,7 +145,10 @@ class _NewFlyFormAttributesState extends State<NewFlyFormAttributes>
               stream: _newFlyBloc.newFlyForm,
               builder: (context, AsyncSnapshot<NewFlyFormTransfer> snapshot) {
                 print(snapshot.connectionState);
-                if (snapshot.hasError) return Text('error occurred');
+                if (snapshot.hasError) {
+                  print(snapshot.error);
+                  return Text('error occurred');
+                }
                 switch (snapshot.connectionState) {
                   case (ConnectionState.done):
                   case (ConnectionState.active):

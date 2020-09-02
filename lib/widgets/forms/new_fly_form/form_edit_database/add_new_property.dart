@@ -75,7 +75,7 @@ class _AddNewPropertyState extends State<AddNewProperty> {
             ),
           );
       }
-
+      Navigator.of(context).pop();
       return true;
     }
     return false;

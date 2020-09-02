@@ -10,9 +10,8 @@ import 'package:flutter/material.dart';
 import 'package:my_tie/models/db_names.dart';
 import 'package:my_tie/models/fly_form_attribute.dart';
 import 'package:my_tie/models/new_fly_form_transfer.dart';
+import 'package:my_tie/routes/fly_form_routes.dart';
 import 'package:my_tie/styles/styles.dart';
-
-import 'new_fly_form_publish.dart';
 
 class AttributeReview extends StatelessWidget {
   final _iconButtonPadding = 8.0;
@@ -37,14 +36,15 @@ class AttributeReview extends StatelessWidget {
               width: Theme.of(context).iconTheme.size + 4 * _iconButtonPadding,
               height: Theme.of(context).iconTheme.size + 2 * _iconButtonPadding,
             ),
-            Text(nfft.flyInProgress.getAttribute(DbNames.flyName),
-                style: AppTextStyles.header),
+            Text(nfft.flyInProgress.flyName, style: AppTextStyles.header),
             IconButton(
-              onPressed: () => NewFlyFormPublish.popToPage(
-                  ctx: context,
-                  pageCount:
-                      nfft.newFlyFormTemplate.flyFormMaterials.length + 1,
-                  popToPage: pageNumber - 1),
+              onPressed: () => FlyFormRoutes.newFlyAttributesPage(context),
+
+              // NewFlyFormPublish.popToPage(
+              //     ctx: context,
+              //     pageCount:
+              //         nfft.newFlyFormTemplate.flyFormMaterials.length + 1,
+              //     popToPage: pageNumber - 1),
               icon: Icon(
                 Icons.edit,
                 semanticLabel: _semanticLabel,
@@ -52,23 +52,24 @@ class AttributeReview extends StatelessWidget {
             )
           ]),
           ...nfft.newFlyFormTemplate.flyFormAttributes
-              .map((FlyFormAttribute attr) => Row(
-                      // mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        Expanded(
-                            child: Container(
-                                alignment: Alignment.center,
-                                child: Text(attr.name,
-                                    style: AppTextStyles.subHeader))),
-                        Expanded(
-                            child: Container(
-                                alignment: Alignment.center,
-                                child: Text(
-                                    nfft.flyInProgress
-                                            .getAttribute(attr.name) ??
-                                        'None',
-                                    style: AppTextStyles.subHeader))),
-                      ]))
+              .map(
+                (FlyFormAttribute attr) => Row(
+                    // mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      Expanded(
+                          child: Container(
+                              alignment: Alignment.center,
+                              child: Text(attr.name,
+                                  style: AppTextStyles.subHeader))),
+                      Expanded(
+                          child: Container(
+                              alignment: Alignment.center,
+                              child: Text(
+                                  nfft.flyInProgress.getAttribute(attr.name) ??
+                                      'None',
+                                  style: AppTextStyles.subHeader))),
+                    ]),
+              )
               .toList()
         ]),
       ),

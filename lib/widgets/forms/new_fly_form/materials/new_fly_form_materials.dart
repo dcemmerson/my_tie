@@ -11,7 +11,7 @@ import 'package:my_tie/bloc/state/fly_form_state.dart';
 import 'package:my_tie/bloc/state/my_tie_state.dart';
 import 'package:my_tie/bloc/new_fly_bloc.dart';
 import 'package:my_tie/models/fly.dart';
-import 'package:my_tie/models/fly_material.dart';
+import 'package:my_tie/models/fly_materials.dart';
 import 'package:my_tie/models/new_fly_form_template.dart';
 import 'package:my_tie/models/new_fly_form_transfer.dart';
 import 'package:my_tie/models/form_page_number.dart';
@@ -52,7 +52,8 @@ class _NewFlyFormMaterialsState extends State<NewFlyFormMaterials>
 
   void _onFormChanged(Map form) {
     if (!_formChanged) {
-      setState(() => _formChanged = true);
+      _formChanged = true;
+//      setState(() => _formChanged = true);
     }
   }
 
@@ -80,13 +81,13 @@ class _NewFlyFormMaterialsState extends State<NewFlyFormMaterials>
 
   bool _saveAndValidate(String material) {
     if (_formKey.currentState.saveAndValidate()) {
-      var inputs = _formKey.currentState.value;
+      final inputs = _formKey.currentState.value;
 
-      var flyMaterials = FlyMaterial(
+      final flyMaterial = FlyMaterial(
         name: material,
-        props: inputs.map((k, v) => MapEntry(k, v)),
+        properties: inputs.map((k, v) => MapEntry(k, v)),
       );
-      _newFlyBloc.newFlyMaterialsSink.add(flyMaterials);
+      _newFlyBloc.newFlyMaterialSink.add(flyMaterial);
       return true;
     }
     return false;
@@ -113,17 +114,18 @@ class _NewFlyFormMaterialsState extends State<NewFlyFormMaterials>
         SizedBox(height: widget._spaceBetweenDropdowns),
         FlyMaterialDropdown(
           flyMaterials:
-              flyFormTemplate.flyFormMaterials[_formPageNumber.pageNumber - 1],
+              flyFormTemplate.flyFormMaterials[_formPageNumber.pageNumber],
           fly: fly,
         ),
         SizedBox(height: widget._spaceBetweenDropdowns),
-        ForwardButtons(
-            flyFormTransfer: flyFormTransfer,
-            formPageNumber: _formPageNumber,
-            saveAndValidate: () => _saveAndValidate(flyFormTransfer
-                .newFlyFormTemplate
-                .flyFormMaterials[_formPageNumber.pageNumber - 1]
-                .name)),
+        RaisedButton(
+            onPressed: () {
+              if (_saveAndValidate(flyFormTemplate
+                  .flyFormMaterials[_formPageNumber.pageNumber].name)) {
+                Navigator.of(context).pop();
+              }
+            },
+            child: Text('Save')),
       ],
     );
   }

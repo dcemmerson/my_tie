@@ -1,21 +1,22 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:my_tie/models/db_names.dart';
 
 class NewFlyService {
   static const _newFlyForm = 'new_fly_form';
   static const _newFlyFormIncoming = 'new_fly_form_incoming';
   static const _flyInProgress = 'fly_in_progress';
 
-  Future<DocumentSnapshot> getFlyInProgressDoc(String uid) async {
-    var snapshot = await FirebaseFirestore.instance
-        .collection(_flyInProgress)
-        .where('uid', isEqualTo: uid)
-        .get();
+  // Future<DocumentSnapshot> getFlyInProgressDoc(String uid) async {
+  //   var snapshot = await FirebaseFirestore.instance
+  //       .collection(_flyInProgress)
+  //       .where('uid', isEqualTo: uid)
+  //       .get();
 
-    if (snapshot.docs.length > 0)
-      return snapshot.docs[0];
-    else
-      return null;
-  }
+  //   if (snapshot.docs.length > 0)
+  //     return snapshot.docs[0];
+  //   else
+  //     return null;
+  // }
 
   // Stream<QuerySnapshot> get newFlyFormStream {
   //   return FirebaseFirestore.instance
@@ -26,39 +27,41 @@ class NewFlyService {
   //       .snapshots();
   // }
 
-  Stream<QuerySnapshot> getFlyInProgressDocStream(String uid) {
+  Stream<DocumentSnapshot> getFlyInProgressDocStream(String uid) {
+    print(uid);
     return FirebaseFirestore.instance
         .collection(_flyInProgress)
-        .where('uid', isEqualTo: uid)
+        .doc(uid)
+//        .where('uid', isEqualTo: uid)
         .snapshots();
   }
 
   Future updateFlyMaterialsInProgress({
-    String docId,
+    String uid,
     String name,
     Map<String, String> properties,
   }) async {
-    return FirebaseFirestore.instance.collection(_flyInProgress).doc(docId).set(
+    return FirebaseFirestore.instance.collection(_flyInProgress).doc(uid).set(
       {
         'materials': {
-          name: properties,
+          name: FieldValue.arrayUnion([properties]),
         }
       },
       SetOptions(merge: true),
     );
   }
 
-  Future updateFlyAttributes({
-    String docId,
-    Map<String, String> attributes,
-  }) async {
-    return FirebaseFirestore.instance.collection(_flyInProgress).doc(docId).set(
-      {
-        'attributes': attributes,
-      },
-      SetOptions(merge: true),
-    );
-  }
+  // Future updateFlyAttributes({
+  //   String docId,
+  //   Map<String, String> attributes,
+  // }) async {
+  //   return FirebaseFirestore.instance.collection(_flyInProgress).doc(docId).set(
+  //     {
+  //       'attributes': attributes,
+  //     },
+  //     SetOptions(merge: true),
+  //   );
+  // }
 
   // Future addAtributeToFormTemplate(
   //     {String uid, String attribute, String value}) {
@@ -70,13 +73,20 @@ class NewFlyService {
   //   }, SetOptions(merge: true));
   // }
 
-  Future addNewFlyAttributesDoc({
+  Future addNewFlyAttributes({
     String uid,
     Map<String, String> attributes,
+    String flyName,
   }) {
-    return FirebaseFirestore.instance.collection(_flyInProgress).add({
-      'uid': uid,
+    final Map<String, dynamic> flyInProgress = {
       'attributes': attributes,
-    });
+    };
+
+    if (flyName != null) flyInProgress[DbNames.flyName] = flyName;
+
+    return FirebaseFirestore.instance
+        .collection(_flyInProgress)
+        .doc(uid)
+        .set(flyInProgress, SetOptions(merge: true));
   }
 }

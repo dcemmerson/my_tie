@@ -8,11 +8,10 @@
 
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:my_tie/models/bloc_related/add_attribute.dart';
 import 'package:my_tie/models/db_names.dart';
 import 'package:my_tie/models/fly.dart';
 import 'package:my_tie/models/fly_attribute.dart';
-import 'package:my_tie/models/fly_material.dart';
+import 'package:my_tie/models/fly_materials.dart';
 import 'package:my_tie/models/new_fly_form_transfer.dart';
 import 'package:my_tie/models/new_fly_form_template.dart';
 import 'package:my_tie/services/network/auth_service.dart';
@@ -27,73 +26,97 @@ class NewFlyBloc {
   final FlyFormTemplateService flyFormTemplateService;
 
   // Coming from app.
-  StreamController<List<FlyAttribute>> newFlyAttributesSink =
-      StreamController<List<FlyAttribute>>();
-  StreamController<FlyMaterial> newFlyMaterialsSink =
+  StreamController<Fly> newFlyAttributesSink = StreamController<Fly>();
+  StreamController<FlyMaterial> newFlyMaterialSink =
       StreamController<FlyMaterial>();
 
   // Going to app.
   NewFlyBloc(
       {this.newFlyService, this.authService, this.flyFormTemplateService}) {
     newFlyAttributesSink.stream.listen(_handleAddNewFlyAttributes);
-    newFlyMaterialsSink.stream.listen(_handleAddNewFlyMaterials);
+    newFlyMaterialSink.stream.listen(_handleAddNewFlyMaterial);
   }
 
   Stream<NewFlyFormTransfer> get newFlyForm {
-    Stream<QuerySnapshot> flyInProgress =
+    Stream<DocumentSnapshot> flyInProgressStream =
         newFlyService.getFlyInProgressDocStream(authService.currentUser.uid);
-    Stream<QuerySnapshot> flyTemplateDoc =
+    Stream<QuerySnapshot> flyTemplateDocStream =
         flyFormTemplateService.newFlyFormStream;
 
     return CombineLatestStream.combine2(
-      flyInProgress,
-      flyTemplateDoc,
-      (QuerySnapshot flyDoc, QuerySnapshot nfftDoc) {
+      flyInProgressStream,
+      flyTemplateDocStream,
+      (DocumentSnapshot flyInProgressDoc, QuerySnapshot nfftDocs) {
+        NewFlyFormTemplate newFlyFormTemplate =
+            NewFlyFormTemplate.fromDoc(nfftDocs?.docs[0]?.data());
+
+        // flyInProgressDocs.docs could be empty here here, first time user
+        //  click addNewFly button.
+        Fly flyInProgress = flyInProgressDoc?.data() != null
+            ? Fly.formattedForEditing(
+                flyName: flyInProgressDoc?.data()[DbNames.flyName],
+                attrs: flyInProgressDoc?.data()[DbNames.attributes],
+                mats: flyInProgressDoc?.data()[DbNames.materials],
+                flyFormTemplate: newFlyFormTemplate)
+            : Fly.formattedForEditing(flyFormTemplate: newFlyFormTemplate);
+
         return NewFlyFormTransfer(
-          flyInProgress: Fly(
-              attrs: flyDoc.docs[0]?.data()[DbNames.attributes],
-              mats: flyDoc.docs[0]?.data()[DbNames.materials]),
-          newFlyFormTemplate:
-              NewFlyFormTemplate.fromDoc(nfftDoc.docs[0].data()),
+          flyInProgress: flyInProgress,
+          newFlyFormTemplate: newFlyFormTemplate,
         );
       },
     );
   }
 
-  Future _handleAddNewFlyMaterials(FlyMaterial material) async {
-    QueryDocumentSnapshot document =
-        await newFlyService.getFlyInProgressDoc(authService.currentUser.uid);
+  Stream<NewFlyFormTransfer> get newFlyFormReview {
+    Stream<DocumentSnapshot> flyInProgressStream =
+        newFlyService.getFlyInProgressDocStream(authService.currentUser.uid);
+    Stream<QuerySnapshot> flyTemplateDocStream =
+        flyFormTemplateService.newFlyFormStream;
 
+    return CombineLatestStream.combine2(
+      flyInProgressStream,
+      flyTemplateDocStream,
+      (DocumentSnapshot flyInProgressDoc, QuerySnapshot nfftDocs) {
+        NewFlyFormTemplate newFlyFormTemplate =
+            NewFlyFormTemplate.fromDoc(nfftDocs?.docs[0]?.data());
+
+        Fly flyInProgress = Fly.formattedForReview(
+            flyName: flyInProgressDoc?.data()[DbNames.flyName],
+            attrs: flyInProgressDoc?.data()[DbNames.attributes],
+            mats: flyInProgressDoc?.data()[DbNames.materials],
+            flyFormTemplate: newFlyFormTemplate);
+
+        return NewFlyFormTransfer(
+          flyInProgress: flyInProgress,
+          newFlyFormTemplate: newFlyFormTemplate,
+        );
+      },
+    );
+  }
+
+  Future _handleAddNewFlyMaterial(FlyMaterial material) async {
     return newFlyService.updateFlyMaterialsInProgress(
-      docId: document.id,
+      uid: authService.currentUser.uid,
       name: material.name,
       properties: material.properties,
     );
   }
 
-  Future _handleAddNewFlyAttributes(List<FlyAttribute> flyAttributes) async {
-    QueryDocumentSnapshot document =
-        await newFlyService.getFlyInProgressDoc(authService.currentUser.uid);
-
+  Future _handleAddNewFlyAttributes(Fly flyInProgress) async {
     Map<String, String> formAttributeData = {};
-    flyAttributes.forEach((flyAttribute) =>
+    flyInProgress.attributes.forEach((flyAttribute) =>
         formAttributeData = {...formAttributeData, ...flyAttribute.toMap()});
 
-    if (document == null) {
-      return newFlyService.addNewFlyAttributesDoc(
-        uid: authService.currentUser.uid,
-        attributes: formAttributeData,
-      );
-    } else {
-      return newFlyService.updateFlyAttributes(
-        docId: document.id,
-        attributes: formAttributeData,
-      );
-    }
+    return newFlyService.addNewFlyAttributes(
+      uid: authService.currentUser.uid,
+      flyName: flyInProgress.flyName,
+      attributes: formAttributeData,
+    );
   }
 
   void close() {
     newFlyAttributesSink.close();
-    newFlyMaterialsSink.close();
+    newFlyMaterialSink.close();
   }
 }

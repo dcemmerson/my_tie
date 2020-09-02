@@ -1,13 +1,86 @@
+import 'package:my_tie/models/fly_form_material.dart';
+
 import 'fly_attribute.dart';
-import 'fly_material.dart';
+import 'fly_form_attribute.dart';
+import 'fly_materials.dart';
+import 'new_fly_form_template.dart';
 
 class Fly {
-  final List<FlyAttribute> attributes;
-  final List<FlyMaterial> materials;
+  static const nullReplacement = '[None selected]';
 
-  Fly({Map attrs, Map mats})
+  final String flyName;
+  final List<FlyAttribute> attributes;
+  final List<FlyMaterials> materials;
+
+  Fly({this.flyName, Map attrs, Map mats})
       : this.attributes = _toAttributeList(attrs),
-        this.materials = _toMaterialList(mats);
+        this.materials = _toMaterialsList(mats);
+
+  /// To format for review, we need to pass in the NewFlyFormTemplate from db,
+  ///   which we will then use as a guide to ensure we either set attributes/
+  ///   materials values to the value passed in, or Fly.nullReplacement.
+  Fly.formattedForReview({
+    String flyName,
+    Map attrs,
+    Map mats,
+    NewFlyFormTemplate flyFormTemplate,
+  })  : this.flyName =
+            flyName ?? 'No name', // Must set flyName here rather than
+        //  default arg (because if value doesnt exist in firebase, flyName will
+        //  be explicitly set to null, even if we provide default arg)
+        this.attributes =
+            _toAttributeListForReview(attrs ?? {}, flyFormTemplate),
+        this.materials = _toMaterialListForReview(mats ?? {}, flyFormTemplate);
+
+  Fly.formattedForEditing(
+      {this.flyName, Map attrs, Map mats, NewFlyFormTemplate flyFormTemplate})
+      : this.attributes =
+            _toAttributeListForEditing(attrs ?? {}, flyFormTemplate),
+        this.materials = _toMaterialListForEditing(mats ?? {}, flyFormTemplate);
+
+  static List<FlyAttribute> _toAttributeListForEditing(
+      Map attrs, NewFlyFormTemplate flyFormTemplate) {
+    List<FlyAttribute> flyAttributes =
+        flyFormTemplate.flyFormAttributes.map((FlyFormAttribute ffa) {
+      return FlyAttribute.formattedForEditing(
+          name: ffa.name, value: attrs[ffa.name]);
+    }).toList();
+
+    return flyAttributes;
+  }
+
+  static List<FlyMaterials> _toMaterialListForEditing(
+      Map mats, NewFlyFormTemplate flyFormTemplate) {
+    List<FlyMaterials> flyMaterials =
+        flyFormTemplate.flyFormMaterials.map((FlyFormMaterial ffm) {
+      return FlyMaterials.formattedForEditing(
+          name: ffm.name, props: mats[ffm.name]);
+    }).toList();
+
+    return flyMaterials;
+  }
+
+  static List<FlyAttribute> _toAttributeListForReview(
+      Map attrs, NewFlyFormTemplate flyFormTemplate) {
+    List<FlyAttribute> flyAttributes =
+        flyFormTemplate.flyFormAttributes.map((FlyFormAttribute ffa) {
+      return FlyAttribute.formattedForReview(
+          name: ffa.name, value: attrs[ffa.name]);
+    }).toList();
+
+    return flyAttributes;
+  }
+
+  static List<FlyMaterials> _toMaterialListForReview(
+      Map mats, NewFlyFormTemplate flyFormTemplate) {
+    List<FlyMaterials> flyMaterials =
+        flyFormTemplate.flyFormMaterials.map((FlyFormMaterial ffm) {
+      return FlyMaterials.formattedForReview(
+          name: ffm.name, props: mats[ffm.name]);
+    }).toList();
+
+    return flyMaterials;
+  }
 
   static List<FlyAttribute> _toAttributeList(Map attrs) {
     List<FlyAttribute> flyAttributes = [];
@@ -17,9 +90,9 @@ class Fly {
     return flyAttributes;
   }
 
-  static List<FlyMaterial> _toMaterialList(Map mats) {
-    List<FlyMaterial> flyMaterials = [];
-    mats?.forEach((k, v) => flyMaterials.add(FlyMaterial(name: k, props: v)));
+  static List<FlyMaterials> _toMaterialsList(Map mats) {
+    List<FlyMaterials> flyMaterials = [];
+    mats?.forEach((k, v) => flyMaterials.add(FlyMaterials(name: k, props: v)));
 
     return flyMaterials;
   }
@@ -35,11 +108,12 @@ class Fly {
   }
 
   String getMaterial(String matName, String materialAttribute) {
-    var matFound =
-        materials.firstWhere((mat) => mat.name == matName, orElse: () => null);
-    if (matFound != null) {
-      return matFound.properties[materialAttribute];
-    }
-    return null;
+    return 'unimplemented Fly.getMaterial';
+    // var matFound =
+    //     materials.firstWhere((mat) => mat.name == matName, orElse: () => null);
+    // if (matFound != null && matFound.properties != null) {
+    //   return matFound.properties[materialAttribute];
+    // }
+    // return null;
   }
 }

@@ -8,11 +8,11 @@
 ///   in Text widgets.
 
 import 'package:flutter/material.dart';
+import 'package:my_tie/models/form_page_number.dart';
 import 'package:my_tie/models/new_fly_form_template.dart';
 import 'package:my_tie/models/new_fly_form_transfer.dart';
+import 'package:my_tie/routes/fly_form_routes.dart';
 import 'package:my_tie/styles/styles.dart';
-
-import 'new_fly_form_publish.dart';
 
 class MaterialReview extends StatefulWidget {
   final _iconButtonPadding = 8.0;
@@ -67,12 +67,8 @@ class _MaterialReviewState extends State<MaterialReview>
     calculateAnimationOffsets(widget.nfft.newFlyFormTemplate);
     List<Widget> rows = [];
 
-    widget.nfft.newFlyFormTemplate.flyFormMaterials.forEach((mat) {
-      // Add Rows of Text widgets to nextRow, then append nextRow inside
-      //  a Card widget.
+    widget.nfft.flyInProgress.materials.asMap().forEach((index, mat) {
       List<Row> nextRow = [];
-
-      //  Material name, for example furs, yarns, threads, etc
       nextRow.add(
           Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
         SizedBox(
@@ -83,15 +79,18 @@ class _MaterialReviewState extends State<MaterialReview>
         ),
         Text(mat.name, style: AppTextStyles.header),
         IconButton(
-          onPressed: () => NewFlyFormPublish.popToPage(
-              ctx: context,
-              pageCount:
-                  widget.nfft.newFlyFormTemplate.flyFormMaterials.length + 1,
-              popToPage:
-                  widget.nfft.newFlyFormTemplate.flyFormMaterials.indexOf(mat) +
-                      1),
+          onPressed: () => FlyFormRoutes.newFlyMaterialsPage(context,
+              pageNumber: FormPageNumber(pageNumber: index)),
+
+          // NewFlyFormPublish.popToPage(
+          //     ctx: context,
+          //     pageCount:
+          //         widget.nfft.newFlyFormTemplate.flyFormMaterials.length + 1,
+          //     popToPage:
+          //         widget.nfft.newFlyFormTemplate.flyFormMaterials.indexOf(mat) +
+          //             1),
           icon: Icon(
-            Icons.edit,
+            Icons.add,
             semanticLabel: widget._semanticLabel,
           ),
         )
@@ -99,27 +98,29 @@ class _MaterialReviewState extends State<MaterialReview>
 
       //  Now add each material property in a row to nextRow, for example
       //  Row(children: [Text('color'), Text('red')]) would be a single row entry.
-      mat.properties.forEach((k, v) {
-        nextRow.add(
-          Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
-            Expanded(
-              child: Container(
-                alignment: Alignment.center,
-                child: Text(k, style: AppTextStyles.subHeader),
+      mat.flyMaterials?.forEach(
+        (flyMaterial) => flyMaterial.properties.forEach((k, v) {
+          nextRow.add(
+            Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
+              Expanded(
+                child: Container(
+                  alignment: Alignment.center,
+                  child: Text(k, style: AppTextStyles.subHeader),
+                ),
               ),
-            ),
-            Expanded(
-              child: Container(
-                alignment: Alignment.center,
-                child: Text(
-                    widget.nfft.flyInProgress.getMaterial(mat.name, k) ??
-                        'None selected',
-                    style: AppTextStyles.subHeader),
+              Expanded(
+                child: Container(
+                  alignment: Alignment.center,
+                  child: Text(v,
+                      // widget.nfft.flyInProgress.getMaterial(mat.name, k) ??
+                      //     'None selected',
+                      style: AppTextStyles.subHeader),
+                ),
               ),
-            ),
-          ]),
-        );
-      });
+            ]),
+          );
+        }),
+      );
 
       //  Now build actual card widget with all the previous rows as descendents,
       //  all wrapped in an animation to show card transitioning on screen.
