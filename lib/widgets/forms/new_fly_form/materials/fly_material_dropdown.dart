@@ -3,6 +3,7 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:my_tie/models/arguments/add_property_argument.dart';
 import 'package:my_tie/models/fly.dart';
 import 'package:my_tie/models/fly_form_material.dart';
+import 'package:my_tie/models/form_page_number.dart';
 import 'package:my_tie/styles/styles.dart';
 
 import '../field_long_press_wrapper.dart';
@@ -10,18 +11,16 @@ import '../field_long_press_wrapper.dart';
 class FlyMaterialDropdown extends StatelessWidget {
   final FlyFormMaterial flyMaterials;
   final Fly fly;
+  final FormPageNumber formPageNumber;
 
-  FlyMaterialDropdown({
-    this.flyMaterials,
-    this.fly,
-  });
+  FlyMaterialDropdown({this.flyMaterials, this.fly, this.formPageNumber});
 
   List<Widget> _buildDropdown(BuildContext context) {
     List<Widget> dropdowns = [];
 
     flyMaterials.properties.forEach((String materialType, List<String> values) {
-      final String initialValue =
-          fly.getMaterial(flyMaterials.name, materialType);
+      final String initialValue = fly.getMaterial(formPageNumber.pageNumber,
+          formPageNumber.propertyIndex, materialType);
       dropdowns.add(
         FieldLongPressWrapper(
           wrapperType: AddPropertyType.Material,

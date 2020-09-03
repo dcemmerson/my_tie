@@ -107,13 +107,16 @@ class Fly {
     return null;
   }
 
-  String getMaterial(String matName, String materialAttribute) {
-    return 'unimplemented Fly.getMaterial';
-    // var matFound =
-    //     materials.firstWhere((mat) => mat.name == matName, orElse: () => null);
-    // if (matFound != null && matFound.properties != null) {
-    //   return matFound.properties[materialAttribute];
-    // }
-    // return null;
+  String getMaterial(
+      int materialIndex, int propertyIndex, String propertyName) {
+    if ((materialIndex == null ||
+            propertyIndex == null ||
+            propertyName == null) ||
+        propertyIndex >= materials[materialIndex].flyMaterials.length) {
+      return null;
+    }
+    return materials[materialIndex]
+        .flyMaterials[propertyIndex]
+        .properties[propertyName];
   }
 }

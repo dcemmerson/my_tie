@@ -40,6 +40,8 @@ class AppTextStyles {
   static const dropdownLg = const TextStyle(fontSize: 20);
   static const dropdownLabel = const TextStyle(fontSize: 20);
 
-  static const header = const TextStyle(fontSize: AppFonts.h4);
-  static const subHeader = const TextStyle(fontSize: AppFonts.h6);
+  static const header =
+      const TextStyle(fontSize: AppFonts.h4, fontWeight: FontWeight.w600);
+  static const subHeader =
+      const TextStyle(fontSize: AppFonts.h6, fontWeight: FontWeight.w500);
 }

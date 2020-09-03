@@ -10,7 +10,6 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:my_tie/models/db_names.dart';
 import 'package:my_tie/models/fly.dart';
-import 'package:my_tie/models/fly_attribute.dart';
 import 'package:my_tie/models/fly_materials.dart';
 import 'package:my_tie/models/new_fly_form_transfer.dart';
 import 'package:my_tie/models/new_fly_form_template.dart';
@@ -27,7 +26,9 @@ class NewFlyBloc {
 
   // Coming from app.
   StreamController<Fly> newFlyAttributesSink = StreamController<Fly>();
-  StreamController<FlyMaterial> newFlyMaterialSink =
+  StreamController<FlyMaterialAddOrUpdate> newFlyMaterialSink =
+      StreamController<FlyMaterialAddOrUpdate>();
+  StreamController<FlyMaterial> deleteFlyMaterialSink =
       StreamController<FlyMaterial>();
 
   // Going to app.
@@ -35,6 +36,7 @@ class NewFlyBloc {
       {this.newFlyService, this.authService, this.flyFormTemplateService}) {
     newFlyAttributesSink.stream.listen(_handleAddNewFlyAttributes);
     newFlyMaterialSink.stream.listen(_handleAddNewFlyMaterial);
+    deleteFlyMaterialSink.stream.listen(_handleDeleteFlyMaterial);
   }
 
   Stream<NewFlyFormTransfer> get newFlyForm {
@@ -95,12 +97,25 @@ class NewFlyBloc {
     );
   }
 
-  Future _handleAddNewFlyMaterial(FlyMaterial material) async {
-    return newFlyService.updateFlyMaterialsInProgress(
+  Future _handleDeleteFlyMaterial(FlyMaterial flyMaterial) async {
+    if (flyMaterial != null) {
+      return newFlyService.deleteFlyInProgressMaterial(
+        uid: authService.currentUser.uid,
+        name: flyMaterial.name,
+        properties: flyMaterial.properties,
+      );
+    }
+  }
+
+  Future _handleAddNewFlyMaterial(FlyMaterialAddOrUpdate materialUpdate) async {
+    // Add new material to array, then delete the old material since firestore
+    //  doesn't have good support for update array.
+    newFlyService.addFlyInProgressMaterial(
       uid: authService.currentUser.uid,
-      name: material.name,
-      properties: material.properties,
+      name: materialUpdate.curr.name,
+      properties: materialUpdate.curr.properties,
     );
+    return _handleDeleteFlyMaterial(materialUpdate.prev);
   }
 
   Future _handleAddNewFlyAttributes(Fly flyInProgress) async {
@@ -119,4 +134,11 @@ class NewFlyBloc {
     newFlyAttributesSink.close();
     newFlyMaterialSink.close();
   }
+}
+
+class FlyMaterialAddOrUpdate {
+  final FlyMaterial prev;
+  final FlyMaterial curr;
+
+  FlyMaterialAddOrUpdate({this.prev, this.curr});
 }

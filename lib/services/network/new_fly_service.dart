@@ -36,7 +36,7 @@ class NewFlyService {
         .snapshots();
   }
 
-  Future updateFlyMaterialsInProgress({
+  Future addFlyInProgressMaterial({
     String uid,
     String name,
     Map<String, String> properties,
@@ -45,6 +45,21 @@ class NewFlyService {
       {
         'materials': {
           name: FieldValue.arrayUnion([properties]),
+        }
+      },
+      SetOptions(merge: true),
+    );
+  }
+
+  Future deleteFlyInProgressMaterial({
+    String uid,
+    String name,
+    Map<String, String> properties,
+  }) async {
+    return FirebaseFirestore.instance.collection(_flyInProgress).doc(uid).set(
+      {
+        'materials': {
+          name: FieldValue.arrayRemove([properties]),
         }
       },
       SetOptions(merge: true),

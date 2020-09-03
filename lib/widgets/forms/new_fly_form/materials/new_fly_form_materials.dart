@@ -79,18 +79,33 @@ class _NewFlyFormMaterialsState extends State<NewFlyFormMaterials>
     );
   }
 
-  bool _saveAndValidate(String material) {
+  bool _saveAndValidate(Fly fly) {
     if (_formKey.currentState.saveAndValidate()) {
       final inputs = _formKey.currentState.value;
 
-      final flyMaterial = FlyMaterial(
-        name: material,
+      final FlyMaterial prev = _formPageNumber.propertyIndex == null
+          ? null
+          : fly.materials[_formPageNumber.pageNumber]
+              .flyMaterials[_formPageNumber.propertyIndex];
+
+      final updated = FlyMaterial(
+        name: fly.materials[_formPageNumber.pageNumber].name,
         properties: inputs.map((k, v) => MapEntry(k, v)),
       );
-      _newFlyBloc.newFlyMaterialSink.add(flyMaterial);
+
+      _newFlyBloc.newFlyMaterialSink
+          .add(FlyMaterialAddOrUpdate(prev: prev, curr: updated));
       return true;
     }
     return false;
+  }
+
+  void _deleteMaterial(Fly fly) {
+    final FlyMaterial flyMaterial = _formPageNumber.propertyIndex == null
+        ? null
+        : fly.materials[_formPageNumber.pageNumber]
+            .flyMaterials[_formPageNumber.propertyIndex];
+    _newFlyBloc.deleteFlyMaterialSink.add(flyMaterial);
   }
 
   Widget _buildLoading() {
@@ -116,16 +131,26 @@ class _NewFlyFormMaterialsState extends State<NewFlyFormMaterials>
           flyMaterials:
               flyFormTemplate.flyFormMaterials[_formPageNumber.pageNumber],
           fly: fly,
+          formPageNumber: _formPageNumber,
         ),
         SizedBox(height: widget._spaceBetweenDropdowns),
         RaisedButton(
             onPressed: () {
-              if (_saveAndValidate(flyFormTemplate
-                  .flyFormMaterials[_formPageNumber.pageNumber].name)) {
+              if (_saveAndValidate(fly)) {
                 Navigator.of(context).pop();
               }
             },
             child: Text('Save')),
+        if (_formPageNumber.propertyIndex != null)
+          // This is indicative that user is editing existing material
+          RaisedButton(
+              color: Theme.of(context).colorScheme.error,
+              onPressed: () {
+                Navigator.of(context).pop();
+
+                _deleteMaterial(fly);
+              },
+              child: Text('Delete')),
       ],
     );
   }

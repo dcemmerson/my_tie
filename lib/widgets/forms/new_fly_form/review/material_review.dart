@@ -8,10 +8,12 @@
 ///   in Text widgets.
 
 import 'package:flutter/material.dart';
+import 'package:my_tie/models/fly_materials.dart';
 import 'package:my_tie/models/form_page_number.dart';
 import 'package:my_tie/models/new_fly_form_template.dart';
 import 'package:my_tie/models/new_fly_form_transfer.dart';
 import 'package:my_tie/routes/fly_form_routes.dart';
+import 'package:my_tie/styles/string_format.dart';
 import 'package:my_tie/styles/styles.dart';
 
 class MaterialReview extends StatefulWidget {
@@ -62,65 +64,106 @@ class _MaterialReviewState extends State<MaterialReview>
     }
   }
 
+  Widget _buildMaterialHeader(FlyMaterials mat, int index) {
+    return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+      SizedBox(
+        width: Theme.of(context).iconTheme.size + 4 * widget._iconButtonPadding,
+        height:
+            Theme.of(context).iconTheme.size + 2 * widget._iconButtonPadding,
+      ),
+      Text(mat.name.toTitleCase(), style: AppTextStyles.header),
+      IconButton(
+        onPressed: () => FlyFormRoutes.newFlyMaterialsPage(context,
+            pageNumber: FormPageNumber(pageNumber: index)),
+        icon: Icon(
+          Icons.add,
+          semanticLabel: widget._semanticLabel,
+        ),
+      )
+    ]);
+  }
+
+  Widget _buildSubGroupHeader(
+      FlyMaterial flyMaterial, int materialIndex, int propertyIndex) {
+    // SubGroupHeader could be 'Bead 2' for example, with edit icon.
+    return Container(
+      padding: EdgeInsets.all(AppPadding.p2),
+      alignment: Alignment.bottomLeft,
+      child: Row(children: [
+        Text(
+          flyMaterial.name.toSingular().toTitleCase() +
+              ' ' +
+              (propertyIndex + 1).toString(),
+          style: TextStyle(fontSize: AppFonts.h6, fontWeight: FontWeight.w600),
+        ),
+        IconButton(
+          onPressed: () => FlyFormRoutes.newFlyMaterialsPage(context,
+              pageNumber: FormPageNumber(
+                  pageNumber: materialIndex, propertyIndex: propertyIndex)),
+          iconSize: AppFonts.h5,
+          padding: EdgeInsets.fromLTRB(AppPadding.p2, 0, AppPadding.p2, 0),
+          constraints:
+              BoxConstraints(maxHeight: AppFonts.h4, maxWidth: AppFonts.h4),
+          // alignment: Alignment.top,
+          icon: Icon(
+            Icons.edit,
+            semanticLabel: widget._semanticLabel,
+          ),
+        ),
+      ]),
+    );
+  }
+
+  List<Widget> _buildMaterialSubGroups(
+      FlyMaterial flyMaterial, int materialIndex, int propertyIndex) {
+    List<Widget> nextSubGroup = [];
+    nextSubGroup
+        .add(_buildSubGroupHeader(flyMaterial, materialIndex, propertyIndex));
+
+    flyMaterial.properties.forEach((k, v) {
+      nextSubGroup.add(
+        Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
+          Expanded(
+            child: Container(
+              alignment: Alignment.center,
+              child: Text(k),
+            ),
+          ),
+          Expanded(
+            child: Container(
+              alignment: Alignment.center,
+              child: Text(v),
+            ),
+          ),
+        ]),
+      );
+    });
+    return nextSubGroup;
+  }
+
   @override
   Widget build(BuildContext context) {
     calculateAnimationOffsets(widget.nfft.newFlyFormTemplate);
+
+    // Think of rows as the list of groups of materials, eg beads.
     List<Widget> rows = [];
 
-    widget.nfft.flyInProgress.materials.asMap().forEach((index, mat) {
-      List<Row> nextRow = [];
-      nextRow.add(
-          Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-        SizedBox(
-          width:
-              Theme.of(context).iconTheme.size + 4 * widget._iconButtonPadding,
-          height:
-              Theme.of(context).iconTheme.size + 2 * widget._iconButtonPadding,
-        ),
-        Text(mat.name, style: AppTextStyles.header),
-        IconButton(
-          onPressed: () => FlyFormRoutes.newFlyMaterialsPage(context,
-              pageNumber: FormPageNumber(pageNumber: index)),
-
-          // NewFlyFormPublish.popToPage(
-          //     ctx: context,
-          //     pageCount:
-          //         widget.nfft.newFlyFormTemplate.flyFormMaterials.length + 1,
-          //     popToPage:
-          //         widget.nfft.newFlyFormTemplate.flyFormMaterials.indexOf(mat) +
-          //             1),
-          icon: Icon(
-            Icons.add,
-            semanticLabel: widget._semanticLabel,
-          ),
-        )
-      ]));
+    widget.nfft.flyInProgress.materials.asMap().forEach((materialIndex, mat) {
+      // Think of nextGroup as all of a material type, for example all different
+      // types of beads used in this fly.
+      List<Widget> nextGroup = [];
+      nextGroup.add(_buildMaterialHeader(mat, materialIndex));
 
       //  Now add each material property in a row to nextRow, for example
       //  Row(children: [Text('color'), Text('red')]) would be a single row entry.
-      mat.flyMaterials?.forEach(
-        (flyMaterial) => flyMaterial.properties.forEach((k, v) {
-          nextRow.add(
-            Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
-              Expanded(
-                child: Container(
-                  alignment: Alignment.center,
-                  child: Text(k, style: AppTextStyles.subHeader),
-                ),
-              ),
-              Expanded(
-                child: Container(
-                  alignment: Alignment.center,
-                  child: Text(v,
-                      // widget.nfft.flyInProgress.getMaterial(mat.name, k) ??
-                      //     'None selected',
-                      style: AppTextStyles.subHeader),
-                ),
-              ),
-            ]),
-          );
-        }),
-      );
+      mat.flyMaterials?.asMap()?.forEach((propertyIndex, flyMaterial) {
+        nextGroup.add(Container(
+            padding: EdgeInsets.fromLTRB(0, 0, 0, AppPadding.p4),
+            child: Column(
+              children: _buildMaterialSubGroups(
+                  flyMaterial, materialIndex, propertyIndex),
+            )));
+      });
 
       //  Now build actual card widget with all the previous rows as descendents,
       //  all wrapped in an animation to show card transitioning on screen.
@@ -132,7 +175,7 @@ class _MaterialReviewState extends State<MaterialReview>
           child: Padding(
             padding: EdgeInsets.fromLTRB(0, AppPadding.p2, 0, AppPadding.p4),
             child: Column(
-              children: nextRow,
+              children: nextGroup,
             ),
           ),
         ),

@@ -13,7 +13,7 @@ import 'fly.dart';
 
 class FlyMaterial {
   final Map<String, String> properties;
-  final String name;
+  final String name; // Name of material
 
   FlyMaterial({this.properties, this.name});
 }
@@ -57,8 +57,8 @@ class FlyMaterials {
       final m = Map<String, String>();
       (prop as Map).forEach((k, v) {
         m[k.toString()] = (v == null) ? v : v.toString();
-        return FlyMaterial(properties: m, name: name);
       });
+      return FlyMaterial(properties: m, name: name);
     })?.toList();
   }
 
