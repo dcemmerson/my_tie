@@ -6,8 +6,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:my_tie/bloc/state/fly_form_state.dart';
 
+import 'package:my_tie/bloc/state/fly_form_state.dart';
 import 'package:my_tie/bloc/state/my_tie_state.dart';
 import 'package:my_tie/bloc/new_fly_bloc.dart';
 import 'package:my_tie/models/fly.dart';
@@ -15,10 +15,8 @@ import 'package:my_tie/models/fly_materials.dart';
 import 'package:my_tie/models/new_fly_form_template.dart';
 import 'package:my_tie/models/new_fly_form_transfer.dart';
 import 'package:my_tie/models/form_page_number.dart';
-
 import 'package:my_tie/styles/styles.dart';
 
-import '../../forward_buttons.dart';
 import 'fly_material_dropdown.dart';
 
 class NewFlyFormMaterials extends StatefulWidget {

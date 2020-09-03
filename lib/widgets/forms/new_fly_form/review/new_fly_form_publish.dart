@@ -14,6 +14,7 @@ import 'package:my_tie/models/new_fly_form_transfer.dart';
 import 'package:my_tie/styles/styles.dart';
 
 import 'attribute_review.dart';
+import 'instruction_review.dart';
 import 'material_review.dart';
 
 class NewFlyFormPublish extends StatefulWidget {
@@ -26,6 +27,7 @@ class NewFlyFormPublish extends StatefulWidget {
 class _NewFlyFormPublishState extends State<NewFlyFormPublish> {
   Widget _attributesHeader;
   Widget _materialsHeader;
+  Widget _instructionsHeader;
 
   NewFlyBloc _newFlyBloc;
 
@@ -54,7 +56,16 @@ class _NewFlyFormPublishState extends State<NewFlyFormPublish> {
                   color: Theme.of(context).colorScheme.secondaryVariant,
                   decoration: TextDecoration.underline,
                 ))));
-
+    _instructionsHeader = Container(
+        padding: EdgeInsets.all(AppPadding.p2),
+        child: Opacity(
+            opacity: 0.9,
+            child: Text('Instructions',
+                style: TextStyle(
+                  fontSize: AppFonts.h3,
+                  color: Theme.of(context).colorScheme.secondaryVariant,
+                  decoration: TextDecoration.underline,
+                ))));
     _newFlyBloc = MyTieStateContainer.of(context).blocProvider.newFlyBloc;
   }
 
@@ -73,6 +84,8 @@ class _NewFlyFormPublishState extends State<NewFlyFormPublish> {
         AttributeReview(newFlyFormTransfer: flyFormTransfer),
         _materialsHeader,
         MaterialReview(newFlyFormTransfer: flyFormTransfer),
+        _instructionsHeader,
+        InstructionReview(newFlyFormTransfer: flyFormTransfer),
         Row(children: [
           Expanded(
             child: Container(

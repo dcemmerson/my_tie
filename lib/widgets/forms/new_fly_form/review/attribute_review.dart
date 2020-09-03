@@ -7,7 +7,6 @@
 ///   in Text widgets.
 
 import 'package:flutter/material.dart';
-import 'package:my_tie/models/db_names.dart';
 import 'package:my_tie/models/fly_form_attribute.dart';
 import 'package:my_tie/models/new_fly_form_transfer.dart';
 import 'package:my_tie/routes/fly_form_routes.dart';
@@ -39,12 +38,6 @@ class AttributeReview extends StatelessWidget {
             Text(nfft.flyInProgress.flyName, style: AppTextStyles.header),
             IconButton(
               onPressed: () => FlyFormRoutes.newFlyAttributesPage(context),
-
-              // NewFlyFormPublish.popToPage(
-              //     ctx: context,
-              //     pageCount:
-              //         nfft.newFlyFormTemplate.flyFormMaterials.length + 1,
-              //     popToPage: pageNumber - 1),
               icon: Icon(
                 Icons.edit,
                 semanticLabel: _semanticLabel,
@@ -53,22 +46,20 @@ class AttributeReview extends StatelessWidget {
           ]),
           ...nfft.newFlyFormTemplate.flyFormAttributes
               .map(
-                (FlyFormAttribute attr) => Row(
-                    // mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      Expanded(
-                          child: Container(
-                              alignment: Alignment.center,
-                              child: Text(attr.name,
-                                  style: AppTextStyles.subHeader))),
-                      Expanded(
-                          child: Container(
-                              alignment: Alignment.center,
-                              child: Text(
-                                  nfft.flyInProgress.getAttribute(attr.name) ??
-                                      'None',
-                                  style: AppTextStyles.subHeader))),
-                    ]),
+                (FlyFormAttribute attr) => Row(children: [
+                  Expanded(
+                      child: Container(
+                          alignment: Alignment.center,
+                          child: Text(attr.name,
+                              style: TextStyle(fontSize: AppFonts.h6)))),
+                  Expanded(
+                      child: Container(
+                          alignment: Alignment.center,
+                          child: Text(
+                              nfft.flyInProgress.getAttribute(attr.name) ??
+                                  'None',
+                              style: TextStyle(fontSize: AppFonts.h6)))),
+                ]),
               )
               .toList()
         ]),

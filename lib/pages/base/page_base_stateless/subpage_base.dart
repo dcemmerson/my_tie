@@ -8,6 +8,7 @@ enum SubPageType {
   NewFlyStartPage,
   NewFlyAttributesPage,
   NewFlyMaterialsPage,
+  NewFlyInstructionPage,
   NewFlyPublishPage,
   AddNewAttributePage,
   AddNewPropertyPage,
@@ -38,21 +39,6 @@ abstract class SubPageBase extends StatelessWidget {
     }
   }
 
-  // String getFormProgress(BuildContext context) {
-  //   // Check that the arg passed if of type FormPageNumber. Usually will be,
-  //   //  but if user is adding a new attribute or material to db, then we won't
-  //   //  have passed a FormPageNumber arg in.
-  //   var arg = ModalRoute.of(context).settings.arguments;
-  //   FormPageNumber fpn = (arg is FormPageNumber) ? arg : null;
-  //   int currPage = (fpn?.pageNumber ?? 0) + 1;
-  //   int pageCount = fpn?.pageCount ?? 0;
-
-  //   if (pageCount > 0) {
-  //     return currPage.toString() + ' / ' + pageCount.toString();
-  //   }
-  //   return '';
-  // }
-
   @override
   Widget build(BuildContext context) {
     themeManager =
@@ -76,14 +62,6 @@ abstract class SubPageBase extends StatelessWidget {
             centerTitle: true,
             elevation: 0.0,
             leading: _subNavPopButton(context),
-            // actions: [
-            //   Padding(
-            //       padding:
-            //           EdgeInsets.fromLTRB(0, AppPadding.p1, AppPadding.p1, 0),
-            //       child: Text(getFormProgress(context))),
-            // ],
-
-            // iconTheme: themeManager.themeData.appSubBarTheme.actionsIconTheme,
             primary: false,
             title: Text(subPageTitle, style: AppTextStyles.subHeader),
             textTheme: Theme.of(context).primaryTextTheme,

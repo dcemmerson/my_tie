@@ -87,14 +87,15 @@ class _MaterialReviewState extends State<MaterialReview>
       FlyMaterial flyMaterial, int materialIndex, int propertyIndex) {
     // SubGroupHeader could be 'Bead 2' for example, with edit icon.
     return Container(
-      padding: EdgeInsets.all(AppPadding.p2),
+      padding:
+          EdgeInsets.fromLTRB(AppPadding.p2, 0, AppPadding.p2, AppPadding.p1),
       alignment: Alignment.bottomLeft,
       child: Row(children: [
         Text(
           flyMaterial.name.toSingular().toTitleCase() +
               ' ' +
               (propertyIndex + 1).toString(),
-          style: TextStyle(fontSize: AppFonts.h6, fontWeight: FontWeight.w600),
+          style: TextStyle(fontSize: AppFonts.h5, fontWeight: FontWeight.w600),
         ),
         IconButton(
           onPressed: () => FlyFormRoutes.newFlyMaterialsPage(context,
@@ -126,13 +127,13 @@ class _MaterialReviewState extends State<MaterialReview>
           Expanded(
             child: Container(
               alignment: Alignment.center,
-              child: Text(k),
+              child: Text(k, style: TextStyle(fontSize: AppFonts.h6)),
             ),
           ),
           Expanded(
             child: Container(
               alignment: Alignment.center,
-              child: Text(v),
+              child: Text(v, style: TextStyle(fontSize: AppFonts.h6)),
             ),
           ),
         ]),

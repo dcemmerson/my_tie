@@ -1,42 +1,71 @@
+/// filename: fly.dart
+/// description: Model class representing a fly. A fly has a name, attributes
+///   (eg difficulty to tie the fly, type of fly, etc), materials need to tie
+///   the fly (eg hook size, threads, etc), and instructional steps to tie
+///   the fly.
+
 import 'package:my_tie/models/fly_form_material.dart';
 
 import 'fly_attribute.dart';
 import 'fly_form_attribute.dart';
+import 'fly_instruction.dart';
 import 'fly_materials.dart';
 import 'new_fly_form_template.dart';
 
 class Fly {
-  static const nullReplacement = '[None selected]';
+  static const nullReplacement = '[None]';
 
   final String flyName;
   final List<FlyAttribute> attributes;
   final List<FlyMaterials> materials;
+  final List<FlyInstruction> instructions;
 
-  Fly({this.flyName, Map attrs, Map mats})
+  Fly({this.flyName, Map attrs, Map mats, List instr})
       : this.attributes = _toAttributeList(attrs),
-        this.materials = _toMaterialsList(mats);
+        this.materials = _toMaterialsList(mats),
+        this.instructions = _toInstructionsList(instr);
 
   /// To format for review, we need to pass in the NewFlyFormTemplate from db,
   ///   which we will then use as a guide to ensure we either set attributes/
   ///   materials values to the value passed in, or Fly.nullReplacement.
-  Fly.formattedForReview({
-    String flyName,
-    Map attrs,
-    Map mats,
-    NewFlyFormTemplate flyFormTemplate,
-  })  : this.flyName =
+  Fly.formattedForReview(
+      {String flyName,
+      Map attrs,
+      Map mats,
+      NewFlyFormTemplate flyFormTemplate,
+      List instr})
+      : this.flyName =
             flyName ?? 'No name', // Must set flyName here rather than
         //  default arg (because if value doesnt exist in firebase, flyName will
         //  be explicitly set to null, even if we provide default arg)
         this.attributes =
             _toAttributeListForReview(attrs ?? {}, flyFormTemplate),
-        this.materials = _toMaterialListForReview(mats ?? {}, flyFormTemplate);
+        this.materials = _toMaterialListForReview(mats ?? {}, flyFormTemplate),
+        this.instructions = _toInstructionsListForReview(instr);
 
   Fly.formattedForEditing(
-      {this.flyName, Map attrs, Map mats, NewFlyFormTemplate flyFormTemplate})
+      {this.flyName,
+      Map attrs,
+      Map mats,
+      NewFlyFormTemplate flyFormTemplate,
+      List instr})
       : this.attributes =
             _toAttributeListForEditing(attrs ?? {}, flyFormTemplate),
-        this.materials = _toMaterialListForEditing(mats ?? {}, flyFormTemplate);
+        this.materials = _toMaterialListForEditing(mats ?? {}, flyFormTemplate),
+        this.instructions = _toInstructionsList(instr);
+
+  String getMaterial(
+      int materialIndex, int propertyIndex, String propertyName) {
+    if ((materialIndex == null ||
+            propertyIndex == null ||
+            propertyName == null) ||
+        propertyIndex >= materials[materialIndex].flyMaterials.length) {
+      return null;
+    }
+    return materials[materialIndex]
+        .flyMaterials[propertyIndex]
+        .properties[propertyName];
+  }
 
   static List<FlyAttribute> _toAttributeListForEditing(
       Map attrs, NewFlyFormTemplate flyFormTemplate) {
@@ -82,6 +111,23 @@ class Fly {
     return flyMaterials;
   }
 
+  static List<FlyInstruction> _toInstructionsListForReview(List instructions) {
+    List<FlyInstruction> flyInstructions = [];
+    instructions?.forEach(
+      (instr) => flyInstructions.add(
+        FlyInstruction(
+          title: instr.title != null ? instr.title.toString() : nullReplacement,
+          description: instr.description != null
+              ? instr.description.toString()
+              : nullReplacement,
+          step: int.parse(instr.step),
+        ),
+      ),
+    );
+    flyInstructions.sort(_sortBySteps);
+    return flyInstructions;
+  }
+
   static List<FlyAttribute> _toAttributeList(Map attrs) {
     List<FlyAttribute> flyAttributes = [];
     attrs
@@ -97,6 +143,21 @@ class Fly {
     return flyMaterials;
   }
 
+  static List<FlyInstruction> _toInstructionsList(List instructions) {
+    List<FlyInstruction> flyInstructions = [];
+    instructions?.forEach(
+      (instr) => flyInstructions.add(
+        FlyInstruction(
+          title: instr.title.toString(),
+          description: instr.description.toString(),
+          step: int.parse(instr.step),
+        ),
+      ),
+    );
+    flyInstructions.sort(_sortBySteps);
+    return flyInstructions;
+  }
+
   String getAttribute(String name) {
     var attrFound =
         attributes.firstWhere((attr) => attr.name == name, orElse: () => null);
@@ -107,16 +168,12 @@ class Fly {
     return null;
   }
 
-  String getMaterial(
-      int materialIndex, int propertyIndex, String propertyName) {
-    if ((materialIndex == null ||
-            propertyIndex == null ||
-            propertyName == null) ||
-        propertyIndex >= materials[materialIndex].flyMaterials.length) {
-      return null;
-    }
-    return materials[materialIndex]
-        .flyMaterials[propertyIndex]
-        .properties[propertyName];
+  static int _sortBySteps(a, b) {
+    if (a.step < b.step)
+      return -1;
+    else if (a.step == b.step)
+      return 0;
+    else
+      return 1;
   }
 }

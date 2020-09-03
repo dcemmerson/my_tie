@@ -12,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:my_tie/pages/base/page_base_stateless/subpage_base.dart';
 import 'package:my_tie/pages/bottom_navigation_based_pages/new_fly_start_page.dart';
 import 'package:my_tie/pages/route_based_pages/new_fly_pages/add_new_attribute_page.dart';
+import 'package:my_tie/pages/route_based_pages/new_fly_pages/new_fly_instruction_page.dart';
 import 'package:my_tie/pages/route_based_pages/new_fly_pages/add_new_property_page.dart';
 
 import 'package:my_tie/pages/route_based_pages/new_fly_pages/new_fly_attributes_page.dart';
@@ -41,12 +42,17 @@ class SubPageContainer extends SubPageBase {
       case SubPageType.NewFlyPublishPage:
         page = NewFlyPublishPage();
         break;
+      case SubPageType.NewFlyInstructionPage:
+        page = NewFlyInstructionPage();
+        break;
+      // DB new fly form template editing routes:
       case SubPageType.AddNewAttributePage:
         page = AddNewAttributePage();
         break;
       case SubPageType.AddNewPropertyPage:
         page = AddNewPropertyPage();
         break;
+
       default:
         page = NewFlyStartPage();
     }
@@ -71,6 +77,9 @@ class SubPageContainer extends SubPageBase {
         return AddNewAttributePage.title;
       case SubPageType.AddNewPropertyPage:
         return AddNewPropertyPage.title;
+      case SubPageType.NewFlyInstructionPage:
+        return NewFlyInstructionPage.title;
+
       default:
         return NewFlyMaterialsPage.title;
     }
