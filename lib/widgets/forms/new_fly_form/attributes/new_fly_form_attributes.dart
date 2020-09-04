@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:my_tie/bloc/state/fly_form_state.dart';
 import 'package:my_tie/bloc/state/my_tie_state.dart';
 import 'package:my_tie/bloc/new_fly_bloc.dart';
 import 'package:my_tie/models/db_names.dart';
 import 'package:my_tie/models/fly.dart';
-import 'package:my_tie/models/fly_attribute.dart';
 import 'package:my_tie/models/fly_form_attribute.dart';
 import 'package:my_tie/models/form_page_number.dart';
 import 'package:my_tie/models/new_fly_form_transfer.dart';
 import 'package:my_tie/styles/styles.dart';
 import 'package:my_tie/widgets/forms/new_fly_form/attributes/fly_attribute_dropdown.dart';
 import 'package:my_tie/widgets/forms/new_fly_form/attributes/fly_name_text_input.dart';
+
+import '../fly_in_progress_form_stream_builder.dart';
 
 class NewFlyFormAttributes extends StatefulWidget {
   final _spaceBetweenDropdowns = AppPadding.p6;
@@ -23,7 +23,6 @@ class _NewFlyFormAttributesState extends State<NewFlyFormAttributes>
     with AutomaticKeepAliveClientMixin {
   final _formKey = new GlobalKey<FormBuilderState>();
   NewFlyBloc _newFlyBloc;
-  bool _showSkipToEnd;
 
   FormPageNumber _formPageNumber;
   bool _formChanged = false;
@@ -35,7 +34,6 @@ class _NewFlyFormAttributesState extends State<NewFlyFormAttributes>
   void didChangeDependencies() {
     super.didChangeDependencies();
     _newFlyBloc = MyTieStateContainer.of(context).blocProvider.newFlyBloc;
-    _showSkipToEnd = FlyFormStateContainer.of(context).isSkippableToEnd;
 
     _formPageNumber =
         ModalRoute.of(context).settings.arguments ?? FormPageNumber();
@@ -140,26 +138,8 @@ class _NewFlyFormAttributesState extends State<NewFlyFormAttributes>
         onChanged: _onFormChanged,
         onWillPop: _onWillPop,
         child: Padding(
-          padding: EdgeInsets.all(AppPadding.p2),
-          child: StreamBuilder(
-              stream: _newFlyBloc.newFlyForm,
-              builder: (context, AsyncSnapshot<NewFlyFormTransfer> snapshot) {
-                print(snapshot.connectionState);
-                if (snapshot.hasError) {
-                  print(snapshot.error);
-                  return Text('error occurred');
-                }
-                switch (snapshot.connectionState) {
-                  case (ConnectionState.done):
-                  case (ConnectionState.active):
-                    return _buildForm(snapshot.data);
-                  case (ConnectionState.none):
-                  case (ConnectionState.waiting):
-                  default:
-                    return _buildLoading();
-                }
-              }),
-        ),
+            padding: EdgeInsets.all(AppPadding.p2),
+            child: FlyInProgressFormStreamBuilder(child: _buildForm)),
       ),
     );
   }

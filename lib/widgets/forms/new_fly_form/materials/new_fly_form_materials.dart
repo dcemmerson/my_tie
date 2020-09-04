@@ -16,6 +16,7 @@ import 'package:my_tie/models/new_fly_form_template.dart';
 import 'package:my_tie/models/new_fly_form_transfer.dart';
 import 'package:my_tie/models/form_page_number.dart';
 import 'package:my_tie/styles/styles.dart';
+import 'package:my_tie/widgets/forms/new_fly_form/fly_in_progress_form_stream_builder.dart';
 
 import 'fly_material_dropdown.dart';
 
@@ -160,22 +161,8 @@ class _NewFlyFormMaterialsState extends State<NewFlyFormMaterials>
         onChanged: _onFormChanged,
         onWillPop: _onWillPop,
         child: Padding(
-          padding: EdgeInsets.all(AppPadding.p2),
-          child: StreamBuilder(
-              stream: _newFlyBloc.newFlyForm,
-              builder: (context, AsyncSnapshot<NewFlyFormTransfer> snapshot) {
-                if (snapshot.hasError) return Text('error occurred');
-                switch (snapshot.connectionState) {
-                  case (ConnectionState.done):
-                  case (ConnectionState.active):
-                    return _buildForm(snapshot.data);
-                  case (ConnectionState.none):
-                  case (ConnectionState.waiting):
-                  default:
-                    return _buildLoading();
-                }
-              }),
-        ),
+            padding: EdgeInsets.all(AppPadding.p2),
+            child: FlyInProgressFormStreamBuilder(child: _buildForm)),
       ),
     );
   }

@@ -8,6 +8,7 @@
 import 'package:flutter/material.dart';
 import 'package:my_tie/models/arguments/add_attribute_argument.dart';
 import 'package:my_tie/models/arguments/add_property_argument.dart';
+import 'package:my_tie/models/arguments/instruction_page_attribute.dart';
 import 'package:my_tie/models/form_page_number.dart';
 
 import 'package:my_tie/pages/base/page_base_stateless/subpage_base.dart';
@@ -61,6 +62,8 @@ class FlyFormRoutes {
   static Future newFlyPublishPage(BuildContext context) =>
       Navigator.pushNamed(context, NewFlyPublishPage.route);
 
-  static Future newFlyInstructionPage(BuildContext context) =>
-      Navigator.pushNamed(context, NewFlyInstructionPage.route);
+  static Future newFlyInstructionPage(BuildContext context,
+          InstructionPageAttribute instructionPageAttribute) =>
+      Navigator.pushNamed(context, NewFlyInstructionPage.route,
+          arguments: instructionPageAttribute);
 }

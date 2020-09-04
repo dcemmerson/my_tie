@@ -39,6 +39,7 @@ dependencies:
   location: ^3.0.0
   shared_preferences: ^0.5.8
   rxdart: 0.20.0
+  uuid: 2.2.2
 
 dev_dependencies:
   flutter_test:

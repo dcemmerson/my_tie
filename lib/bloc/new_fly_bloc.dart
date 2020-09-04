@@ -1,5 +1,5 @@
 /// filename: new_fly_bloc.dart
-/// last modified: 08/30/2020
+/// last modified: 09/03/2020
 /// description: New fly BLoC class. Business logic class for user adding a new
 ///   fly to database. This class stands between the = app (the actual new fly
 ///   forms, and service to firestore, in new_fly_serverice.dart). This class
@@ -8,8 +8,10 @@
 
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:my_tie/models/arguments/instruction_page_attribute.dart';
 import 'package:my_tie/models/db_names.dart';
 import 'package:my_tie/models/fly.dart';
+import 'package:my_tie/models/fly_instruction.dart';
 import 'package:my_tie/models/fly_materials.dart';
 import 'package:my_tie/models/new_fly_form_transfer.dart';
 import 'package:my_tie/models/new_fly_form_template.dart';
@@ -18,6 +20,8 @@ import 'package:my_tie/services/network/fly_form_template_service.dart';
 
 import 'package:my_tie/services/network/new_fly_service.dart';
 import 'package:rxdart/rxdart.dart';
+
+import 'stream_transformers/document_to_fly_instruction.dart';
 
 class NewFlyBloc {
   final NewFlyService newFlyService;
@@ -28,14 +32,16 @@ class NewFlyBloc {
   StreamController<Fly> newFlyAttributesSink = StreamController<Fly>();
   StreamController<FlyMaterialAddOrUpdate> newFlyMaterialSink =
       StreamController<FlyMaterialAddOrUpdate>();
+  StreamController<FlyInstruction> newFlyInstructionSink =
+      StreamController<FlyInstruction>();
   StreamController<FlyMaterial> deleteFlyMaterialSink =
       StreamController<FlyMaterial>();
 
-  // Going to app.
   NewFlyBloc(
       {this.newFlyService, this.authService, this.flyFormTemplateService}) {
     newFlyAttributesSink.stream.listen(_handleAddNewFlyAttributes);
     newFlyMaterialSink.stream.listen(_handleAddNewFlyMaterial);
+    newFlyInstructionSink.stream.listen(_handleAddNewFlyInstruction);
     deleteFlyMaterialSink.stream.listen(_handleDeleteFlyMaterial);
   }
 
@@ -97,6 +103,14 @@ class NewFlyBloc {
     );
   }
 
+  Stream<FlyInstruction> getFlyInProgressInstructionStep(
+      InstructionPageAttribute ipa) {
+    return newFlyService
+        .getFlyInProgressInstructionStep(
+            authService.currentUser.uid, ipa.stepNumber)
+        .transform(DocumentToFlyInstruction());
+  }
+
   Future _handleDeleteFlyMaterial(FlyMaterial flyMaterial) async {
     if (flyMaterial != null) {
       return newFlyService.deleteFlyInProgressMaterial(
@@ -130,9 +144,21 @@ class NewFlyBloc {
     );
   }
 
+  Future _handleAddNewFlyInstruction(FlyInstruction instruction) {
+    return newFlyService.addNewFlyInstruction(
+      uid: authService.currentUser.uid,
+      title: instruction.title,
+      description: instruction.description,
+      stepNumber: instruction.step,
+      images: instruction.images,
+    );
+  }
+
   void close() {
     newFlyAttributesSink.close();
     newFlyMaterialSink.close();
+    deleteFlyMaterialSink.close();
+    newFlyInstructionSink.close();
   }
 }
 

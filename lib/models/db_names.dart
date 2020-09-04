@@ -57,4 +57,10 @@ class DbNames {
 
   static const yarn = 'yarn';
   static const yarns = 'yarns';
+
+  static const instructionTitle = 'instruction_title';
+  static const instructionStep = 'step_number';
+  static const instructionDescription = 'instruction_description';
+  static const instructionImageUris = 'instruction_image_uris';
+  static const instructionImages = 'instruction_images';
 }

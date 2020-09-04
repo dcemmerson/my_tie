@@ -54,7 +54,10 @@ class ThemeManager {
     // appBarTheme: AppBarTheme(iconTheme: IconThemeData(size: AppFonts.h6)),
     // Define the default font family.
     fontFamily: 'Ubuntu',
-
+    iconTheme: IconThemeData(
+      color: Colors.grey[400],
+      size: 24.0,
+    ),
     // Define the default TextTheme. Use this to specify the default
     // text styling for headlines, titles, bodies of text, and more.
     textTheme: TextTheme(
