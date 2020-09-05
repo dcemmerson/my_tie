@@ -10,6 +10,7 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:my_tie/bloc/new_fly_bloc.dart';
 import 'package:my_tie/bloc/state/my_tie_state.dart';
 import 'package:my_tie/models/arguments/instruction_page_attribute.dart';
+import 'package:my_tie/models/bloc_related/fly_instruction_change.dart';
 import 'package:my_tie/models/db_names.dart';
 import 'package:my_tie/models/fly_instruction.dart';
 import 'package:my_tie/styles/styles.dart';
@@ -65,18 +66,22 @@ class _NewFlyFormInstructionState extends State<NewFlyFormInstruction> {
     );
   }
 
-  bool _saveAndValidate() {
+  bool _saveAndValidate(FlyInstruction prevInstruction) {
     if (_formKey.currentState.saveAndValidate()) {
-      final inputs = _formKey.currentState.value;
+      final inputs = {
+        ..._formKey.currentState.value,
+        DbNames.instructionStep: _instructionPageAttribute.stepNumber
+      };
 
-      final updatedInstructions = FlyInstruction(
-        step: _instructionPageAttribute.stepNumber,
-        title: inputs[DbNames.instructionTitle],
-        description: inputs[DbNames.instructionDescription],
-        images: inputs[DbNames.instructionImages],
-      );
+      // final updatedInstructions = FlyInstruction(
+      //   step: _instructionPageAttribute.stepNumber,
+      //   title: inputs[DbNames.instructionTitle],
+      //   description: inputs[DbNames.instructionDescription],
+      //   images: inputs[DbNames.instructionImages],
+      // );
 
-      _newFlyBloc.newFlyInstructionSink.add(updatedInstructions);
+      _newFlyBloc.newFlyInstructionSink.add(FlyInstructionChange(
+          prevInstruction: prevInstruction, updatedInstruction: inputs));
       return true;
     }
     return false;
@@ -87,29 +92,29 @@ class _NewFlyFormInstructionState extends State<NewFlyFormInstruction> {
       child: Text('Step ${_instructionPageAttribute.stepNumber}',
           style: AppTextStyles.header));
 
-  Widget _buildForm(FlyInstruction flyInstruction) {
+  Widget _buildForm(FlyInstruction prevInstruction) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         _buildTitle(),
         InstructionNameTextInput(
           attribute: DbNames.instructionTitle,
-          initialValue: flyInstruction.title,
+          initialValue: prevInstruction.title,
           label: 'Enter Title',
         ),
         InstructionDescriptionTextInput(
             attribute: DbNames.instructionDescription,
-            initialValue: flyInstruction.description,
+            initialValue: prevInstruction.description,
             label: 'Enter Description'),
         SizedBox(height: AppPadding.p5),
         InstructionPhotoInput(
           attribute: DbNames.instructionImages,
-          imageUris: flyInstruction.imageUris,
+          imageUris: prevInstruction.imageUris,
           label: 'Choose photos',
         ),
         RaisedButton(
           onPressed: () {
-            if (_saveAndValidate()) {
+            if (_saveAndValidate(prevInstruction)) {
               Navigator.of(context).pop();
             }
           },

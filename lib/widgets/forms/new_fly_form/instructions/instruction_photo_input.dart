@@ -18,6 +18,15 @@ class InstructionPhotoInput extends StatelessWidget {
           ?.map((uri) => Image.network(
                 uri,
                 fit: BoxFit.fill,
+                loadingBuilder: (context, child, loadingProgress) {
+                  if (loadingProgress != null) {
+                    return LinearProgressIndicator(
+                      value: loadingProgress.cumulativeBytesLoaded /
+                          loadingProgress.expectedTotalBytes,
+                    );
+                  }
+                  return child;
+                },
               ))
           ?.toList(),
       decoration: InputDecoration(labelText: label),

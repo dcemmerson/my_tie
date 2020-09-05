@@ -5,8 +5,11 @@
 ///   names in app code.
 
 class DbNames {
+  static const lastModified = 'last_modified';
+
   static const attributes = 'attributes';
   static const materials = 'materials';
+  static const instructions = 'instructions';
 
   static const flyName = 'fly_name';
 

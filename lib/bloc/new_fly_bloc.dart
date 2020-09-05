@@ -9,6 +9,7 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:my_tie/models/arguments/instruction_page_attribute.dart';
+import 'package:my_tie/models/bloc_related/fly_instruction_change.dart';
 import 'package:my_tie/models/db_names.dart';
 import 'package:my_tie/models/fly.dart';
 import 'package:my_tie/models/fly_instruction.dart';
@@ -32,8 +33,8 @@ class NewFlyBloc {
   StreamController<Fly> newFlyAttributesSink = StreamController<Fly>();
   StreamController<FlyMaterialAddOrUpdate> newFlyMaterialSink =
       StreamController<FlyMaterialAddOrUpdate>();
-  StreamController<FlyInstruction> newFlyInstructionSink =
-      StreamController<FlyInstruction>();
+  StreamController<FlyInstructionChange> newFlyInstructionSink =
+      StreamController<FlyInstructionChange>();
   StreamController<FlyMaterial> deleteFlyMaterialSink =
       StreamController<FlyMaterial>();
 
@@ -106,9 +107,8 @@ class NewFlyBloc {
   Stream<FlyInstruction> getFlyInProgressInstructionStep(
       InstructionPageAttribute ipa) {
     return newFlyService
-        .getFlyInProgressInstructionStep(
-            authService.currentUser.uid, ipa.stepNumber)
-        .transform(DocumentToFlyInstruction());
+        .getFlyInProgressDocStream(authService.currentUser.uid)
+        .transform(DocumentToFlyInstruction(ipa.stepNumber));
   }
 
   Future _handleDeleteFlyMaterial(FlyMaterial flyMaterial) async {
@@ -144,14 +144,35 @@ class NewFlyBloc {
     );
   }
 
-  Future _handleAddNewFlyInstruction(FlyInstruction instruction) {
+  Future _handleAddNewFlyInstruction(
+      FlyInstructionChange instructionChange) async {
+    // Add new files that user took with camera (or selected on device) to
+    //  Firebase storage.
+    List<String> addedUris = await newFlyService.addFilesToStorage(
+      uid: authService.currentUser.uid,
+      images: instructionChange.imagesToAdd,
+    );
+
+    //  Now update the actual fly instructions doc
     return newFlyService.addNewFlyInstruction(
       uid: authService.currentUser.uid,
-      title: instruction.title,
-      description: instruction.description,
-      stepNumber: instruction.step,
-      images: instruction.images,
+      title: instructionChange.title,
+      description: instructionChange.description,
+      stepNumber: instructionChange.step,
+      imageUris: [...addedUris, ...instructionChange.imageUrisToKeep],
     );
+    //  We do not burden the client with correctly merging the old instruction
+    //  step with the new instruction step. Instead, we have a cloud funciton
+    //  performing this task for us.
+
+    //  Finally delete any previous images user may have uploaded for this step
+    //  but is no longer using for this instruction step.
+    // Future deleteUnusedImages = newFlyService.deleteFilesInStorage(
+    //     uid: authService.currentUser.uid,
+    //     imageUris: instructionChange.imageUrisToDelete);
+
+    // return Future.wait([updateInstructions, deleteUnusedImages])
+    //     .catchError((err) => print(err));
   }
 
   void close() {

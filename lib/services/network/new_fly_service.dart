@@ -83,15 +83,10 @@ class NewFlyService {
         .snapshots();
   }
 
-  Future addNewFlyInstruction({
-    String uid,
-    String title,
-    String description,
-    int stepNumber,
-    List<File> images,
-  }) async {
-    var uuid = Uuid();
-    final StorageReference ref = FirebaseStorage().ref();
+  Future<List<String>> addFilesToStorage(
+      {String uid, List<File> images}) async {
+    final uuid = Uuid();
+    final StorageReference ref = FirebaseStorage().ref().child(uid);
 
     // Generate random identifiers for each file, get references to these in
     //  storage, then put corresponding file at that reference.
@@ -104,29 +99,58 @@ class NewFlyService {
     }).toList();
 
     // Wait until all files have been uploaded.
-    await Future.wait(
-        uploadTasks.map((uploadTask) => uploadTask.task.onComplete).toList());
+    await Future.wait(uploadTasks
+            .map((uploadTask) => uploadTask.task.onComplete)
+            .toList())
+        .catchError((err) => print(err));
 
-    // Now obtain the uri associated with each file we just put in storage.
-    final List<String> uris = await Future.wait(uploadTasks
-        .map((uploadTask) =>
-            (uploadTask.ref.getDownloadURL().then((dyn) => dyn.toString())))
-        .toList());
+    // Now return the future that will resolve to a list of the uri strings.
+    return Future.wait(uploadTasks
+            .map((uploadTask) =>
+                (uploadTask.ref.getDownloadURL().then((dyn) => dyn.toString())))
+            .toList())
+        .catchError((err) => print(err));
+  }
 
+  // Future deleteFilesInStorage({String uid, List<String> imageUris}) {
+  //   final StorageReference ref = FirebaseStorage().ref().child(uid);
+
+  //   final List<Future> deleteTasks = imageUris.map((imageUri) {
+  //     StorageReference indRef = ref.child(imageUri);
+  //     return indRef.delete();
+  //   }).toList();
+
+  //   return Future.wait(deleteTasks).catchError((err) => print(err));
+  // }
+
+  Future addNewFlyInstruction({
+    String uid,
+    String title,
+    String description,
+    int stepNumber,
+    List<String> imageUris,
+  }) {
     // Now update fly in progress doc in firestore.
-    FirebaseFirestore.instance
+    return FirebaseFirestore.instance
         .collection(_flyInProgress)
+        // .doc(uid)
+        // .collection('instructions')
+//        .where(DbNames.instructionStep, isEqualTo: stepNumber)
         .doc(uid)
-        .collection('instructions')
-        .add({
-      DbNames.instructionStep: stepNumber,
-      DbNames.instructionTitle: title,
-      DbNames.instructionDescription: description,
-      DbNames.instructionImageUris: uris,
-    });
-
-    // List<String> uris = uploadTasks.map((task) => task)
-    // return FirebaseFirestore.instance.collection(_flyInProgress).doc(uid);
+        .set(
+      {
+        DbNames.instructions: {
+          stepNumber.toString(): {
+            DbNames.instructionStep: stepNumber,
+            DbNames.instructionTitle: title,
+            DbNames.instructionDescription: description,
+            DbNames.instructionImageUris: imageUris,
+            DbNames.lastModified: DateTime.now(),
+          }
+        }
+      },
+      SetOptions(merge: true),
+    );
   }
 }
 
