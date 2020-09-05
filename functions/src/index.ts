@@ -5,6 +5,10 @@ import { DocumentSnapshot } from 'firebase-functions/lib/providers/firestore';
 admin.initializeApp();
 const db = admin.firestore();
 
+const STORAGE_BASE_PATH = 'https://firebasestorage.googleapis.com/v0/b/';
+const BUCKET_URL = 'mytie-3b8a3.appspot.com';
+const IMAGE_BASE_PATH = STORAGE_BASE_PATH + BUCKET_URL + '/o/';
+
 /// name: addToNewFlyFormTemplate
 /// description: Cloud function used to add an attribute or material property
 ///   to the currently existing newFlyFormTemplate doc.
@@ -65,49 +69,40 @@ exports.addToNewFlyFormTemplate = functions.firestore.document('/new_fly_form_in
   });
 
 exports.addToNewFlyInstruction = functions.firestore.document('/fly_in_progress/{docId}'/*/instructions/instructionDocId'*/)
-  .onWrite((change, context) => {
-    console.log('auth = ');
-    
-    console.log(context.auth);
-    const imageUrisToDelete: Array<String> = extractImageUrlsToDelete(change.after, change.before);
-    const storage = admin.storage().bucket('gs://mytie-3b8a3.appshot.com');
+  .onWrite(async (change, context) => {
 
+    const imageUrisToDelete: Array<string> = extractImageUrlsToDelete(change.after, change.before);
+    const storage = admin.storage().bucket(`gs://${BUCKET_URL}`);
 
-    console.log('uris to delete = ');
-    console.log(imageUrisToDelete);
-    imageUrisToDelete.forEach((uri: String) => console.log(uri));
+    const deletions = imageUrisToDelete.map(async (uri: string) => {
+      const file = storage.file(extractImagePathFromUrl(uri));
+      return file.delete();
+    });
 
-    imageUrisToDelete.forEach((uri: String) => storage.delete(uri));
-
+    await Promise.all(deletions);
   });
 
+function extractImagePathFromUrl(url: string) {
+  const removedUrl = url.replace(IMAGE_BASE_PATH, '');
+  const withSlash = removedUrl.replace('%2F', '/');
+  const filePath = withSlash.substring(0, withSlash.lastIndexOf('?'));
 
-function extractImageUrlsToDelete(newDoc: DocumentSnapshot, prevDoc: DocumentSnapshot): Array<String> {
-  console.log('inside extractimageurls');
+  return filePath;
+
+}
+
+function extractImageUrlsToDelete(newDoc: DocumentSnapshot, prevDoc: DocumentSnapshot): Array<string> {
   let urisToRemove: Array<string> = [];
   if (prevDoc.data() && newDoc.data()) {
     // Iterate through all the instruction steps in prevDoc and check if newDoc contains each
     //  image uri in each instruction step. Add each uri not in newDoc instruction steps to
     //  urisToRemove.
-    // console.log('prevdoc.data().instructions');
-    // console.log(prevDoc.data());
-    console.log('instructions');
-    console.log(prevDoc.data()?.instructions);
+
     const prevInstructions = prevDoc.data()?.instructions;
     for (const step in prevInstructions) {
-      // console.log('*** step = ')
-      // console.log(step);
-      // console.log('*** prevInstructions[step] = ');
 
-      // console.log(prevInstructions[step]);
-      // console.log('*** prevInstructions[step].instruction_image_uris = ');
-
-      // console.log(prevInstructions[step].instruction_image_uris);
-      const uris : Array<string> = prevInstructions[step].instruction_image_uris.filter((prevDocUri: string) => 
-      !newDoc.data()?.instructions[step].instruction_image_uris.includes(prevDocUri));
-      
-      console.log('***** to remove');
-      console.log(uris);
+      const uris: Array<string> = prevInstructions[step].instruction_image_uris.filter((prevDocUri: string) =>
+        !newDoc.data()?.instructions[step].instruction_image_uris.includes(prevDocUri));
 
       urisToRemove = [...urisToRemove, ...uris];
     }
