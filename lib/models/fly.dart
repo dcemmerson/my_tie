@@ -20,7 +20,7 @@ class Fly {
   final List<FlyMaterials> materials;
   final List<FlyInstruction> instructions;
 
-  Fly({this.flyName, Map attrs, Map mats, List instr})
+  Fly({this.flyName, Map attrs, Map mats, Map instr})
       : this.attributes = _toAttributeList(attrs),
         this.materials = _toMaterialsList(mats),
         this.instructions = _toInstructionsList(instr);
@@ -28,13 +28,13 @@ class Fly {
   /// To format for review, we need to pass in the NewFlyFormTemplate from db,
   ///   which we will then use as a guide to ensure we either set attributes/
   ///   materials values to the value passed in, or Fly.nullReplacement.
-  Fly.formattedForReview(
-      {String flyName,
-      Map attrs,
-      Map mats,
-      NewFlyFormTemplate flyFormTemplate,
-      List instr})
-      : this.flyName =
+  Fly.formattedForReview({
+    String flyName,
+    Map attrs,
+    Map mats,
+    NewFlyFormTemplate flyFormTemplate,
+    Map instr,
+  })  : this.flyName =
             flyName ?? 'No name', // Must set flyName here rather than
         //  default arg (because if value doesnt exist in firebase, flyName will
         //  be explicitly set to null, even if we provide default arg)
@@ -48,7 +48,7 @@ class Fly {
       Map attrs,
       Map mats,
       NewFlyFormTemplate flyFormTemplate,
-      List instr})
+      Map instr})
       : this.attributes =
             _toAttributeListForEditing(attrs ?? {}, flyFormTemplate),
         this.materials = _toMaterialListForEditing(mats ?? {}, flyFormTemplate),
@@ -111,17 +111,11 @@ class Fly {
     return flyMaterials;
   }
 
-  static List<FlyInstruction> _toInstructionsListForReview(List instructions) {
+  static List<FlyInstruction> _toInstructionsListForReview(Map instructions) {
     List<FlyInstruction> flyInstructions = [];
     instructions?.forEach(
-      (instr) => flyInstructions.add(
-        FlyInstruction(
-          title: instr.title != null ? instr.title.toString() : nullReplacement,
-          description: instr.description != null
-              ? instr.description.toString()
-              : nullReplacement,
-          step: int.parse(instr.step),
-        ),
+      (k, instr) => flyInstructions.add(
+        FlyInstruction.formattedForReview(instr),
       ),
     );
     flyInstructions.sort(_sortBySteps);
@@ -143,15 +137,15 @@ class Fly {
     return flyMaterials;
   }
 
-  static List<FlyInstruction> _toInstructionsList(List instructions) {
+  static List<FlyInstruction> _toInstructionsList(Map instructions) {
     List<FlyInstruction> flyInstructions = [];
     instructions?.forEach(
-      (instr) => flyInstructions.add(
-        FlyInstruction(
-          title: instr.title.toString(),
-          description: instr.description.toString(),
-          step: int.parse(instr.step),
-        ),
+      (k, instr) => flyInstructions.add(
+        FlyInstruction.fromDoc(instr
+            // title: instr.title.toString(),
+            // description: instr.description.toString(),
+            // step: int.parse(instr.step),
+            ),
       ),
     );
     flyInstructions.sort(_sortBySteps);

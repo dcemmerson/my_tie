@@ -91,10 +91,12 @@ class NewFlyBloc {
             NewFlyFormTemplate.fromDoc(nfftDocs?.docs[0]?.data());
 
         Fly flyInProgress = Fly.formattedForReview(
-            flyName: flyInProgressDoc?.data()[DbNames.flyName],
-            attrs: flyInProgressDoc?.data()[DbNames.attributes],
-            mats: flyInProgressDoc?.data()[DbNames.materials],
-            flyFormTemplate: newFlyFormTemplate);
+          flyName: flyInProgressDoc?.data()[DbNames.flyName],
+          attrs: flyInProgressDoc?.data()[DbNames.attributes],
+          mats: flyInProgressDoc?.data()[DbNames.materials],
+          instr: flyInProgressDoc?.data()[DbNames.instructions],
+          flyFormTemplate: newFlyFormTemplate,
+        );
 
         return NewFlyFormTransfer(
           flyInProgress: flyInProgress,

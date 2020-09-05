@@ -15,6 +15,7 @@ import 'package:my_tie/models/new_fly_form_transfer.dart';
 import 'package:my_tie/routes/fly_form_routes.dart';
 import 'package:my_tie/styles/string_format.dart';
 import 'package:my_tie/styles/styles.dart';
+import 'package:my_tie/widgets/forms/new_fly_form/review/review_edit_button.dart';
 
 class MaterialReview extends StatefulWidget {
   final _iconButtonPadding = 8.0;
@@ -97,19 +98,11 @@ class _MaterialReviewState extends State<MaterialReview>
               (propertyIndex + 1).toString(),
           style: TextStyle(fontSize: AppFonts.h5, fontWeight: FontWeight.w600),
         ),
-        IconButton(
-          onPressed: () => FlyFormRoutes.newFlyMaterialsPage(context,
+        ReviewEditButton(
+          onPressedCallback: () => FlyFormRoutes.newFlyMaterialsPage(context,
               pageNumber: FormPageNumber(
                   pageNumber: materialIndex, propertyIndex: propertyIndex)),
-          iconSize: AppFonts.h5,
-          padding: EdgeInsets.fromLTRB(AppPadding.p2, 0, AppPadding.p2, 0),
-          constraints:
-              BoxConstraints(maxHeight: AppFonts.h4, maxWidth: AppFonts.h4),
-          // alignment: Alignment.top,
-          icon: Icon(
-            Icons.edit,
-            semanticLabel: widget._semanticLabel,
-          ),
+          semanticLabel: widget._semanticLabel,
         ),
       ]),
     );

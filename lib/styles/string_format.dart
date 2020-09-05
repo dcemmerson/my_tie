@@ -1,3 +1,6 @@
+import 'package:my_tie/utils/miscellaneous_constants.dart';
+import 'package:my_tie/utils/range.dart';
+
 /// filename: format.dart
 /// description: Class with all static methods used for formatting strings
 ///   when displaying on screen. For example, make a string singular, make a
@@ -25,10 +28,13 @@ extension StringExtension on String {
     RegExp regExp = RegExp(
         r'[A-Z]{2,}(?=[A-Z][a-z]+[0-9]*|\b)|[A-Z]?[a-z]+[0-9]*|[A-Z]|[0-9]+');
 
-    var a = regExp.allMatches(this);
-
     return replaceAllMapped(regExp, (match) {
       return '${this[match.start].toUpperCase()}${this.substring(match.start + 1, match.end)}';
     });
+  }
+
+  String toPreview() {
+    return this.substring(
+        0, Range.minInt(this.length, MiscellaneousConstants.maxPreviewLength));
   }
 }

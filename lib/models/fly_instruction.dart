@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'db_names.dart';
+import 'package:my_tie/styles/string_format.dart';
 
 class FlyInstruction {
   final String title;
@@ -13,6 +14,14 @@ class FlyInstruction {
   FlyInstruction(
       {this.title, this.description, this.step, this.imageUris, List images})
       : this.images = _toListOfFile(images);
+
+  FlyInstruction.formattedForReview(Map doc)
+      : step = doc[DbNames.instructionStep],
+        description =
+            doc[DbNames.instructionDescription].toString().toPreview(),
+        title = doc[DbNames.instructionTitle].toString().toPreview(),
+        imageUris = _toListOfString(doc[DbNames.instructionImageUris]),
+        images = _toListOfFile(doc[DbNames.instructionImages]);
 
   FlyInstruction.fromDoc(Map doc)
       : step = doc[DbNames.instructionStep],
