@@ -1,3 +1,3 @@
 class MiscellaneousConstants {
-  static const maxPreviewLength = 100;
+  static const maxPreviewLength = 50;
 }

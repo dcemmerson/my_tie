@@ -7,6 +7,8 @@ import 'package:my_tie/utils/range.dart';
 ///   string in sentence case, etc.
 
 extension StringExtension on String {
+  static const ellipsis = '...';
+
   String toSingular() {
     RegExp regEx = RegExp('s\$');
     if (regEx.hasMatch(this)) {
@@ -34,7 +36,12 @@ extension StringExtension on String {
   }
 
   String toPreview() {
-    return this.substring(
-        0, Range.minInt(this.length, MiscellaneousConstants.maxPreviewLength));
+    if (this.length <
+        MiscellaneousConstants.maxPreviewLength + ellipsis.length) {
+      return this;
+    } else {
+      return this.substring(0, MiscellaneousConstants.maxPreviewLength) +
+          ellipsis;
+    }
   }
 }

@@ -13,12 +13,15 @@ import 'package:my_tie/styles/styles.dart';
 import 'package:my_tie/widgets/forms/new_fly_form/review/review_edit_button.dart';
 
 class InstructionReview extends StatelessWidget {
+  static const _addFirstStep = 'Add the first step!';
+  static const _addNextStep = 'Add next step!';
+
   final NewFlyFormTransfer nfft;
 
   InstructionReview({@required NewFlyFormTransfer newFlyFormTransfer})
       : nfft = newFlyFormTransfer;
 
-  Widget _buildAddFirstStep(BuildContext context) {
+  Widget _buildNextStep(BuildContext context, {int nextStepNumber: 1}) {
     return Card(
       color: Theme.of(context).colorScheme.surface,
       margin: EdgeInsets.fromLTRB(0, AppPadding.p2, 0, AppPadding.p4),
@@ -29,12 +32,12 @@ class InstructionReview extends StatelessWidget {
             Container(
               padding: EdgeInsets.all(AppPadding.p4),
               child: GestureDetector(
-                onTap: () => FlyFormRoutes.newFlyInstructionPage(
-                    context, InstructionPageAttribute(stepNumber: 1)),
+                onTap: () => FlyFormRoutes.newFlyInstructionPage(context,
+                    InstructionPageAttribute(stepNumber: nextStepNumber)),
                 child: Row(
                   children: [
                     Icon(Icons.add),
-                    Text('Add the first step!',
+                    Text(nextStepNumber == 1 ? _addFirstStep : _addNextStep,
                         style: TextStyle(fontSize: AppFonts.h6))
                   ],
                 ),
@@ -60,7 +63,9 @@ class InstructionReview extends StatelessWidget {
                 Text('Step ${instruction.step}', style: AppTextStyles.header),
                 ReviewEditButton(
                   semanticLabel: 'Edit instruction step',
-                  onPressedCallback: () => print('unimplemented'),
+                  onPressedCallback: () => FlyFormRoutes.newFlyInstructionPage(
+                      context,
+                      InstructionPageAttribute(stepNumber: instruction.step)),
                 ),
               ],
             ),
@@ -82,9 +87,11 @@ class InstructionReview extends StatelessWidget {
               alignment: Alignment.bottomLeft,
               child: Row(
                 children: [
-                  Text(
-                    instruction.description,
-                    style: TextStyle(fontSize: AppFonts.h6),
+                  Flexible(
+                    child: Text(
+                      instruction.description,
+                      style: TextStyle(fontSize: AppFonts.h6),
+                    ),
                   ),
                 ],
               ),
@@ -104,10 +111,10 @@ class InstructionReview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: nfft.flyInProgress.instructions.length == 0
-          ? [_buildAddFirstStep(context)]
-          : _buildInstructionsPreview(context, nfft.flyInProgress.instructions),
-    );
+    return Column(children: [
+      ..._buildInstructionsPreview(context, nfft.flyInProgress.instructions),
+      _buildNextStep(context,
+          nextStepNumber: nfft.flyInProgress.instructions.length + 1)
+    ]);
   }
 }
