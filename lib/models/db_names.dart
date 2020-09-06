@@ -6,6 +6,8 @@
 
 class DbNames {
   static const lastModified = 'last_modified';
+  static const uploadedBy = 'uploaded_by';
+  static const created = 'created';
 
   static const attributes = 'attributes';
   static const materials = 'materials';

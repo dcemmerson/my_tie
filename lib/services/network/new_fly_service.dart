@@ -18,23 +18,29 @@ class NewFlyService {
   static const _flyInProgress = 'fly_in_progress';
   static const _instructions = 'instructions';
 
-  Stream<DocumentSnapshot> getFlyInProgressDocStream(String uid) {
+  Stream<QuerySnapshot> getFlyInProgressDocStream(String uid) {
     return FirebaseFirestore.instance
         .collection(_flyInProgress)
-        .doc(uid)
+        .where(DbNames.uploadedBy, isEqualTo: uid)
+        // OrderBy is not necessary beause a cloud function ensures one user
+        //  can only ever have one fly_in_progress doc at a time.
+//        .orderBy(DbNames.created, descending: true)
+//        .doc(uid)
         .snapshots();
   }
 
   Future addFlyInProgressMaterial({
+    String docId,
     String uid,
     String name,
     Map<String, String> properties,
   }) async {
-    return FirebaseFirestore.instance.collection(_flyInProgress).doc(uid).set(
+    return FirebaseFirestore.instance.collection(_flyInProgress).doc(docId).set(
       {
-        'materials': {
+        DbNames.materials: {
           name: FieldValue.arrayUnion([properties]),
-        }
+        },
+        DbNames.uploadedBy: uid,
       },
       SetOptions(merge: true),
     );
@@ -47,7 +53,7 @@ class NewFlyService {
   }) async {
     return FirebaseFirestore.instance.collection(_flyInProgress).doc(uid).set(
       {
-        'materials': {
+        DbNames.materials: {
           name: FieldValue.arrayRemove([properties]),
         }
       },
@@ -56,32 +62,33 @@ class NewFlyService {
   }
 
   Future addNewFlyAttributes({
+    String docId,
     String uid,
     Map<String, String> attributes,
     String flyName,
   }) {
     final Map<String, dynamic> flyInProgress = {
-      'attributes': attributes,
+      DbNames.uploadedBy: uid,
+      DbNames.attributes: attributes,
+      if (flyName != null) DbNames.flyName: flyName,
     };
-
-    if (flyName != null) flyInProgress[DbNames.flyName] = flyName;
 
     return FirebaseFirestore.instance
         .collection(_flyInProgress)
-        .doc(uid)
+        .doc(docId)
         .set(flyInProgress, SetOptions(merge: true));
   }
 
   // Fly in progress instruction related.
-  Stream<QuerySnapshot> getFlyInProgressInstructionStep(
-      String uid, int stepNumber) {
-    return FirebaseFirestore.instance
-        .collection(_flyInProgress)
-        .doc(uid)
-        .collection(_instructions)
-        .where(DbNames.instructionStep, isEqualTo: stepNumber)
-        .snapshots();
-  }
+  // Stream<QuerySnapshot> getFlyInProgressInstructionStep(
+  //     String uid, int stepNumber) {
+  //   return FirebaseFirestore.instance
+  //       .collection(_flyInProgress)
+  //       .doc(uid)
+  //       .collection(_instructions)
+  //       .where(DbNames.instructionStep, isEqualTo: stepNumber)
+  //       .snapshots();
+  // }
 
   Future<List<String>> addFilesToStorage(
       {String uid, List<File> images}) async {
@@ -112,18 +119,8 @@ class NewFlyService {
         .catchError((err) => print(err));
   }
 
-  // Future deleteFilesInStorage({String uid, List<String> imageUris}) {
-  //   final StorageReference ref = FirebaseStorage().ref().child(uid);
-
-  //   final List<Future> deleteTasks = imageUris.map((imageUri) {
-  //     StorageReference indRef = ref.child(imageUri);
-  //     return indRef.delete();
-  //   }).toList();
-
-  //   return Future.wait(deleteTasks).catchError((err) => print(err));
-  // }
-
   Future addNewFlyInstruction({
+    String docId,
     String uid,
     String title,
     String description,
@@ -136,7 +133,7 @@ class NewFlyService {
         // .doc(uid)
         // .collection('instructions')
 //        .where(DbNames.instructionStep, isEqualTo: stepNumber)
-        .doc(uid)
+        .doc(docId)
         .set(
       {
         DbNames.instructions: {
@@ -147,7 +144,8 @@ class NewFlyService {
             DbNames.instructionImageUris: imageUris,
             DbNames.lastModified: DateTime.now(),
           }
-        }
+        },
+        DbNames.uploadedBy: uid,
       },
       SetOptions(merge: true),
     );

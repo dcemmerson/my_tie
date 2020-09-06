@@ -35,6 +35,8 @@ class NewFlyBloc {
       StreamController<FlyMaterialAddOrUpdate>();
   StreamController<FlyInstructionChange> newFlyInstructionSink =
       StreamController<FlyInstructionChange>();
+  StreamController<FlyInstruction> deleteFlyInstructionSink =
+      StreamController<FlyInstruction>();
   StreamController<FlyMaterial> deleteFlyMaterialSink =
       StreamController<FlyMaterial>();
 
@@ -47,7 +49,7 @@ class NewFlyBloc {
   }
 
   Stream<NewFlyFormTransfer> get newFlyForm {
-    Stream<DocumentSnapshot> flyInProgressStream =
+    Stream<QuerySnapshot> flyInProgressStream =
         newFlyService.getFlyInProgressDocStream(authService.currentUser.uid);
     Stream<QuerySnapshot> flyTemplateDocStream =
         flyFormTemplateService.newFlyFormStream;
@@ -55,17 +57,18 @@ class NewFlyBloc {
     return CombineLatestStream.combine2(
       flyInProgressStream,
       flyTemplateDocStream,
-      (DocumentSnapshot flyInProgressDoc, QuerySnapshot nfftDocs) {
+      (QuerySnapshot flyInProgressDoc, QuerySnapshot nfftDocs) {
         NewFlyFormTemplate newFlyFormTemplate =
             NewFlyFormTemplate.fromDoc(nfftDocs?.docs[0]?.data());
 
         // flyInProgressDocs.docs could be empty here here, first time user
         //  click addNewFly button.
-        Fly flyInProgress = flyInProgressDoc?.data() != null
+        Fly flyInProgress = flyInProgressDoc?.docs[0]?.data() != null
             ? Fly.formattedForEditing(
-                flyName: flyInProgressDoc?.data()[DbNames.flyName],
-                attrs: flyInProgressDoc?.data()[DbNames.attributes],
-                mats: flyInProgressDoc?.data()[DbNames.materials],
+                docId: flyInProgressDoc?.docs[0].id,
+                flyName: flyInProgressDoc?.docs[0]?.data()[DbNames.flyName],
+                attrs: flyInProgressDoc?.docs[0]?.data()[DbNames.attributes],
+                mats: flyInProgressDoc?.docs[0]?.data()[DbNames.materials],
                 flyFormTemplate: newFlyFormTemplate)
             : Fly.formattedForEditing(flyFormTemplate: newFlyFormTemplate);
 
@@ -78,23 +81,25 @@ class NewFlyBloc {
   }
 
   Stream<NewFlyFormTransfer> get newFlyFormReview {
-    Stream<DocumentSnapshot> flyInProgressStream =
+    Stream<QuerySnapshot> flyInProgressStream =
         newFlyService.getFlyInProgressDocStream(authService.currentUser.uid);
+
     Stream<QuerySnapshot> flyTemplateDocStream =
         flyFormTemplateService.newFlyFormStream;
 
     return CombineLatestStream.combine2(
       flyInProgressStream,
       flyTemplateDocStream,
-      (DocumentSnapshot flyInProgressDoc, QuerySnapshot nfftDocs) {
+      (QuerySnapshot flyInProgressDoc, QuerySnapshot nfftDocs) {
         NewFlyFormTemplate newFlyFormTemplate =
             NewFlyFormTemplate.fromDoc(nfftDocs?.docs[0]?.data());
 
         Fly flyInProgress = Fly.formattedForReview(
-          flyName: flyInProgressDoc?.data()[DbNames.flyName],
-          attrs: flyInProgressDoc?.data()[DbNames.attributes],
-          mats: flyInProgressDoc?.data()[DbNames.materials],
-          instr: flyInProgressDoc?.data()[DbNames.instructions],
+          docId: flyInProgressDoc?.docs[0].id,
+          flyName: flyInProgressDoc?.docs[0]?.data()[DbNames.flyName],
+          attrs: flyInProgressDoc?.docs[0]?.data()[DbNames.attributes],
+          mats: flyInProgressDoc?.docs[0]?.data()[DbNames.materials],
+          instr: flyInProgressDoc?.docs[0]?.data()[DbNames.instructions],
           flyFormTemplate: newFlyFormTemplate,
         );
 
@@ -182,6 +187,7 @@ class NewFlyBloc {
     newFlyMaterialSink.close();
     deleteFlyMaterialSink.close();
     newFlyInstructionSink.close();
+    deleteFlyInstructionSink.close();
   }
 }
 

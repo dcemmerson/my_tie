@@ -1,10 +1,9 @@
-import 'package:my_tie/utils/miscellaneous_constants.dart';
-import 'package:my_tie/utils/range.dart';
-
 /// filename: format.dart
-/// description: Class with all static methods used for formatting strings
+/// description: String class extensions for formatting strings
 ///   when displaying on screen. For example, make a string singular, make a
 ///   string in sentence case, etc.
+
+import 'package:my_tie/utils/miscellaneous_constants.dart';
 
 extension StringExtension on String {
   static const ellipsis = '...';

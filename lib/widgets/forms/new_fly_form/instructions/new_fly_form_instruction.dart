@@ -73,18 +73,16 @@ class _NewFlyFormInstructionState extends State<NewFlyFormInstruction> {
         DbNames.instructionStep: _instructionPageAttribute.stepNumber
       };
 
-      // final updatedInstructions = FlyInstruction(
-      //   step: _instructionPageAttribute.stepNumber,
-      //   title: inputs[DbNames.instructionTitle],
-      //   description: inputs[DbNames.instructionDescription],
-      //   images: inputs[DbNames.instructionImages],
-      // );
-
       _newFlyBloc.newFlyInstructionSink.add(FlyInstructionChange(
           prevInstruction: prevInstruction, updatedInstruction: inputs));
       return true;
     }
     return false;
+  }
+
+  void _deleteInstruction(FlyInstruction prevInstruction) {
+    print('unimplemented');
+    // _newFlyBloc.newFlyInstructionSink
   }
 
   Widget _buildTitle() => Container(
@@ -120,6 +118,16 @@ class _NewFlyFormInstructionState extends State<NewFlyFormInstruction> {
           },
           child: Text('Save'),
         ),
+        if (prevInstruction.step != null)
+          //  Indicates this user is editting an instruction.
+          RaisedButton(
+            color: Theme.of(context).colorScheme.error,
+            onPressed: () {
+              _deleteInstruction(prevInstruction);
+              Navigator.of(context).pop();
+            },
+            child: Text('Delete this step'),
+          ),
       ],
     );
   }

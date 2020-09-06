@@ -15,12 +15,13 @@ import 'new_fly_form_template.dart';
 class Fly {
   static const nullReplacement = '[None]';
 
+  final String docId;
   final String flyName;
   final List<FlyAttribute> attributes;
   final List<FlyMaterials> materials;
   final List<FlyInstruction> instructions;
 
-  Fly({this.flyName, Map attrs, Map mats, Map instr})
+  Fly({this.docId, this.flyName, Map attrs, Map mats, Map instr})
       : this.attributes = _toAttributeList(attrs),
         this.materials = _toMaterialsList(mats),
         this.instructions = _toInstructionsList(instr);
@@ -29,6 +30,7 @@ class Fly {
   ///   which we will then use as a guide to ensure we either set attributes/
   ///   materials values to the value passed in, or Fly.nullReplacement.
   Fly.formattedForReview({
+    this.docId,
     String flyName,
     Map attrs,
     Map mats,
@@ -43,13 +45,14 @@ class Fly {
         this.materials = _toMaterialListForReview(mats ?? {}, flyFormTemplate),
         this.instructions = _toInstructionsListForReview(instr);
 
-  Fly.formattedForEditing(
-      {this.flyName,
-      Map attrs,
-      Map mats,
-      NewFlyFormTemplate flyFormTemplate,
-      Map instr})
-      : this.attributes =
+  Fly.formattedForEditing({
+    this.docId,
+    this.flyName,
+    Map attrs,
+    Map mats,
+    NewFlyFormTemplate flyFormTemplate,
+    Map instr,
+  })  : this.attributes =
             _toAttributeListForEditing(attrs ?? {}, flyFormTemplate),
         this.materials = _toMaterialListForEditing(mats ?? {}, flyFormTemplate),
         this.instructions = _toInstructionsList(instr);

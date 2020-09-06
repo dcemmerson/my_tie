@@ -22,7 +22,6 @@ class FlyInstructionChange {
 
   final List<File> imagesToAdd;
   final List<String> imageUrisToKeep;
-//  final List<String> imageUrisToDelete;
 
   FlyInstructionChange({FlyInstruction prevInstruction, Map updatedInstruction})
       : title = updatedInstruction[DbNames.instructionTitle],
@@ -31,9 +30,6 @@ class FlyInstructionChange {
         imagesToAdd = _extractImagesToAdd(prevInstruction, updatedInstruction),
         imageUrisToKeep =
             _extractImageUrisToKeep(prevInstruction, updatedInstruction);
-  // imageUrisToDelete =
-  //     _extractImageUrisToDelete(prevInstruction, updatedInstruction
-  // );
 
   static List<File> _extractImagesToAdd(
       FlyInstruction prevInstruction, Map updatedInstruction) {
@@ -58,24 +54,6 @@ class FlyInstructionChange {
 
     return imageUrisFromPrevInstruction;
   }
-
-//   static List<String> _extractImageUrisToDelete(
-//       FlyInstruction prevInstruction, Map updatedInstruction) {
-//     final List<String> imageUrisFromPrevInstruction = _toListOfString(
-//       updatedInstruction[DbNames.instructionImages]
-//           .where((img) => (img is Image && img.image is NetworkImage))
-// //          .map((img) => img.image.url)
-//           .toList(),
-//     );
-
-//     final List<String> imageUrisFromPrevInstructionToDelete = prevInstruction
-//         .imageUris
-//         .where(
-//             (prevImgUri) => !imageUrisFromPrevInstruction.contains(prevImgUri))
-//         .toList();
-
-//     return imageUrisFromPrevInstructionToDelete;
-//   }
 
   static List<String> _toListOfString(List imgUris) =>
       imgUris?.map((imgUri) => imgUri.toString())?.toList();
