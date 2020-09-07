@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:my_tie/models/bloc_related/add_attribute.dart';
-import 'package:my_tie/models/bloc_related/add_material.dart';
+import 'package:my_tie/models/bloc_transfer_related/add_attribute.dart';
+import 'package:my_tie/models/bloc_transfer_related/add_material.dart';
 import 'package:my_tie/services/network/auth_service.dart';
 import 'package:my_tie/services/network/fly_form_template_service.dart';
 

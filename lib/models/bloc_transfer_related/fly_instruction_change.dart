@@ -13,9 +13,12 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 
 import '../db_names.dart';
+import '../fly.dart';
 import '../fly_instruction.dart';
 
 class FlyInstructionChange {
+  final Fly fly;
+
   final String title;
   final String description;
   final int step;
@@ -23,7 +26,8 @@ class FlyInstructionChange {
   final List<File> imagesToAdd;
   final List<String> imageUrisToKeep;
 
-  FlyInstructionChange({FlyInstruction prevInstruction, Map updatedInstruction})
+  FlyInstructionChange(
+      {this.fly, FlyInstruction prevInstruction, Map updatedInstruction})
       : title = updatedInstruction[DbNames.instructionTitle],
         description = updatedInstruction[DbNames.instructionDescription],
         step = updatedInstruction[DbNames.instructionStep],

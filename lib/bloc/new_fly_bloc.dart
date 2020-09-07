@@ -1,5 +1,5 @@
 /// filename: new_fly_bloc.dart
-/// last modified: 09/03/2020
+/// last modified: 09/06/2020
 /// description: New fly BLoC class. Business logic class for user adding a new
 ///   fly to database. This class stands between the = app (the actual new fly
 ///   forms, and service to firestore, in new_fly_serverice.dart). This class
@@ -9,11 +9,12 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:my_tie/models/arguments/instruction_page_attribute.dart';
-import 'package:my_tie/models/bloc_related/fly_instruction_change.dart';
+import 'package:my_tie/models/bloc_transfer_related/fly_instruction_change.dart';
+import 'package:my_tie/models/bloc_transfer_related/fly_instruction_transfer.dart';
+import 'package:my_tie/models/bloc_transfer_related/fly_material_add_or_update.dart';
+
 import 'package:my_tie/models/db_names.dart';
 import 'package:my_tie/models/fly.dart';
-import 'package:my_tie/models/fly_instruction.dart';
-import 'package:my_tie/models/fly_materials.dart';
 import 'package:my_tie/models/new_fly_form_transfer.dart';
 import 'package:my_tie/models/new_fly_form_template.dart';
 import 'package:my_tie/services/network/auth_service.dart';
@@ -35,10 +36,10 @@ class NewFlyBloc {
       StreamController<FlyMaterialAddOrUpdate>();
   StreamController<FlyInstructionChange> newFlyInstructionSink =
       StreamController<FlyInstructionChange>();
-  StreamController<FlyInstruction> deleteFlyInstructionSink =
-      StreamController<FlyInstruction>();
-  StreamController<FlyMaterial> deleteFlyMaterialSink =
-      StreamController<FlyMaterial>();
+  StreamController<FlyInstructionTransfer> deleteFlyInstructionSink =
+      StreamController<FlyInstructionTransfer>();
+  StreamController<FlyMaterialAddOrUpdate> deleteFlyMaterialSink =
+      StreamController<FlyMaterialAddOrUpdate>();
 
   NewFlyBloc(
       {this.newFlyService, this.authService, this.flyFormTemplateService}) {
@@ -46,6 +47,7 @@ class NewFlyBloc {
     newFlyMaterialSink.stream.listen(_handleAddNewFlyMaterial);
     newFlyInstructionSink.stream.listen(_handleAddNewFlyInstruction);
     deleteFlyMaterialSink.stream.listen(_handleDeleteFlyMaterial);
+    deleteFlyInstructionSink.stream.listen(_handleDeleteFlyInstruction);
   }
 
   Stream<NewFlyFormTransfer> get newFlyForm {
@@ -111,32 +113,42 @@ class NewFlyBloc {
     );
   }
 
-  Stream<FlyInstruction> getFlyInProgressInstructionStep(
+  Stream<FlyInstructionTransfer> getFlyInProgressInstructionStep(
       InstructionPageAttribute ipa) {
     return newFlyService
         .getFlyInProgressDocStream(authService.currentUser.uid)
         .transform(DocumentToFlyInstruction(ipa.stepNumber));
   }
 
-  Future _handleDeleteFlyMaterial(FlyMaterial flyMaterial) async {
-    if (flyMaterial != null) {
+  Future _handleDeleteFlyMaterial(FlyMaterialAddOrUpdate materialUpdate) async {
+    if (materialUpdate.prev != null) {
       return newFlyService.deleteFlyInProgressMaterial(
-        uid: authService.currentUser.uid,
-        name: flyMaterial.name,
-        properties: flyMaterial.properties,
+        docId: materialUpdate.fly.docId,
+        name: materialUpdate.prev.name,
+        properties: materialUpdate.prev.properties,
       );
     }
   }
 
+  Future _handleDeleteFlyInstruction(
+      FlyInstructionTransfer instructionTransfer) {
+    return newFlyService.deleteFlyInProgressInstruction(
+      docId: instructionTransfer.fly.docId,
+      // uid: authService.currentUser.uid,
+      stepNumber: instructionTransfer.flyInstruction.step,
+    );
+  }
+
   Future _handleAddNewFlyMaterial(FlyMaterialAddOrUpdate materialUpdate) async {
     // Add new material to array, then delete the old material since firestore
-    //  doesn't have good support for update array.
+    //  doesn't currently have good support for update array.
     newFlyService.addFlyInProgressMaterial(
+      docId: materialUpdate.fly.docId,
       uid: authService.currentUser.uid,
       name: materialUpdate.curr.name,
       properties: materialUpdate.curr.properties,
     );
-    return _handleDeleteFlyMaterial(materialUpdate.prev);
+    return _handleDeleteFlyMaterial(materialUpdate);
   }
 
   Future _handleAddNewFlyAttributes(Fly flyInProgress) async {
@@ -145,6 +157,7 @@ class NewFlyBloc {
         formAttributeData = {...formAttributeData, ...flyAttribute.toMap()});
 
     return newFlyService.addNewFlyAttributes(
+      docId: flyInProgress.docId,
       uid: authService.currentUser.uid,
       flyName: flyInProgress.flyName,
       attributes: formAttributeData,
@@ -162,6 +175,7 @@ class NewFlyBloc {
 
     //  Now update the actual fly instructions doc
     return newFlyService.addNewFlyInstruction(
+      docId: instructionChange.fly.docId,
       uid: authService.currentUser.uid,
       title: instructionChange.title,
       description: instructionChange.description,
@@ -171,15 +185,6 @@ class NewFlyBloc {
     //  We do not burden the client with correctly merging the old instruction
     //  step with the new instruction step. Instead, we have a cloud funciton
     //  performing this task for us.
-
-    //  Finally delete any previous images user may have uploaded for this step
-    //  but is no longer using for this instruction step.
-    // Future deleteUnusedImages = newFlyService.deleteFilesInStorage(
-    //     uid: authService.currentUser.uid,
-    //     imageUris: instructionChange.imageUrisToDelete);
-
-    // return Future.wait([updateInstructions, deleteUnusedImages])
-    //     .catchError((err) => print(err));
   }
 
   void close() {
@@ -189,11 +194,4 @@ class NewFlyBloc {
     newFlyInstructionSink.close();
     deleteFlyInstructionSink.close();
   }
-}
-
-class FlyMaterialAddOrUpdate {
-  final FlyMaterial prev;
-  final FlyMaterial curr;
-
-  FlyMaterialAddOrUpdate({this.prev, this.curr});
 }

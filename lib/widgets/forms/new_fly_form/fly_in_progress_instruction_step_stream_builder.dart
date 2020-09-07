@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:my_tie/bloc/state/my_tie_state.dart';
 import 'package:my_tie/models/arguments/instruction_page_attribute.dart';
-import 'package:my_tie/models/fly_instruction.dart';
+import 'package:my_tie/models/bloc_transfer_related/fly_instruction_transfer.dart';
 
-typedef BuildPage = Widget Function(FlyInstruction);
+typedef BuildPage = Widget Function(FlyInstructionTransfer);
 
 class FlyInProgressInstructionStepStreamBuilder extends StatelessWidget {
   final BuildPage child;
@@ -24,7 +24,8 @@ class FlyInProgressInstructionStepStreamBuilder extends StatelessWidget {
             .blocProvider
             .newFlyBloc
             .getFlyInProgressInstructionStep(instructionPageAttribute),
-        builder: (context, AsyncSnapshot<FlyInstruction> snapshot) {
+        builder: (context, AsyncSnapshot<FlyInstructionTransfer> snapshot) {
+          //FlyInstructionTransfer adapt
           print(snapshot.connectionState);
           if (snapshot.hasError) {
             print(snapshot.error);

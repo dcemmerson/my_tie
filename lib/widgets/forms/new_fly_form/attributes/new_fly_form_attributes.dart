@@ -67,11 +67,14 @@ class _NewFlyFormAttributesState extends State<NewFlyFormAttributes>
     );
   }
 
-  bool _saveAndValidate() {
+  bool _saveAndValidate(NewFlyFormTransfer flyFormTransfer) {
     if (_formKey.currentState.saveAndValidate()) {
       Map inputs = _formKey.currentState.value;
 
-      Fly flyInProgress = Fly(flyName: inputs[DbNames.flyName], attrs: inputs);
+      Fly flyInProgress = Fly(
+          docId: flyFormTransfer.flyInProgress.docId,
+          flyName: inputs[DbNames.flyName],
+          attrs: inputs);
 
       _newFlyBloc.newFlyAttributesSink.add(flyInProgress);
       return true;
@@ -120,7 +123,7 @@ class _NewFlyFormAttributesState extends State<NewFlyFormAttributes>
         SizedBox(height: widget._spaceBetweenDropdowns),
         RaisedButton(
           onPressed: () {
-            if (_saveAndValidate()) {
+            if (_saveAndValidate(flyFormTransfer)) {
               Navigator.of(context).pop();
             }
           },

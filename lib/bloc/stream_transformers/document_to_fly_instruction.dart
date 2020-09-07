@@ -1,7 +1,9 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:my_tie/models/bloc_transfer_related/fly_instruction_transfer.dart';
 import 'package:my_tie/models/db_names.dart';
+import 'package:my_tie/models/fly.dart';
 import 'package:my_tie/models/fly_instruction.dart';
 
 class DocumentToFlyInstruction<S, T> extends StreamTransformerBase<S, T> {
@@ -20,17 +22,28 @@ class DocumentToFlyInstruction<S, T> extends StreamTransformerBase<S, T> {
         controller = new StreamController<T>(
           onListen: () {
             subscription = inputStream.listen((snapshot) {
+              Fly fly;
               FlyInstruction flyInstruction;
 
               try {
-                final Map doc = snapshot.data();
+                final Map doc = snapshot.docs[0].data();
+                fly = Fly(
+                  docId: snapshot.docs[0].id,
+                  flyName: doc[DbNames.flyName],
+                  attrs: doc[DbNames.attributes],
+                  mats: doc[DbNames.materials],
+                  instr: doc[DbNames.instructions],
+                );
+
                 flyInstruction = FlyInstruction.fromDoc(
                     doc[DbNames.instructions][stepNumber.toString()]);
               } catch (err) {
                 print(err);
                 flyInstruction = FlyInstruction();
+                fly = Fly();
               }
-              controller.add(flyInstruction);
+              controller.add(FlyInstructionTransfer(
+                  fly: fly, flyInstruction: flyInstruction));
             },
                 onDone: controller.close,
                 onError: controller.addError,

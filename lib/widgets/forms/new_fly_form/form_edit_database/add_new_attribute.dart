@@ -3,7 +3,7 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:my_tie/bloc/edit_new_fly_template_bloc.dart';
 import 'package:my_tie/bloc/state/my_tie_state.dart';
 import 'package:my_tie/models/arguments/add_attribute_argument.dart';
-import 'package:my_tie/models/bloc_related/add_attribute.dart';
+import 'package:my_tie/models/bloc_transfer_related/add_attribute.dart';
 import 'package:my_tie/styles/styles.dart';
 
 class AddNewAttribute extends StatefulWidget {

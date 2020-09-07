@@ -16,7 +16,6 @@ import 'package:my_tie/models/db_names.dart';
 
 class NewFlyService {
   static const _flyInProgress = 'fly_in_progress';
-  static const _instructions = 'instructions';
 
   Stream<QuerySnapshot> getFlyInProgressDocStream(String uid) {
     return FirebaseFirestore.instance
@@ -47,11 +46,11 @@ class NewFlyService {
   }
 
   Future deleteFlyInProgressMaterial({
-    String uid,
+    String docId,
     String name,
     Map<String, String> properties,
   }) async {
-    return FirebaseFirestore.instance.collection(_flyInProgress).doc(uid).set(
+    return FirebaseFirestore.instance.collection(_flyInProgress).doc(docId).set(
       {
         DbNames.materials: {
           name: FieldValue.arrayRemove([properties]),
@@ -59,6 +58,12 @@ class NewFlyService {
       },
       SetOptions(merge: true),
     );
+  }
+
+  Future deleteFlyInProgressInstruction(
+      {String docId, String uid, int stepNumber}) {
+    print('unimplemented service');
+    return null;
   }
 
   Future addNewFlyAttributes({
@@ -78,17 +83,6 @@ class NewFlyService {
         .doc(docId)
         .set(flyInProgress, SetOptions(merge: true));
   }
-
-  // Fly in progress instruction related.
-  // Stream<QuerySnapshot> getFlyInProgressInstructionStep(
-  //     String uid, int stepNumber) {
-  //   return FirebaseFirestore.instance
-  //       .collection(_flyInProgress)
-  //       .doc(uid)
-  //       .collection(_instructions)
-  //       .where(DbNames.instructionStep, isEqualTo: stepNumber)
-  //       .snapshots();
-  // }
 
   Future<List<String>> addFilesToStorage(
       {String uid, List<File> images}) async {

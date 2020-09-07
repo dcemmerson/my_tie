@@ -6,10 +6,12 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:my_tie/bloc/new_fly_bloc.dart';
 
 import 'package:my_tie/bloc/state/fly_form_state.dart';
 import 'package:my_tie/bloc/state/my_tie_state.dart';
-import 'package:my_tie/bloc/new_fly_bloc.dart';
+
+import 'package:my_tie/models/bloc_transfer_related/fly_material_add_or_update.dart';
 import 'package:my_tie/models/fly.dart';
 import 'package:my_tie/models/fly_materials.dart';
 import 'package:my_tie/models/new_fly_form_template.dart';
@@ -93,7 +95,7 @@ class _NewFlyFormMaterialsState extends State<NewFlyFormMaterials>
       );
 
       _newFlyBloc.newFlyMaterialSink
-          .add(FlyMaterialAddOrUpdate(prev: prev, curr: updated));
+          .add(FlyMaterialAddOrUpdate(fly: fly, prev: prev, curr: updated));
       return true;
     }
     return false;
@@ -104,7 +106,8 @@ class _NewFlyFormMaterialsState extends State<NewFlyFormMaterials>
         ? null
         : fly.materials[_formPageNumber.pageNumber]
             .flyMaterials[_formPageNumber.propertyIndex];
-    _newFlyBloc.deleteFlyMaterialSink.add(flyMaterial);
+    _newFlyBloc.deleteFlyMaterialSink
+        .add(FlyMaterialAddOrUpdate(fly: fly, prev: flyMaterial));
   }
 
   Widget _buildLoading() {
