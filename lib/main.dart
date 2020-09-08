@@ -7,12 +7,10 @@ import 'package:my_tie/bloc/auth_bloc.dart';
 import 'package:my_tie/bloc/bloc_provider.dart';
 import 'package:my_tie/bloc/edit_new_fly_template_bloc.dart';
 import 'package:my_tie/bloc/new_fly_bloc.dart';
-import 'package:my_tie/bloc/waste_bloc.dart';
 import 'package:my_tie/bloc/state/my_tie_state.dart';
 import 'package:my_tie/services/network/auth_service.dart';
 import 'package:my_tie/services/network/fly_form_template_service.dart';
 import 'package:my_tie/services/network/new_fly_service.dart';
-import 'package:my_tie/services/network/waste_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -38,14 +36,11 @@ void main() async {
       newFlyService: newFlyService,
       authService: authService,
       flyFormTemplateService: flyFormTemplateService);
-  final wasteService = WasteService();
-  final wasteBloc = WasteBloc(wasteService);
 
   runApp(MyTieStateContainer(
       blocProvider: BlocProvider(
         authBloc: authBloc,
         newFlyBloc: newFlyBloc,
-        wasteBloc: wasteBloc,
         editNewFlyTemplateBloc: editNewFlyTemplateBloc,
       ),
       child: WasteagramApp()));
