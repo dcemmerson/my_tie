@@ -15,6 +15,19 @@ class FlyInstruction {
       {this.title, this.description, this.step, this.imageUris, List images})
       : this.images = _toListOfFile(images);
 
+  FlyInstruction.copy({
+    FlyInstruction flyInstruction,
+    String title,
+    String description,
+    int step,
+    List<String> imageUris,
+    List<File> images,
+  })  : this.title = title ?? flyInstruction?.title,
+        this.description = description ?? flyInstruction?.description,
+        this.step = step ?? flyInstruction?.step,
+        this.imageUris = imageUris ?? flyInstruction?.imageUris,
+        this.images = images ?? flyInstruction?.images;
+
   FlyInstruction.formattedForReview(Map doc)
       : step = doc[DbNames.instructionStep],
         description =
@@ -31,10 +44,11 @@ class FlyInstruction {
         images = _toListOfFile(doc[DbNames.instructionImages]);
 
   Map toMap() => {
-        'title': title,
-        'description': description,
-        'step': step,
-        'images': images
+        DbNames.instructionTitle: title,
+        DbNames.instructionDescription: description,
+        DbNames.instructionStep: step,
+        DbNames.instructionImageUris: imageUris,
+//        'images': images
       };
 
   static List<String> _toListOfString(List imgUris) =>

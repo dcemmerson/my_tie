@@ -68,19 +68,99 @@ exports.addToNewFlyFormTemplate = functions.firestore.document('/new_fly_form_in
     }
   });
 
-exports.addToNewFlyInstruction = functions.firestore.document('/fly_in_progress/{docId}'/*/instructions/instructionDocId'*/)
+// exports.normalizeNewFlyInstructions = functions.firestore.document('/fly_in_progress/{docId}'/*/instructions/instructionDocId'*/)
+// .onWrite(async (change, context) => {
+// });
+
+//  name: editNewFlyInstruction
+//  description: When writing to a fly in progress doc, we iterate through each
+//    instruction to check if the user changed any photos (and the photo urls changed)
+//    when updating an instruction. If the old doc contains and urls that are not
+//    referenced in the new doc, delete those from storage as they would now
+//    be dangling references (from the perspective of the app, but not truly dangling).
+//    
+//    Additionally this cloud function calls normalizeInstructionsOrder, which ensures
+//    that when user adds/deletes (specifically deletes) instructions, the step numbers
+//    self correct themselves. For Example, if user has instruction step 1, 2, and 3, but
+//    deletes 2, we need to make sure instruction step 3 is changed to step 2.
+exports.editNewFlyInstruction = functions.firestore.document('/fly_in_progress/{docId}')
   .onWrite(async (change, context) => {
+    console.log('***** editNewFlyInstruction running *****');
 
-    const imageUrisToDelete: Array<string> = extractImageUrlsToDelete(change.after, change.before);
-    const storage = admin.storage().bucket(`gs://${BUCKET_URL}`);
+    if (instructionsOutOfOrder(change.after)) {
+      console.log('***** inside conditional editNewFlyInstruction running *****');
 
-    const deletions = imageUrisToDelete.map(async (uri: string) => {
-      const file = storage.file(extractImagePathFromUrl(uri));
-      return file.delete();
-    });
+      await normalizeInstructionStepsOrder(change.after);
 
-    await Promise.all(deletions);
+    }
+    await cleanupUnusedPhotosFromStorage(change);
+
+
+    return;
+
+    /// Function definitions for editNewFlyInstruction
+    function instructionsOutOfOrder(changedDoc: DocumentSnapshot): boolean {
+      const instructions = changedDoc.data()?.instructions;
+      let currInstruction = 0;
+
+      for (const [, instruction] of Object.entries(instructions)) {
+        currInstruction++;
+        const instr = instruction as Instruction;
+        if (instr.step_number !== currInstruction) {
+          return true;
+        }
+      }
+      return false;
+    }
+
+    async function normalizeInstructionStepsOrder(changedDoc: DocumentSnapshot) {
+      let currCount = 0;
+      const orderedInstructions: { [key: string]: Instruction } = {};
+      const changedInstructions = changedDoc.data()?.instructions;
+      while (changedInstructions && Object.keys(changedInstructions).length > 0) {
+        currCount++;
+        // Set minEntry equal to the value of the first key: value entry.
+        let minEntry: Instruction = changedInstructions[Object.keys(changedInstructions)[0]];
+        for (const [, instruction] of Object.entries(changedInstructions)) {
+          const instr = instruction as Instruction;
+          if (instr.step_number < minEntry.step_number) {
+            minEntry = instr;
+          }
+        }
+
+        delete changedInstructions[minEntry.step_number.toString()];
+        minEntry.step_number = currCount
+        orderedInstructions[currCount.toString()] = minEntry;
+      }
+
+      // Write orderedInstructions to fly_in_progress doc in db now,
+      //  if the order needs to be updated.
+      if (orderedInstructions !== changedInstructions) {
+        //  delete instructions that were present, followed by inserting the ordered list.
+        await db.collection('fly_in_progress').doc(changedDoc.id)
+          .set({ 'instructions': admin.firestore.FieldValue.delete() }, { merge: true })
+        return db.collection('fly_in_progress').doc(changedDoc.id)
+          .set({ 'instructions': orderedInstructions }, { merge: true })
+      }
+      else return;
+    }
+
+    interface Instruction {
+      step_number: number // Underscore in naming due to db names.
+    }
+  }); // End editNewFlyInstructions
+
+async function cleanupUnusedPhotosFromStorage(change: functions.Change<DocumentSnapshot>) {
+  const imageUrisToDelete: Array<string> = extractImageUrlsToDelete(change.after, change.before);
+  const storage = admin.storage().bucket(`gs://${BUCKET_URL}`);
+
+  const deletions = imageUrisToDelete.map(async (uri: string) => {
+    const file = storage.file(extractImagePathFromUrl(uri));
+    return file.delete();
   });
+
+  await Promise.all(deletions);
+}
 
 function extractImagePathFromUrl(url: string) {
   const removedUrl = url.replace(IMAGE_BASE_PATH, '');

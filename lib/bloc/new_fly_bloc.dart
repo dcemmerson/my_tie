@@ -132,10 +132,11 @@ class NewFlyBloc {
 
   Future _handleDeleteFlyInstruction(
       FlyInstructionTransfer instructionTransfer) {
-    return newFlyService.deleteFlyInProgressInstruction(
+    return newFlyService.updateFlyInProgressInstructions(
       docId: instructionTransfer.fly.docId,
-      // uid: authService.currentUser.uid,
-      stepNumber: instructionTransfer.flyInstruction.step,
+      uid: authService.currentUser.uid,
+      instructions:
+          instructionTransfer.getMergedInstructionsMapSortedAfterRemoval(),
     );
   }
 
@@ -182,9 +183,6 @@ class NewFlyBloc {
       stepNumber: instructionChange.step,
       imageUris: [...addedUris, ...instructionChange.imageUrisToKeep],
     );
-    //  We do not burden the client with correctly merging the old instruction
-    //  step with the new instruction step. Instead, we have a cloud funciton
-    //  performing this task for us.
   }
 
   void close() {

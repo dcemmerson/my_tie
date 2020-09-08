@@ -121,7 +121,7 @@ class Fly {
         FlyInstruction.formattedForReview(instr),
       ),
     );
-    flyInstructions.sort(_sortBySteps);
+    flyInstructions.sort(sortBySteps);
     return flyInstructions;
   }
 
@@ -151,7 +151,7 @@ class Fly {
             ),
       ),
     );
-    flyInstructions.sort(_sortBySteps);
+    flyInstructions.sort(sortBySteps);
     return flyInstructions;
   }
 
@@ -165,7 +165,7 @@ class Fly {
     return null;
   }
 
-  static int _sortBySteps(a, b) {
+  static int sortBySteps(a, b) {
     if (a.step < b.step)
       return -1;
     else if (a.step == b.step)

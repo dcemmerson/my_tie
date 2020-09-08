@@ -34,9 +34,13 @@ class DocumentToFlyInstruction<S, T> extends StreamTransformerBase<S, T> {
                   mats: doc[DbNames.materials],
                   instr: doc[DbNames.instructions],
                 );
-
-                flyInstruction = FlyInstruction.fromDoc(
-                    doc[DbNames.instructions][stepNumber.toString()]);
+                if (doc[DbNames.instructions] != null &&
+                    doc[DbNames.instructions][stepNumber.toString()] != null) {
+                  flyInstruction = FlyInstruction.fromDoc(
+                      doc[DbNames.instructions][stepNumber.toString()]);
+                } else {
+                  flyInstruction = FlyInstruction();
+                }
               } catch (err) {
                 print(err);
                 flyInstruction = FlyInstruction();

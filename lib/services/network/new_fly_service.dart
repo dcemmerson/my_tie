@@ -40,6 +40,7 @@ class NewFlyService {
           name: FieldValue.arrayUnion([properties]),
         },
         DbNames.uploadedBy: uid,
+        DbNames.lastModified: DateTime.now(),
       },
       SetOptions(merge: true),
     );
@@ -54,17 +55,35 @@ class NewFlyService {
       {
         DbNames.materials: {
           name: FieldValue.arrayRemove([properties]),
-        }
+        },
+        DbNames.lastModified: DateTime.now(),
       },
       SetOptions(merge: true),
     );
   }
 
-  Future deleteFlyInProgressInstruction(
-      {String docId, String uid, int stepNumber}) {
-    print('unimplemented service');
-    return null;
+  Future updateFlyInProgressInstructions(
+      {String docId, String uid, Map instructions}) {
+    return FirebaseFirestore.instance
+        .collection(_flyInProgress)
+        .doc(docId)
+        .set({
+      DbNames.instructions: instructions,
+      DbNames.lastModified: DateTime.now(),
+      DbNames.uploadedBy: uid,
+    }, SetOptions(mergeFields: [DbNames.instructions]));
   }
+
+  // Future deleteFlyInProgressInstruction(
+  //     {String docId, String uid, int stepNumber}) {
+  //   return FirebaseFirestore.instance
+  //       .collection(_flyInProgress)
+  //       .doc(docId)
+  //       .set({
+  //     DbNames.instructions: {stepNumber.toString(): FieldValue.delete()},
+  //     // DbNames.lastModified: DateTime.now(),
+  //   }, SetOptions(merge: true));
+  // }
 
   Future addNewFlyAttributes({
     String docId,
@@ -73,8 +92,9 @@ class NewFlyService {
     String flyName,
   }) {
     final Map<String, dynamic> flyInProgress = {
-      DbNames.uploadedBy: uid,
       DbNames.attributes: attributes,
+      DbNames.uploadedBy: uid,
+      DbNames.lastModified: DateTime.now(),
       if (flyName != null) DbNames.flyName: flyName,
     };
 
@@ -122,13 +142,7 @@ class NewFlyService {
     List<String> imageUris,
   }) {
     // Now update fly in progress doc in firestore.
-    return FirebaseFirestore.instance
-        .collection(_flyInProgress)
-        // .doc(uid)
-        // .collection('instructions')
-//        .where(DbNames.instructionStep, isEqualTo: stepNumber)
-        .doc(docId)
-        .set(
+    return FirebaseFirestore.instance.collection(_flyInProgress).doc(docId).set(
       {
         DbNames.instructions: {
           stepNumber.toString(): {
@@ -140,6 +154,7 @@ class NewFlyService {
           }
         },
         DbNames.uploadedBy: uid,
+        DbNames.lastModified: DateTime.now(),
       },
       SetOptions(merge: true),
     );
