@@ -151,9 +151,12 @@ exports.editNewFlyInstruction = functions.firestore.document('/fly_in_progress/{
   }); // End editNewFlyInstructions
 
 async function cleanupUnusedPhotosFromStorage(change: functions.Change<DocumentSnapshot>) {
+  console.log('***** inside cleanup unused photos from storage *****')
   const imageUrisToDelete: Array<string> = extractImageUrlsToDelete(change.after, change.before);
   const storage = admin.storage().bucket(`gs://${BUCKET_URL}`);
 
+  console.log('*** images to delete');
+  console.log(imageUrisToDelete);
   const deletions = imageUrisToDelete.map(async (uri: string) => {
     const file = storage.file(extractImagePathFromUrl(uri));
     return file.delete();
@@ -172,21 +175,34 @@ function extractImagePathFromUrl(url: string) {
 }
 
 function extractImageUrlsToDelete(newDoc: DocumentSnapshot, prevDoc: DocumentSnapshot): Array<string> {
-  let urisToRemove: Array<string> = [];
-  if (prevDoc.data() && newDoc.data()) {
-    // Iterate through all the instruction steps in prevDoc and check if newDoc contains each
-    //  image uri in each instruction step. Add each uri not in newDoc instruction steps to
-    //  urisToRemove.
+  if (prevDoc.data()?.instructions && newDoc.data()?.instructions) {
+
+    // This method could be called in two scenarios where we need to delete images:
+    //  1. User deletes an image which was part of an instruction
+    //  2. User deletes an entire instruction step which contained 1+ images.
+    //  To simulataneously handle both cases, we will collect all image uris from both
+    //  prev doc and new doc, then check which (if any) image uris the new doc does not
+    //  contain and collect those to be deleted.
 
     const prevInstructions = prevDoc.data()?.instructions;
+    const prevInstructionsImageUris: Array<string> = [];
+
+    const newInstructions = newDoc.data()?.instructions;
+    const newInstructionsImageUris: Array<string> = [];
+
+    // Collect image uris from prev and new docs
     for (const step in prevInstructions) {
-
-      const uris: Array<string> = prevInstructions[step].instruction_image_uris.filter((prevDocUri: string) =>
-        !newDoc.data()?.instructions[step].instruction_image_uris.includes(prevDocUri));
-
-      urisToRemove = [...urisToRemove, ...uris];
+      prevInstructionsImageUris.push(...prevInstructions[step].instruction_image_uris);
+    }
+    for (const step in newInstructions) {
+      newInstructionsImageUris.push(...newInstructions[step].instruction_image_uris);
     }
 
+    // Now go through uris in old doc and check if they exist in new doc.
+    //  Return all the uris that exist in the old doc, but not the new doc.
+    return prevInstructionsImageUris.filter(prevUri => !newInstructionsImageUris.includes(prevUri));
   }
-  return urisToRemove;
+  else {
+    return [];
+  }
 }
