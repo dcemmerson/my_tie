@@ -7,7 +7,7 @@ import 'test_value_keys.dart';
 
 void main() {
   final AttributesTestManager attributesInfo = AttributesTestManager();
-  final NewFlyFormTestManager formTestManager = NewFlyFormTestManager();
+  final NewFlyFormTestManager newFlyFormTestManager = NewFlyFormTestManager();
 
   Future<FlutterDriver> setupAndGetDriver() async {
     FlutterDriver driver = await FlutterDriver.connect();
@@ -51,16 +51,36 @@ void main() {
       await driver.scrollUntilVisible(pageView, addNewFlyButton,
           dxScroll: -300.0);
 
-      await driver.waitFor(addNewFlyButton);
+      // await driver.waitFor(addNewFlyButton);
+      await driver.tap(addNewFlyButton);
+
+      // Scroll down page until bottom buttons on form are visible.
+      final clearFormButton = find.byValueKey(TestValueKeys.clearFormButton);
+      await driver.scrollIntoView(clearFormButton);
+      await newFlyFormTestManager.deleteFlyInProgress(driver);
 
       await driver.tap(addNewFlyButton);
-//      await formTestManager.deleteFlyInProgress(driver);
-      //     await formTestManager.verifyFormIsCleared(driver);
+
+      await newFlyFormTestManager.verifyFormIsCleared(driver);
       await attributesInfo.fillOutAttributes(driver);
 
-      // Now verify that all the information we just entered actually appears
+      //  Now verify that all the information we just entered actually appears
       //  on the new fly form review page.
       await attributesInfo.verifyAttributesAppearInFormReview(driver);
+
+      //  Scroll until delete button visible, tap the delete fly in progress
+      //  button but on the confirm dialog, press cancel. Scroll back to top
+      //  and verify correct attributes appear on screen.
+      await driver.scrollIntoView(clearFormButton);
+      await newFlyFormTestManager.deleteFlyInProgressButCancel(driver);
+      await driver
+          .scrollIntoView(find.byValueKey(TestValueKeys.editAttributesIcon));
+      await attributesInfo.verifyAttributesAppearInFormReview(driver);
+
+      //  Finally, scroll back to delete buttons and delete the fly in progress
+      //  that we created in this integration test.
+      await driver.scrollIntoView(clearFormButton);
+      await newFlyFormTestManager.deleteFlyInProgress(driver);
     });
   });
 }

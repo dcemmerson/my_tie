@@ -12,7 +12,9 @@ import 'package:test/test.dart';
 import 'test_value_keys.dart';
 
 class AttributesTestManager {
-  static const emptyPlaceholder = '[None]';
+  static const emptyNamePlaceholder = 'No name';
+  static const emptyAttributePlaceholder = '[None]';
+
   static final rnd = Random();
 
   static const flyDifficulties = ['easy', 'medium', 'hard'];
@@ -55,23 +57,23 @@ class AttributesTestManager {
     expect(
         await driver
             .getText(find.byValueKey(TestValueKeys.nameAttributeReview)),
-        emptyPlaceholder);
+        emptyNamePlaceholder);
     expect(
         await driver
             .getText(find.byValueKey(TestValueKeys.difficultyAttributeReview)),
-        emptyPlaceholder);
+        emptyAttributePlaceholder);
     expect(
         await driver
             .getText(find.byValueKey(TestValueKeys.styleAttributeReview)),
-        emptyPlaceholder);
+        emptyAttributePlaceholder);
     expect(
         await driver
             .getText(find.byValueKey(TestValueKeys.typeAttributeReview)),
-        emptyPlaceholder);
+        emptyAttributePlaceholder);
     expect(
         await driver
             .getText(find.byValueKey(TestValueKeys.targetAttributeReview)),
-        emptyPlaceholder);
+        emptyAttributePlaceholder);
   }
 
   Future fillOutAttributes(FlutterDriver driver) async {

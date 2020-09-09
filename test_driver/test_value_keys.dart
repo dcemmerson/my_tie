@@ -15,6 +15,12 @@ class TestValueKeys {
   static const styleAttributeReview = 'styleAttributeReview';
   static const typeAttributeReview = 'typeAttributeReview';
   static const targetAttributeReview = 'targetAttributeReview';
+
+  // Buttons at bottom of new fly form
+  static const clearFormButton = 'clearFormButton';
+  static const confirmClearFormButton = 'confirmClearFormButton';
+  static const cancelClearFormButton = 'confirmClearFormCancelButton';
+
   //////////////////////////////////////////////////////////////////
   ///
   //////////////////////////////////////////////////////////////////
