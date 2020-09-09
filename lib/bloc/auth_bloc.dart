@@ -11,11 +11,28 @@ import 'package:flutter/material.dart';
 import 'package:my_tie/services/network/auth_service.dart';
 import 'package:rxdart/rxdart.dart';
 
-enum LoginType { Gmail, Github, Facebook }
+enum LoginType { Gmail, Github, Facebook, Twitter, Apple }
 
 class AuthBloc {
   final AuthService _authService;
   LoginType loginType;
+
+  static getLoginTypeString(LoginType loginType) {
+    switch (loginType) {
+      case LoginType.Facebook:
+        return 'facebook';
+      case LoginType.Github:
+        return 'github';
+      case LoginType.Gmail:
+        return 'gmail';
+      case LoginType.Twitter:
+        return 'twitter';
+      case LoginType.Apple:
+        return 'apple';
+      default:
+        return 'gmail';
+    }
+  }
 
   static LoginType getLoginType(String str) {
     switch (str) {
@@ -24,6 +41,11 @@ class AuthBloc {
       case 'github':
         return LoginType.Github;
       case 'gmail':
+        return LoginType.Gmail;
+      case 'twitter':
+        return LoginType.Twitter;
+      case 'apple':
+        return LoginType.Apple;
       default:
         return LoginType.Gmail;
     }

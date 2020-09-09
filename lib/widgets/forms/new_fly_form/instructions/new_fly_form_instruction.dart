@@ -13,7 +13,6 @@ import 'package:my_tie/models/arguments/instruction_page_attribute.dart';
 import 'package:my_tie/models/bloc_transfer_related/fly_instruction_change.dart';
 import 'package:my_tie/models/bloc_transfer_related/fly_instruction_transfer.dart';
 import 'package:my_tie/models/db_names.dart';
-import 'package:my_tie/models/fly_instruction.dart';
 import 'package:my_tie/styles/styles.dart';
 import 'package:my_tie/widgets/forms/new_fly_form/instructions/instruction_name_text_input.dart';
 
@@ -27,7 +26,7 @@ class NewFlyFormInstruction extends StatefulWidget {
 }
 
 class _NewFlyFormInstructionState extends State<NewFlyFormInstruction> {
-  final _formKey = new GlobalKey<FormBuilderState>();
+  final _formKey = GlobalKey<FormBuilderState>();
   NewFlyBloc _newFlyBloc;
   InstructionPageAttribute _instructionPageAttribute;
   bool _formChanged = false;

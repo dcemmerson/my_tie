@@ -40,6 +40,7 @@ class NewFlyBloc {
       StreamController<FlyInstructionTransfer>();
   StreamController<FlyMaterialAddOrUpdate> deleteFlyMaterialSink =
       StreamController<FlyMaterialAddOrUpdate>();
+  StreamController<Fly> deleteFlyInProgressSink = StreamController<Fly>();
 
   NewFlyBloc(
       {this.newFlyService, this.authService, this.flyFormTemplateService}) {
@@ -48,6 +49,7 @@ class NewFlyBloc {
     newFlyInstructionSink.stream.listen(_handleAddNewFlyInstruction);
     deleteFlyMaterialSink.stream.listen(_handleDeleteFlyMaterial);
     deleteFlyInstructionSink.stream.listen(_handleDeleteFlyInstruction);
+    deleteFlyInProgressSink.stream.listen(_handleDeleteFlyInProgress);
   }
 
   Stream<NewFlyFormTransfer> get newFlyForm {
@@ -65,15 +67,23 @@ class NewFlyBloc {
 
         // flyInProgressDocs.docs could be empty here here, first time user
         //  click addNewFly button.
-        Fly flyInProgress = flyInProgressDoc?.docs[0]?.data() != null
-            ? Fly.formattedForEditing(
-                docId: flyInProgressDoc?.docs[0].id,
-                flyName: flyInProgressDoc?.docs[0]?.data()[DbNames.flyName],
-                attrs: flyInProgressDoc?.docs[0]?.data()[DbNames.attributes],
-                mats: flyInProgressDoc?.docs[0]?.data()[DbNames.materials],
-                flyFormTemplate: newFlyFormTemplate)
-            : Fly.formattedForEditing(flyFormTemplate: newFlyFormTemplate);
 
+        Fly flyInProgress;
+
+        if (flyInProgressDoc?.docs != null &&
+            flyInProgressDoc.docs.length > 0) {
+          flyInProgress = Fly.formattedForEditing(
+              docId: flyInProgressDoc?.docs[0].id,
+              flyName: flyInProgressDoc?.docs[0]?.data()[DbNames.flyName],
+              attrs: flyInProgressDoc?.docs[0]?.data()[DbNames.attributes],
+              mats: flyInProgressDoc?.docs[0]?.data()[DbNames.materials],
+              flyFormTemplate: newFlyFormTemplate);
+        } else {
+          newFlyService.createFlyInProgressDoc(
+              uid: authService.currentUser.uid);
+          flyInProgress =
+              Fly.formattedForEditing(flyFormTemplate: newFlyFormTemplate);
+        }
         return NewFlyFormTransfer(
           flyInProgress: flyInProgress,
           newFlyFormTemplate: newFlyFormTemplate,
@@ -96,14 +106,22 @@ class NewFlyBloc {
         NewFlyFormTemplate newFlyFormTemplate =
             NewFlyFormTemplate.fromDoc(nfftDocs?.docs[0]?.data());
 
-        Fly flyInProgress = Fly.formattedForReview(
-          docId: flyInProgressDoc?.docs[0].id,
-          flyName: flyInProgressDoc?.docs[0]?.data()[DbNames.flyName],
-          attrs: flyInProgressDoc?.docs[0]?.data()[DbNames.attributes],
-          mats: flyInProgressDoc?.docs[0]?.data()[DbNames.materials],
-          instr: flyInProgressDoc?.docs[0]?.data()[DbNames.instructions],
-          flyFormTemplate: newFlyFormTemplate,
-        );
+        Fly flyInProgress;
+        if (flyInProgressDoc.docs.length == 0) {
+          newFlyService.createFlyInProgressDoc(
+              uid: authService.currentUser.uid);
+          flyInProgress =
+              Fly.formattedForReview(flyFormTemplate: newFlyFormTemplate);
+        } else {
+          flyInProgress = Fly.formattedForReview(
+            docId: flyInProgressDoc?.docs[0]?.id,
+            flyName: flyInProgressDoc?.docs[0]?.data()[DbNames.flyName],
+            attrs: flyInProgressDoc?.docs[0]?.data()[DbNames.attributes],
+            mats: flyInProgressDoc?.docs[0]?.data()[DbNames.materials],
+            instr: flyInProgressDoc?.docs[0]?.data()[DbNames.instructions],
+            flyFormTemplate: newFlyFormTemplate,
+          );
+        }
 
         return NewFlyFormTransfer(
           flyInProgress: flyInProgress,
@@ -185,11 +203,16 @@ class NewFlyBloc {
     );
   }
 
+  Future _handleDeleteFlyInProgress(Fly fly) async {
+    newFlyService.deleteFlyInProgress(docId: fly.docId);
+  }
+
   void close() {
     newFlyAttributesSink.close();
     newFlyMaterialSink.close();
     deleteFlyMaterialSink.close();
     newFlyInstructionSink.close();
     deleteFlyInstructionSink.close();
+    deleteFlyInProgressSink.close();
   }
 }

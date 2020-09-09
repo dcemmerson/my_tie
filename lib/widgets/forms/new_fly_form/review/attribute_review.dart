@@ -13,8 +13,13 @@ import 'package:my_tie/routes/fly_form_routes.dart';
 import 'package:my_tie/styles/styles.dart';
 
 class AttributeReview extends StatelessWidget {
+  // ValueKeys
+  static const _editAttributes = 'editAttributesIcon';
+  static const _attributeNameReview = 'nameAttributeReview';
+
   final _iconButtonPadding = 8.0;
-  final _semanticLabel = 'Tap to edit';
+
+  static const _semanticLabel = 'Tap to edit attribute';
   final NewFlyFormTransfer nfft;
   final int pageNumber;
 
@@ -35,8 +40,11 @@ class AttributeReview extends StatelessWidget {
               width: Theme.of(context).iconTheme.size + 4 * _iconButtonPadding,
               height: Theme.of(context).iconTheme.size + 2 * _iconButtonPadding,
             ),
-            Text(nfft.flyInProgress.flyName, style: AppTextStyles.header),
+            Text(nfft.flyInProgress.flyName,
+                key: ValueKey(_attributeNameReview),
+                style: AppTextStyles.header),
             IconButton(
+              key: ValueKey(_editAttributes),
               onPressed: () => FlyFormRoutes.newFlyAttributesPage(context),
               icon: Icon(
                 Icons.edit,
@@ -58,6 +66,7 @@ class AttributeReview extends StatelessWidget {
                           child: Text(
                               nfft.flyInProgress.getAttribute(attr.name) ??
                                   'None',
+                              key: ValueKey('${attr.name}AttributeReview'),
                               style: TextStyle(fontSize: AppFonts.h6)))),
                 ]),
               )

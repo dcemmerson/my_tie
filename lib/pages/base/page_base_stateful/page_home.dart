@@ -105,18 +105,18 @@ class _PageHomeState extends State<PageHome> {
           bottomNavPages: widget._pages,
           setBottomNavPage: setSelectedPage,
         ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-        floatingActionButton: Semantics(
-          button: true,
-          enabled: true,
-          label: 'New Waste Post',
-          hint: 'Add new waste post',
-          child: FloatingActionButton(
-              key: Key('addWastePost'),
-              onPressed: () => print('unimplemented'),
-              /* Routes.addWastedPost(context), */
-              child: Icon(Icons.add_a_photo)),
-        ),
+        // floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+        // floatingActionButton: Semantics(
+        //   button: true,
+        //   enabled: true,
+        //   label: 'New Waste Post',
+        //   hint: 'Add new waste post',
+        //   child: FloatingActionButton(
+        //       key: Key('addWastePost'),
+        //       onPressed: () => print('unimplemented'),
+        //       /* Routes.addWastedPost(context), */
+        //       child: Icon(Icons.add_a_photo)),
+        // ),
       ),
     );
   }

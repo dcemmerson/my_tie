@@ -18,13 +18,13 @@ class LoginButtonStandalone extends StatefulWidget {
         loginType: AuthBloc.getLoginType('github')),
     TappableIcon(
         uri: 'assets/icons/facebook.png',
-        loginType: AuthBloc.getLoginType('gmail')),
+        loginType: AuthBloc.getLoginType('facebook')),
     TappableIcon(
         uri: 'assets/icons/twitter.png',
-        loginType: AuthBloc.getLoginType('github')),
+        loginType: AuthBloc.getLoginType('twitter')),
     TappableIcon(
         uri: 'assets/icons/apple.png',
-        loginType: AuthBloc.getLoginType('gmail')),
+        loginType: AuthBloc.getLoginType('apple')),
   ];
 
   @override
@@ -95,8 +95,12 @@ class _LoginButtonStandaloneState extends State<LoginButtonStandalone>
                 width: 50,
                 height: 50,
                 child: GestureDetector(
+                  key: ValueKey(
+                      AuthBloc.getLoginTypeString(tappableIcon.loginType)),
                   onTap: () => login(tappableIcon.loginType),
-                  child: Image.asset(tappableIcon.uri),
+                  child: Image.asset(
+                    tappableIcon.uri,
+                  ),
                 ),
                 decoration: BoxDecoration(
                     border: Border(

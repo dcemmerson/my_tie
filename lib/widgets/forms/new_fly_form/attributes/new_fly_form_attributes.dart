@@ -5,7 +5,6 @@ import 'package:my_tie/bloc/new_fly_bloc.dart';
 import 'package:my_tie/models/db_names.dart';
 import 'package:my_tie/models/fly.dart';
 import 'package:my_tie/models/fly_form_attribute.dart';
-import 'package:my_tie/models/form_page_number.dart';
 import 'package:my_tie/models/new_fly_form_transfer.dart';
 import 'package:my_tie/styles/styles.dart';
 import 'package:my_tie/widgets/forms/new_fly_form/attributes/fly_attribute_dropdown.dart';
@@ -21,10 +20,9 @@ class NewFlyFormAttributes extends StatefulWidget {
 
 class _NewFlyFormAttributesState extends State<NewFlyFormAttributes>
     with AutomaticKeepAliveClientMixin {
-  final _formKey = new GlobalKey<FormBuilderState>();
+  final _formKey = GlobalKey<FormBuilderState>();
   NewFlyBloc _newFlyBloc;
 
-  FormPageNumber _formPageNumber;
   bool _formChanged = false;
 
   @override
@@ -34,9 +32,6 @@ class _NewFlyFormAttributesState extends State<NewFlyFormAttributes>
   void didChangeDependencies() {
     super.didChangeDependencies();
     _newFlyBloc = MyTieStateContainer.of(context).blocProvider.newFlyBloc;
-
-    _formPageNumber =
-        ModalRoute.of(context).settings.arguments ?? FormPageNumber();
   }
 
   void _onFormChanged(Map form) {
@@ -91,12 +86,16 @@ class _NewFlyFormAttributesState extends State<NewFlyFormAttributes>
   List<Widget> _buildDropdowns(NewFlyFormTransfer flyFormTransfer) {
     return flyFormTransfer.newFlyFormTemplate.flyFormAttributes
         .map((FlyFormAttribute ffa) {
-      return FlyAttributeDropdown(
-        attribute: ffa.name,
+      return Semantics(
+        hint: 'Tap to select $ffa.name',
         label: ffa.name,
-        flyProperties: ffa.properties,
-        flyInProgressProperty:
-            flyFormTransfer.flyInProgress.getAttribute(ffa.name),
+        child: FlyAttributeDropdown(
+          attribute: ffa.name,
+          label: ffa.name,
+          flyProperties: ffa.properties,
+          flyInProgressProperty:
+              flyFormTransfer.flyInProgress.getAttribute(ffa.name),
+        ),
       );
     }).toList();
   }

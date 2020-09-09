@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:my_tie/routes/routes.dart';
 
-class WasteagramApp extends StatelessWidget {
+class MyTieApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

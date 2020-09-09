@@ -13,6 +13,10 @@ import 'package:my_tie/services/network/fly_form_template_service.dart';
 import 'package:my_tie/services/network/new_fly_service.dart';
 
 void main() async {
+  runApp(await initApp());
+}
+
+Future<Widget> initApp() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
 
@@ -37,13 +41,14 @@ void main() async {
       authService: authService,
       flyFormTemplateService: flyFormTemplateService);
 
-  runApp(MyTieStateContainer(
-      blocProvider: BlocProvider(
-        authBloc: authBloc,
-        newFlyBloc: newFlyBloc,
-        editNewFlyTemplateBloc: editNewFlyTemplateBloc,
-      ),
-      child: WasteagramApp()));
+  return MyTieStateContainer(
+    blocProvider: BlocProvider(
+      authBloc: authBloc,
+      newFlyBloc: newFlyBloc,
+      editNewFlyTemplateBloc: editNewFlyTemplateBloc,
+    ),
+    child: MyTieApp(),
+  );
 }
 
 Future<RemoteConfig> initRemoteConfig() async {

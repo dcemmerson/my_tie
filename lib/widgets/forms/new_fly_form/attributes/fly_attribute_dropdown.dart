@@ -5,8 +5,6 @@ import 'package:my_tie/models/arguments/add_property_argument.dart';
 import 'package:my_tie/widgets/forms/new_fly_form/field_long_press_wrapper.dart';
 
 class FlyAttributeDropdown extends StatelessWidget {
-  // final _underlineSuccess = Container(height: 2, color: AppColors.success);
-  // final _underlineError = Container(height: 2, color: AppColors.error);
   final List<String> flyProperties;
   final String flyInProgressProperty;
   final String attribute;
@@ -64,6 +62,7 @@ class FlyAttributeDropdown extends StatelessWidget {
     } else {
       child = _buildDropdown();
     }
+
     return FieldLongPressWrapper(
       wrapperType: AddPropertyType.Attribute,
       properties: flyProperties,

@@ -17,6 +17,12 @@ import 'package:my_tie/models/db_names.dart';
 class NewFlyService {
   static const _flyInProgress = 'fly_in_progress';
 
+  Future createFlyInProgressDoc({String uid}) {
+    return FirebaseFirestore.instance
+        .collection(_flyInProgress)
+        .add({DbNames.uploadedBy: uid});
+  }
+
   Stream<QuerySnapshot> getFlyInProgressDocStream(String uid) {
     return FirebaseFirestore.instance
         .collection(_flyInProgress)
@@ -73,17 +79,6 @@ class NewFlyService {
       DbNames.uploadedBy: uid,
     }, SetOptions(mergeFields: [DbNames.instructions]));
   }
-
-  // Future deleteFlyInProgressInstruction(
-  //     {String docId, String uid, int stepNumber}) {
-  //   return FirebaseFirestore.instance
-  //       .collection(_flyInProgress)
-  //       .doc(docId)
-  //       .set({
-  //     DbNames.instructions: {stepNumber.toString(): FieldValue.delete()},
-  //     // DbNames.lastModified: DateTime.now(),
-  //   }, SetOptions(merge: true));
-  // }
 
   Future addNewFlyAttributes({
     String docId,
@@ -158,6 +153,13 @@ class NewFlyService {
       },
       SetOptions(merge: true),
     );
+  }
+
+  Future deleteFlyInProgress({String docId}) {
+    return FirebaseFirestore.instance
+        .collection(_flyInProgress)
+        .doc(docId)
+        .delete();
   }
 }
 

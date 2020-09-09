@@ -11,6 +11,7 @@ class FlyNameTextInput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FormBuilderTextField(
+      key: ValueKey(attribute),
       attribute: attribute,
       decoration: InputDecoration(labelText: label),
       initialValue: flyInProgressName,

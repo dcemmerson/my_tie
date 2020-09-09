@@ -59,6 +59,7 @@ class FieldLongPressWrapper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
+      key: ValueKey(label),
       child: child,
       onLongPress: () => showCupertinoModalPopup(
         context: context,
