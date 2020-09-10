@@ -74,6 +74,7 @@ class _MaterialReviewState extends State<MaterialReview>
       ),
       Text(mat.name.toTitleCase(), style: AppTextStyles.header),
       IconButton(
+        key: ValueKey('${mat.name}AddIcon'),
         onPressed: () => FlyFormRoutes.newFlyMaterialsPage(context,
             pageNumber: FormPageNumber(pageNumber: index)),
         icon: Icon(
@@ -154,6 +155,7 @@ class _MaterialReviewState extends State<MaterialReview>
         nextGroup.add(Container(
             padding: EdgeInsets.fromLTRB(0, 0, 0, AppPadding.p4),
             child: Column(
+              key: ValueKey(flyMaterial.name + propertyIndex.toString()),
               children: _buildMaterialSubGroups(
                   flyMaterial, materialIndex, propertyIndex),
             )));
@@ -164,6 +166,8 @@ class _MaterialReviewState extends State<MaterialReview>
       rows.add(SlideTransition(
         position: _offsetAnimations.removeAt(0),
         child: Card(
+          // key: ValueKey(
+          // widget.nfft.flyInProgress.materials[materialIndex].name + 'Card'),
           color: Theme.of(context).colorScheme.surface,
           margin: EdgeInsets.fromLTRB(0, AppPadding.p2, 0, AppPadding.p4),
           child: Padding(

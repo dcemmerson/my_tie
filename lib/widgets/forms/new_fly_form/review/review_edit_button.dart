@@ -8,6 +8,7 @@ class ReviewEditButton extends StatelessWidget {
   final String semanticLabel;
 
   ReviewEditButton({@required this.onPressedCallback, this.semanticLabel});
+
   @override
   Widget build(BuildContext context) {
     return IconButton(

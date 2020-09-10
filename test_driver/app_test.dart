@@ -2,12 +2,14 @@ import 'package:flutter_driver/flutter_driver.dart';
 import 'package:test/test.dart';
 
 import 'attributes_test_manager.dart';
+import 'materials_test_manager.dart';
 import 'new_fly_form_test_manager.dart';
 import 'test_value_keys.dart';
 
 void main() {
-  final AttributesTestManager attributesInfo = AttributesTestManager();
   final NewFlyFormTestManager newFlyFormTestManager = NewFlyFormTestManager();
+  final AttributesTestManager attributesTestManager = AttributesTestManager();
+  final MaterialsTestManager materialsTestManager = MaterialsTestManager();
 
   Future<FlutterDriver> setupAndGetDriver() async {
     FlutterDriver driver = await FlutterDriver.connect();
@@ -62,11 +64,11 @@ void main() {
       await driver.tap(addNewFlyButton);
 
       await newFlyFormTestManager.verifyFormIsCleared(driver);
-      await attributesInfo.fillOutAttributes(driver);
+      await attributesTestManager.fillOutAttributes(driver);
 
       //  Now verify that all the information we just entered actually appears
       //  on the new fly form review page.
-      await attributesInfo.verifyAttributesAppearInFormReview(driver);
+      await attributesTestManager.verifyAttributesAppearInFormReview(driver);
 
       //  Scroll until delete button visible, tap the delete fly in progress
       //  button but on the confirm dialog, press cancel. Scroll back to top
@@ -75,12 +77,27 @@ void main() {
       await newFlyFormTestManager.deleteFlyInProgressButCancel(driver);
       await driver
           .scrollIntoView(find.byValueKey(TestValueKeys.editAttributesIcon));
-      await attributesInfo.verifyAttributesAppearInFormReview(driver);
+      await attributesTestManager.verifyAttributesAppearInFormReview(driver);
 
       //  Finally, scroll back to delete buttons and delete the fly in progress
       //  that we created in this integration test.
       await driver.scrollIntoView(clearFormButton);
       await newFlyFormTestManager.deleteFlyInProgress(driver);
+      print('FINISH TEST 1');
+    });
+    test('Add and delete materials', () async {
+      //  Enter back into new fly form
+      final addNewFlyButton = find.byValueKey(TestValueKeys.addNewFlyButton);
+      await driver.tap(addNewFlyButton);
+
+      // Scroll to bottom and clear form.
+      // final clearFormButton = find.byValueKey(TestValueKeys.clearFormButton);
+      // await driver.scrollIntoView(clearFormButton);
+      // await newFlyFormTestManager.deleteFlyInProgress(driver);
+
+      await materialsTestManager.fillOutMaterials(driver);
+      await materialsTestManager.verifyMaterialsAppearInFormReview(driver);
+      await materialsTestManager.removeEachMaterialAndVerifyRemoved(driver);
     });
   });
 }
