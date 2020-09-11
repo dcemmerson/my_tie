@@ -7,6 +7,7 @@
 import 'package:flutter/material.dart';
 import 'package:my_tie/models/arguments/instruction_page_attribute.dart';
 import 'package:my_tie/models/fly_instruction.dart';
+import 'package:my_tie/models/keys.dart';
 import 'package:my_tie/models/new_fly_form_transfer.dart';
 import 'package:my_tie/routes/fly_form_routes.dart';
 import 'package:my_tie/styles/styles.dart';
@@ -36,7 +37,10 @@ class InstructionReview extends StatelessWidget {
                     InstructionPageAttribute(stepNumber: nextStepNumber)),
                 child: Row(
                   children: [
-                    Icon(Icons.add),
+                    Icon(
+                      Icons.add,
+                      key: ValueKey(Keys.addInstructionKey),
+                    ),
                     Text(nextStepNumber == 1 ? _addFirstStep : _addNextStep,
                         style: TextStyle(fontSize: AppFonts.h6))
                   ],
@@ -55,49 +59,45 @@ class InstructionReview extends StatelessWidget {
       margin: EdgeInsets.fromLTRB(0, AppPadding.p2, 0, AppPadding.p4),
       child: Padding(
         padding: EdgeInsets.fromLTRB(0, AppPadding.p2, 0, AppPadding.p4),
-        child: Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+        child: Column(children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text('Step ${instruction.step}', style: AppTextStyles.header),
+              ReviewEditButton(
+                semanticLabel: 'Edit instruction step',
+                onPressedCallback: () => FlyFormRoutes.newFlyInstructionPage(
+                    context,
+                    InstructionPageAttribute(stepNumber: instruction.step)),
+              ),
+            ],
+          ),
+          Container(
+            padding: EdgeInsets.fromLTRB(
+                AppPadding.p2, 0, AppPadding.p2, AppPadding.p1),
+            alignment: Alignment.bottomLeft,
+            child: Row(
               children: [
-                Text('Step ${instruction.step}', style: AppTextStyles.header),
-                ReviewEditButton(
-                  semanticLabel: 'Edit instruction step',
-                  onPressedCallback: () => FlyFormRoutes.newFlyInstructionPage(
-                      context,
-                      InstructionPageAttribute(stepNumber: instruction.step)),
-                ),
+                Text(instruction.title,
+                    style: TextStyle(
+                        fontSize: AppFonts.h5, fontWeight: FontWeight.w600)),
               ],
             ),
-            Container(
-              padding: EdgeInsets.fromLTRB(
-                  AppPadding.p2, 0, AppPadding.p2, AppPadding.p1),
-              alignment: Alignment.bottomLeft,
-              child: Row(
-                children: [
-                  Text(instruction.title,
-                      style: TextStyle(
-                          fontSize: AppFonts.h5, fontWeight: FontWeight.w600)),
-                ],
+          ),
+          Container(
+            padding: EdgeInsets.fromLTRB(
+                AppPadding.p2, 0, AppPadding.p2, AppPadding.p1),
+            alignment: Alignment.bottomLeft,
+            child: Row(children: [
+              Flexible(
+                child: Text(
+                  instruction.description,
+                  style: TextStyle(fontSize: AppFonts.h6),
+                ),
               ),
-            ),
-            Container(
-              padding: EdgeInsets.fromLTRB(
-                  AppPadding.p2, 0, AppPadding.p2, AppPadding.p1),
-              alignment: Alignment.bottomLeft,
-              child: Row(
-                children: [
-                  Flexible(
-                    child: Text(
-                      instruction.description,
-                      style: TextStyle(fontSize: AppFonts.h6),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
+            ]),
+          ),
+        ]),
       ),
     );
   }

@@ -51,10 +51,15 @@ class TestValueKeys {
   //////////////////////////////////////////////////////////////////
   ///
   //////////////////////////////////////////////////////////////////
-  /// Fly in progress attributes entry
+  /// Fly in progress attributes entry form
   static const flyNameEntry = 'fly_name';
   static const difficultyAttributeDropdown = 'difficulty';
   static const styleAttributeDropdown = 'style';
   static const typeAttributeDropdown = 'type';
   static const targetAttributeDropdown = 'target';
+
+  /// Fly in progress materials entry form
+
+  /// Fly in progress instructions entry form
+  static const addInstructionKey = 'addInstructionKey';
 }

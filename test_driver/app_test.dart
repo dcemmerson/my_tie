@@ -2,6 +2,7 @@ import 'package:flutter_driver/flutter_driver.dart';
 import 'package:test/test.dart';
 
 import 'attributes_test_manager.dart';
+import 'instructions_test_manager.dart';
 import 'materials_test_manager.dart';
 import 'new_fly_form_test_manager.dart';
 import 'test_value_keys.dart';
@@ -10,6 +11,8 @@ void main() {
   final NewFlyFormTestManager newFlyFormTestManager = NewFlyFormTestManager();
   final AttributesTestManager attributesTestManager = AttributesTestManager();
   final MaterialsTestManager materialsTestManager = MaterialsTestManager();
+  final InstructionsTestManager instructionsTestManager =
+      InstructionsTestManager();
 
   Future<FlutterDriver> setupAndGetDriver() async {
     FlutterDriver driver = await FlutterDriver.connect();
@@ -98,6 +101,9 @@ void main() {
       await materialsTestManager.fillOutMaterials(driver);
       await materialsTestManager.verifyMaterialsAppearInFormReview(driver);
       await materialsTestManager.removeEachMaterialAndVerifyRemoved(driver);
+    });
+    test('Add and delete instructions', () async {
+      await instructionsTestManager.fillOutInstructions(driver);
     });
   });
 }

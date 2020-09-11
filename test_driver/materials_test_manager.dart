@@ -1,8 +1,8 @@
 /// filename: materials_test_manager.dart
-/// description: Logic for testing attributes aspect of new fly form.
-///   Available functionallity includes verify that the attributes portion
+/// description: Logic for testing materials aspect of new fly form.
+///   Available functionallity includes verify that the materials portion
 ///   of form was successfully cleared when deleting fly in progress,
-///   fill out attributes portion of form, verify attributes portion, etc.
+///   fill out materials portion of form, verify materials portion, etc.
 
 import 'dart:math';
 
@@ -16,17 +16,6 @@ class MaterialsTestManager {
   static const emptyAttributePlaceholder = '[None]';
 
   static final rnd = Random();
-
-  // final addMaterialsKeys = [
-  //   TestValueKeys.editFlossesIcon,
-  //   TestValueKeys.editFursIcon,
-  //   TestValueKeys.editHooksIcon,
-  //   TestValueKeys.editSyntheticsIcon,
-  //   TestValueKeys.editThreadsIcon,
-  //   TestValueKeys.editTinselsIcon,
-  //   TestValueKeys.editWiresIcon,
-  //   TestValueKeys.editYarnsIcon,
-  // ];
 
   static final _materials = {
     'beads': {
@@ -162,12 +151,6 @@ class MaterialsTestManager {
                 driver),
             false);
       });
-      // await Future.forEach(matSelected.propertiesAdded,
-      //     (TestProperty prop) async {
-      //   final searchProp =
-      //       find.descendant(of: ancestor, matching: find.text(prop.name));
-      //   expect(await driver.getText(searchProp), prop.name);
-      // });
     });
   }
 

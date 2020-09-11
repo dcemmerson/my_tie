@@ -186,20 +186,32 @@ class NewFlyBloc {
   Future _handleAddNewFlyInstruction(
       FlyInstructionChange instructionChange) async {
     // Add new files that user took with camera (or selected on device) to
-    //  Firebase storage.
-    List<String> addedUris = await newFlyService.addFilesToStorage(
+    //  Firebase storage. Do not wait for future to resolve, so we can add
+    //  or update doc in firestore to show user a preview quicker.
+    Future<List<String>> addedUris = newFlyService.addFilesToStorage(
       uid: authService.currentUser.uid,
       images: instructionChange.imagesToAdd,
     );
 
-    //  Now update the actual fly instructions doc
-    return newFlyService.addNewFlyInstruction(
+    //  Now update the actual fly instructions doc, without any new photo urls
+    //   added.
+    newFlyService.addNewFlyInstruction(
       docId: instructionChange.fly.docId,
       uid: authService.currentUser.uid,
       title: instructionChange.title,
       description: instructionChange.description,
       stepNumber: instructionChange.step,
-      imageUris: [...addedUris, ...instructionChange.imageUrisToKeep],
+      imageUris: instructionChange.imageUrisToKeep,
+    );
+    //  Update the with the same instructions again, but we are awaiting for
+    //  the call to storage to return with our urls.
+    newFlyService.addNewFlyInstruction(
+      docId: instructionChange.fly.docId,
+      uid: authService.currentUser.uid,
+      title: instructionChange.title,
+      description: instructionChange.description,
+      stepNumber: instructionChange.step,
+      imageUris: [...(await addedUris), ...instructionChange.imageUrisToKeep],
     );
   }
 
