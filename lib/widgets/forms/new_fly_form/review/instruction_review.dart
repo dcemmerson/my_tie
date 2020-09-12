@@ -61,6 +61,7 @@ class InstructionReview extends StatelessWidget {
         padding: EdgeInsets.fromLTRB(0, AppPadding.p2, 0, AppPadding.p4),
         child: Column(children: [
           Row(
+            key: ValueKey('Step ${instruction.step}'),
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text('Step ${instruction.step}', style: AppTextStyles.header),

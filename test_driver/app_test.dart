@@ -104,6 +104,8 @@ void main() {
     });
     test('Add and delete instructions', () async {
       await instructionsTestManager.fillOutInstructions(driver);
+      await instructionsTestManager.verifyInstructionsReview(driver);
+      await instructionsTestManager.deleteEachInstructionAndVerify(driver);
     });
   });
 }

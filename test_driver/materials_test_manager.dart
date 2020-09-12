@@ -9,6 +9,7 @@ import 'dart:math';
 import 'package:flutter_driver/flutter_driver.dart';
 import 'package:test/test.dart';
 
+import 'test_utility.dart';
 import 'test_value_keys.dart';
 
 class MaterialsTestManager {
@@ -144,7 +145,7 @@ class MaterialsTestManager {
       await Future.forEach(matSelected.propertiesAdded,
           (TestProperty testProp) async {
         expect(
-            await isPresent(
+            await TestUtility.isPresent(
                 find.descendant(
                     of: ancestor,
                     matching: find.text(testProp.propertySelected)),
@@ -152,17 +153,6 @@ class MaterialsTestManager {
             false);
       });
     });
-  }
-
-  Future<bool> isPresent(SerializableFinder finder, FlutterDriver driver,
-      {Duration timeout = const Duration(seconds: 1)}) async {
-    try {
-      await driver.scrollIntoView(finder, timeout: timeout);
-      await driver.waitFor(finder, timeout: timeout);
-      return true;
-    } catch (e) {
-      return false;
-    }
   }
 }
 
