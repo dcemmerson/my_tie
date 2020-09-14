@@ -6,7 +6,7 @@ import 'package:my_tie/models/fly_form_material.dart';
 import 'package:my_tie/models/fly_materials.dart';
 import 'package:my_tie/models/new_fly_form_template.dart';
 
-const mockNewFlyForm = {
+const mockNewFlyFormDoc = {
   'attributes': {
     'difficulty': ['easy', 'medium', 'hard'],
     'style': [
@@ -66,25 +66,51 @@ const mockNewFlyForm = {
   },
 };
 
+const flyInProgressDoc = {
+  'materials': {
+    'beads': [
+      {'color': 'red', 'size': 'small', 'type': 'steel'},
+      {'color': 'black', 'size': 'mediun', 'type': 'lead'}
+    ],
+    'hooks': [
+      {'size': 'medium'}
+    ],
+    'wires': [
+      {'color': 'copper', 'type': 'sinker'}
+    ],
+    'yarns': [
+      {'color': 'tan'},
+      {'color': 'black'}
+    ]
+  },
+  'attributes': {
+    // 'fly_name': 'my new fly name',
+    'difficulty': 'medium',
+    'style': 'caddis',
+    'target': 'steelhead',
+    'type': 'nymph',
+  },
+};
+
 void main() {
-  group('No fly in progress - ', () {
+  group('Fly form template - ', () {
     NewFlyFormTemplate nfft;
     Fly fly;
     setUp(() {
-      nfft = NewFlyFormTemplate.fromDoc(mockNewFlyForm);
+      nfft = NewFlyFormTemplate.fromDoc(mockNewFlyFormDoc);
       fly = Fly.formattedForReview(flyFormTemplate: nfft);
     });
 
-    test('Fly form template', () {
+    test('Test fly form template without fly', () {
       // Add the mock data to the NewFlyFormTemplate, then verify all data is
       //  contained in NewFlyFormTemplate.
-      assert(
-          nfft.flyFormAttributes.length == mockNewFlyForm['attributes'].length);
-      assert(
-          nfft.flyFormMaterials.length == mockNewFlyForm['materials'].length);
+      assert(nfft.flyFormAttributes.length ==
+          mockNewFlyFormDoc['attributes'].length);
+      assert(nfft.flyFormMaterials.length ==
+          mockNewFlyFormDoc['materials'].length);
 
       // Check for all attributes
-      mockNewFlyForm['attributes'].forEach((key, value) {
+      mockNewFlyFormDoc['attributes'].forEach((key, value) {
         final List<FlyFormAttribute> ffas =
             nfft.flyFormAttributes.where((attr) => attr.name == key).toList();
         assert(ffas.length == 1);
@@ -95,7 +121,7 @@ void main() {
       });
 
       // Check for all materials
-      mockNewFlyForm['materials'].forEach((key, value) {
+      mockNewFlyFormDoc['materials'].forEach((key, value) {
         // eg key == 'beads'
 
         (value as Map).forEach((k, v) {
@@ -111,8 +137,17 @@ void main() {
         });
       });
     });
+  });
+  group('No fly in progress - ', () {
+    NewFlyFormTemplate nfft;
+    Fly fly;
+    setUp(() {
+      nfft = NewFlyFormTemplate.fromDoc(mockNewFlyFormDoc);
+      fly = Fly.formattedForReview(flyFormTemplate: nfft);
+    });
+
     test('Fly for review, test attributes', () {
-      mockNewFlyForm['attributes'].forEach((attrKey, attrValues) {
+      mockNewFlyFormDoc['attributes'].forEach((attrKey, attrValues) {
         FlyAttribute flyAttribute = fly.attributes.firstWhere(
             (flyAttribute) => flyAttribute.name == attrKey,
             orElse: () => null);
@@ -121,7 +156,7 @@ void main() {
       });
     });
     test('Fly for review, test materials', () {
-      mockNewFlyForm['materials'].forEach((matKey, matValues) {
+      mockNewFlyFormDoc['materials'].forEach((matKey, matValues) {
         // eg matKey == 'beads'
         FlyMaterials flyMaterials = fly.materials.firstWhere(
             (flyMaterials) => flyMaterials.name == matKey,
@@ -136,6 +171,54 @@ void main() {
     test('Fly for review, test instructions', () {
       assert(fly.instructions != null);
       assert(fly.instructions.length == 0);
+    });
+  });
+  group('With fly in progress - ', () {
+    NewFlyFormTemplate nfft;
+    Fly fly;
+    setUp(() {
+      nfft = NewFlyFormTemplate.fromDoc(mockNewFlyFormDoc);
+      fly = Fly.formattedForReview(
+          flyFormTemplate: nfft,
+          attrs: flyInProgressDoc['attributes'],
+          mats: flyInProgressDoc['materials'],
+          instr: flyInProgressDoc['instructions']);
+    });
+
+    test('Fly for review, test attributes', () {
+      flyInProgressDoc['attributes'].forEach((attrKey, attrValue) {
+        // eg, attrKey == 'difficulty', attrValue == 'medium'
+        FlyAttribute foundFlyAttribute = fly.attributes.firstWhere(
+          (flyAttr) => flyAttr.name == attrKey && flyAttr.value == attrValue,
+          orElse: () => null,
+        );
+        assert(foundFlyAttribute != null);
+      });
+    });
+    test('Fly for review, test materials', () {
+      flyInProgressDoc['materials'].forEach((matKey, matValues) {
+        // eg, matKey == 'beads
+        (matValues as List).forEach((matProps) {
+          // eg, matProps == {'color': 'red', 'size': 'small', 'type': 'steel'},
+          FlyMaterials flyMaterials = fly.materials.firstWhere(
+            (flyMat) => flyMat.name == matKey,
+            orElse: () => null,
+          );
+
+          assert(flyMaterials != null);
+
+          matProps.forEach((key, value) {
+            // eg, key == 'color', value == 'red'
+            FlyMaterial foundFlyMaterial = flyMaterials.flyMaterials.firstWhere(
+                (flyMat) =>
+                    flyMat.properties.containsKey(key) &&
+                    flyMat.properties.containsValue(value),
+                orElse: () => null);
+
+            assert(foundFlyMaterial != null);
+          });
+        });
+      });
     });
   });
 }
