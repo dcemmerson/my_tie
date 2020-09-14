@@ -148,26 +148,39 @@ class _NewFlyFormPublishState extends State<NewFlyFormPublish> {
             ),
           ),
         ]),
-        Row(children: [
-          Container(
-            child: FlatButton(
-              key: ValueKey('clearFormButton'),
-              padding: EdgeInsets.all(0),
-              child:
-                  Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                Icon(Icons.delete_forever,
-                    color: Theme.of(context).colorScheme.error),
-                Padding(
-                  padding:
-                      EdgeInsets.fromLTRB(0, 0, AppPadding.p2, AppPadding.p2),
-                  child: Text('Clear form',
-                      style: TextStyle(
-                          color: Theme.of(context).colorScheme.error)),
-                ),
-              ]),
-              onPressed: () =>
-                  _promptDeleteFlyInProgress(flyFormTransfer.flyInProgress),
-            ),
+        Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+          FlatButton(
+            key: ValueKey('clearFormButton'),
+            padding: EdgeInsets.all(0),
+            child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+              Icon(Icons.delete_forever,
+                  color: Theme.of(context).colorScheme.error),
+              Padding(
+                padding:
+                    EdgeInsets.fromLTRB(0, 0, AppPadding.p2, AppPadding.p2),
+                child: Text('Clear form',
+                    style:
+                        TextStyle(color: Theme.of(context).colorScheme.error)),
+              ),
+            ]),
+            onPressed: () =>
+                _promptDeleteFlyInProgress(flyFormTransfer.flyInProgress),
+          ),
+          FlatButton(
+            key: ValueKey('previewFormButton'),
+            padding: EdgeInsets.all(0),
+            child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+              Icon(Icons.art_track,
+                  color: Theme.of(context).colorScheme.primary),
+              Padding(
+                padding:
+                    EdgeInsets.fromLTRB(0, 0, AppPadding.p2, AppPadding.p2),
+                child: Text('Preview',
+                    style: TextStyle(
+                        color: Theme.of(context).colorScheme.primary)),
+              ),
+            ]),
+            onPressed: () => print('unimplmented'),
           ),
         ]),
       ],
