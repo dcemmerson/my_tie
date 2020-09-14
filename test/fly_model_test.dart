@@ -1,7 +1,9 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:my_tie/models/fly.dart';
+import 'package:my_tie/models/fly_attribute.dart';
 import 'package:my_tie/models/fly_form_attribute.dart';
 import 'package:my_tie/models/fly_form_material.dart';
+import 'package:my_tie/models/fly_materials.dart';
 import 'package:my_tie/models/new_fly_form_template.dart';
 
 const mockNewFlyForm = {
@@ -66,10 +68,16 @@ const mockNewFlyForm = {
 
 void main() {
   group('No fly in progress - ', () {
+    NewFlyFormTemplate nfft;
+    Fly fly;
+    setUp(() {
+      nfft = NewFlyFormTemplate.fromDoc(mockNewFlyForm);
+      fly = Fly.formattedForReview(flyFormTemplate: nfft);
+    });
+
     test('Fly form template', () {
       // Add the mock data to the NewFlyFormTemplate, then verify all data is
       //  contained in NewFlyFormTemplate.
-      final nfft = NewFlyFormTemplate.fromDoc(mockNewFlyForm);
       assert(
           nfft.flyFormAttributes.length == mockNewFlyForm['attributes'].length);
       assert(
@@ -77,7 +85,7 @@ void main() {
 
       // Check for all attributes
       mockNewFlyForm['attributes'].forEach((key, value) {
-        List<FlyFormAttribute> ffas =
+        final List<FlyFormAttribute> ffas =
             nfft.flyFormAttributes.where((attr) => attr.name == key).toList();
         assert(ffas.length == 1);
 
@@ -92,7 +100,7 @@ void main() {
 
         (value as Map).forEach((k, v) {
           //eg k == 'color', v == List<String>
-          List<FlyFormMaterial> ffms =
+          final List<FlyFormMaterial> ffms =
               nfft.flyFormMaterials.where((mat) => mat.name == key).toList();
           assert(ffms.length == 1);
 
@@ -103,10 +111,31 @@ void main() {
         });
       });
     });
-    test('Fly for review', () {
-      final nfft = NewFlyFormTemplate.fromDoc(mockNewFlyForm);
-      Fly fly = Fly.formattedForReview(flyFormTemplate: nfft);
-//      fly.attributes
+    test('Fly for review, test attributes', () {
+      mockNewFlyForm['attributes'].forEach((attrKey, attrValues) {
+        FlyAttribute flyAttribute = fly.attributes.firstWhere(
+            (flyAttribute) => flyAttribute.name == attrKey,
+            orElse: () => null);
+        assert(flyAttribute != null);
+        assert(flyAttribute.value == '[None]');
+      });
+    });
+    test('Fly for review, test materials', () {
+      mockNewFlyForm['materials'].forEach((matKey, matValues) {
+        // eg matKey == 'beads'
+        FlyMaterials flyMaterials = fly.materials.firstWhere(
+            (flyMaterials) => flyMaterials.name == matKey,
+            orElse: () => null);
+
+        assert(flyMaterials != null);
+        // There is no fly in progress, so flyMaterials.flyMaterials should
+        //  be null.
+        assert(flyMaterials.flyMaterials == null);
+      });
+    });
+    test('Fly for review, test instructions', () {
+      assert(fly.instructions != null);
+      assert(fly.instructions.length == 0);
     });
   });
 }

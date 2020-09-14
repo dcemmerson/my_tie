@@ -19,7 +19,7 @@ class FlyMaterial {
 }
 
 class FlyMaterials {
-  final String name;
+  final String name; // eg beads
   final List<FlyMaterial> flyMaterials;
 
   FlyMaterials({this.name, List props})
