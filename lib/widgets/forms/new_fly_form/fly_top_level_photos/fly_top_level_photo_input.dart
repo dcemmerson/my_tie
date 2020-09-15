@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
-class InstructionPhotoInput extends StatelessWidget {
+class FlyTopLevelPhotoInput extends StatelessWidget {
   // final String title;
   final String label;
   final String attribute;
   final List<String> imageUris;
 
-  InstructionPhotoInput({this.label, this.attribute, this.imageUris});
+  FlyTopLevelPhotoInput({this.label, this.attribute, this.imageUris});
 
   @override
   Widget build(BuildContext context) {

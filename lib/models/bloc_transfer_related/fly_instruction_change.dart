@@ -31,12 +31,10 @@ class FlyInstructionChange {
       : title = updatedInstruction[DbNames.instructionTitle],
         description = updatedInstruction[DbNames.instructionDescription],
         step = updatedInstruction[DbNames.instructionStep],
-        imagesToAdd = _extractImagesToAdd(prevInstruction, updatedInstruction),
-        imageUrisToKeep =
-            _extractImageUrisToKeep(prevInstruction, updatedInstruction);
+        imagesToAdd = _extractImagesToAdd(updatedInstruction),
+        imageUrisToKeep = _extractImageUrisToKeep(updatedInstruction);
 
-  static List<File> _extractImagesToAdd(
-      FlyInstruction prevInstruction, Map updatedInstruction) {
+  static List<File> _extractImagesToAdd(Map updatedInstruction) {
     final List<File> imageFilesToAdd =
         updatedInstruction[DbNames.instructionImages]
             .whereType<File>()
@@ -45,10 +43,7 @@ class FlyInstructionChange {
     return imageFilesToAdd;
   }
 
-  static List<String> _extractImageUrisToKeep(
-      FlyInstruction prevInstruction, Map updatedInstruction) {
-    //final List<String>
-    print(prevInstruction);
+  static List<String> _extractImageUrisToKeep(Map updatedInstruction) {
     List<String> imageUrisFromPrevInstruction = _toListOfString(
       updatedInstruction[DbNames.instructionImages]
           .where((img) => (img is Image && img.image is NetworkImage))

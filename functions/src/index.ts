@@ -68,16 +68,15 @@ exports.addToNewFlyFormTemplate = functions.firestore.document('/new_fly_form_in
     }
   });
 
-// exports.normalizeNewFlyInstructions = functions.firestore.document('/fly_in_progress/{docId}'/*/instructions/instructionDocId'*/)
-// .onWrite(async (change, context) => {
-// });
-
 //  name: editNewFlyInstruction
 //  description: When writing to a fly in progress doc, we iterate through each
 //    instruction to check if the user changed any photos (and the photo urls changed)
-//    when updating an instruction. If the old doc contains and urls that are not
+//    when updating an instruction. If the old doc contains any urls that are not
 //    referenced in the new doc, delete those from storage as they would now
 //    be dangling references (from the perspective of the app, but not truly dangling).
+//    Additionally, we check the previous doc with the new doc and compare the 
+//    top_level_image_uris. Any top_level_image_uris in the old doc but not the new
+//    doc will be deleted.
 //    
 //    Additionally this cloud function calls normalizeInstructionsOrder, which ensures
 //    that when user adds/deletes (specifically deletes) instructions, the step numbers
@@ -85,16 +84,11 @@ exports.addToNewFlyFormTemplate = functions.firestore.document('/new_fly_form_in
 //    deletes 2, we need to make sure instruction step 3 is changed to step 2.
 exports.editNewFlyInstruction = functions.firestore.document('/fly_in_progress/{docId}')
   .onWrite(async (change, context) => {
-    console.log('***** editNewFlyInstruction running *****');
 
     if (instructionsOutOfOrder(change.after)) {
-      console.log('***** inside conditional editNewFlyInstruction running *****');
-
       await normalizeInstructionStepsOrder(change.after);
-
     }
     await cleanupUnusedPhotosFromStorage(change);
-
 
     return;
 
@@ -151,11 +145,9 @@ exports.editNewFlyInstruction = functions.firestore.document('/fly_in_progress/{
   }); // End editNewFlyInstructions
 
 async function cleanupUnusedPhotosFromStorage(change: functions.Change<DocumentSnapshot>) {
-  console.log('***** inside cleanup unused photos from storage *****')
   const imageUrisToDelete: Array<string> = extractImageUrlsToDelete(change.after, change.before);
   const storage = admin.storage().bucket(`gs://${BUCKET_URL}`);
 
-  console.log('*** images to delete');
   console.log(imageUrisToDelete);
   const deletions = imageUrisToDelete.map(async (uri: string) => {
     const file = storage.file(extractImagePathFromUrl(uri));
@@ -175,34 +167,69 @@ function extractImagePathFromUrl(url: string) {
 }
 
 function extractImageUrlsToDelete(newDoc: DocumentSnapshot, prevDoc: DocumentSnapshot): Array<string> {
-  if (prevDoc.data()?.instructions && newDoc.data()?.instructions) {
+  // This method could be called in two scenarios where we need to delete images:
+  //  1. User deletes an image which was part of an instruction, or a top level
+  //    image used in fly overview section.
+  //  2. User deletes an entire instruction step which contained 1+ images.
+  //  To simulataneously handle both cases, we will collect all image uris from both
+  //  prev doc and new doc, then check which (if any) image uris the new doc does not
+  //  contain and collect those to be deleted.
 
-    // This method could be called in two scenarios where we need to delete images:
-    //  1. User deletes an image which was part of an instruction
-    //  2. User deletes an entire instruction step which contained 1+ images.
-    //  To simulataneously handle both cases, we will collect all image uris from both
-    //  prev doc and new doc, then check which (if any) image uris the new doc does not
-    //  contain and collect those to be deleted.
+  const imageUrisToDelete: Array<string> = [];
+  imageUrisToDelete.push(...extractImageUrlsFromInstructionsToDelete());
+
+  imageUrisToDelete.push(...extractTopLevelImageUrlsToDelete());
+
+  return imageUrisToDelete;
+
+  function extractImageUrlsFromInstructionsToDelete(): Array<string> {
+
+    // If no prevDoc, then user just created new fly in progress doc, meaning
+    //  there are no old instruction image uris to delete.
+    if (!prevDoc.data()?.instructions) return [];
+    // else if (newDoc.data()?.instructions) return prevDoc.data()?.instructions;
 
     const prevInstructions = prevDoc.data()?.instructions;
     const prevInstructionsImageUris: Array<string> = [];
-
-    const newInstructions = newDoc.data()?.instructions;
-    const newInstructionsImageUris: Array<string> = [];
 
     // Collect image uris from prev and new docs
     for (const step in prevInstructions) {
       prevInstructionsImageUris.push(...prevInstructions[step].instruction_image_uris);
     }
+
+    // If there is no newDoc, then user must have deleted fly in progress form, 
+    //  in which case we need to delete all prev image uris from storage.
+    if (!newDoc.data()?.instructions) {
+      return prevInstructionsImageUris;
+    }
+
+    const newInstructions = newDoc.data()?.instructions;
+    const newInstructionsImageUris: Array<string> = [];
+
     for (const step in newInstructions) {
       newInstructionsImageUris.push(...newInstructions[step].instruction_image_uris);
     }
 
-    // Now go through uris in old doc and check if they exist in new doc.
+    // Now go through instruction uris in old doc and check if they exist in new doc.
     //  Return all the uris that exist in the old doc, but not the new doc.
     return prevInstructionsImageUris.filter(prevUri => !newInstructionsImageUris.includes(prevUri));
   }
-  else {
-    return [];
+
+  function extractTopLevelImageUrlsToDelete(): Array<string> {
+      
+    const prevTopLevelImageUris: Array<string> = prevDoc.data()?.top_level_image_uris;
+    const newTopLevelImageUris: Array<string> = newDoc.data()?.top_level_image_uris;
+
+    if (!newTopLevelImageUris) {
+      // Case where user deleted entrie doc.
+      return prevTopLevelImageUris;
+    }
+    else if (!prevTopLevelImageUris) {
+      return [];
+    }
+    else {
+      return prevTopLevelImageUris.filter(prevUri => !newTopLevelImageUris.includes(prevUri));
+    }
+
   }
 }

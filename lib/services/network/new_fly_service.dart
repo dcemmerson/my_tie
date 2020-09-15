@@ -85,9 +85,11 @@ class NewFlyService {
     String uid,
     Map<String, String> attributes,
     String flyName,
+    List<String> topLevelImageUris,
   }) {
     final Map<String, dynamic> flyInProgress = {
       DbNames.attributes: attributes,
+      DbNames.topLevelImageUris: topLevelImageUris,
       DbNames.uploadedBy: uid,
       DbNames.lastModified: DateTime.now(),
       if (flyName != null) DbNames.flyName: flyName,

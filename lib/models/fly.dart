@@ -21,16 +21,26 @@ class Fly {
   final List<FlyMaterials> materials;
   final List<FlyInstruction> instructions;
 
-  Fly({this.docId, this.flyName, Map attrs, Map mats, Map instr})
-      : this.attributes = _toAttributeList(attrs),
+  final List<String> topLevelImageUris;
+
+  Fly({
+    this.docId,
+    this.flyName,
+    List imageUris,
+    Map attrs,
+    Map mats,
+    Map instr,
+  })  : this.attributes = _toAttributeList(attrs),
         this.materials = _toMaterialsList(mats),
-        this.instructions = _toInstructionsList(instr);
+        this.instructions = _toInstructionsList(instr),
+        this.topLevelImageUris = _toListOfString(imageUris);
 
   /// To format for review, we need to pass in the NewFlyFormTemplate from db,
   ///   which we will then use as a guide to ensure we either set attributes/
   ///   materials values to the value passed in, or Fly.nullReplacement.
   Fly.formattedForReview({
     this.docId,
+    List imageUris,
     String flyName,
     Map attrs,
     Map mats,
@@ -43,11 +53,13 @@ class Fly {
         this.attributes =
             _toAttributeListForReview(attrs ?? {}, flyFormTemplate),
         this.materials = _toMaterialListForReview(mats ?? {}, flyFormTemplate),
-        this.instructions = _toInstructionsListForReview(instr);
+        this.instructions = _toInstructionsListForReview(instr),
+        this.topLevelImageUris = _toListOfString(imageUris);
 
   Fly.formattedForEditing({
     this.docId,
     this.flyName,
+    List imageUris,
     Map attrs,
     Map mats,
     NewFlyFormTemplate flyFormTemplate,
@@ -55,7 +67,8 @@ class Fly {
   })  : this.attributes =
             _toAttributeListForEditing(attrs ?? {}, flyFormTemplate),
         this.materials = _toMaterialListForEditing(mats ?? {}, flyFormTemplate),
-        this.instructions = _toInstructionsList(instr);
+        this.instructions = _toInstructionsList(instr),
+        this.topLevelImageUris = _toListOfString(imageUris);
 
   String getMaterial(
       int materialIndex, int propertyIndex, String propertyName) {
@@ -69,6 +82,9 @@ class Fly {
         .flyMaterials[propertyIndex]
         .properties[propertyName];
   }
+
+  static List<String> _toListOfString(List list) =>
+      list?.map((el) => el.toString());
 
   static List<FlyAttribute> _toAttributeListForEditing(
       Map attrs, NewFlyFormTemplate flyFormTemplate) {

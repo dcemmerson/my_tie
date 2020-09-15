@@ -120,6 +120,7 @@ class _NewFlyFormPublishState extends State<NewFlyFormPublish> {
         SizedBox(height: _spaceBetweenDropdowns),
         _attributesHeader,
         AttributeReview(newFlyFormTransfer: flyFormTransfer),
+        // FlyTopLevelImagesReview(),
         _materialsHeader,
         MaterialReview(newFlyFormTransfer: flyFormTransfer),
         _instructionsHeader,

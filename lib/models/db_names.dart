@@ -12,6 +12,7 @@ class DbNames {
   static const attributes = 'attributes';
   static const materials = 'materials';
   static const instructions = 'instructions';
+  static const topLevelImageUris = 'top_level_image_uris';
 
   static const flyName = 'fly_name';
 

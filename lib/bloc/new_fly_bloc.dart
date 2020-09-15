@@ -9,12 +9,14 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:my_tie/models/arguments/instruction_page_attribute.dart';
+import 'package:my_tie/models/bloc_transfer_related/fly_attribute_change.dart';
 import 'package:my_tie/models/bloc_transfer_related/fly_instruction_change.dart';
 import 'package:my_tie/models/bloc_transfer_related/fly_instruction_transfer.dart';
 import 'package:my_tie/models/bloc_transfer_related/fly_material_add_or_update.dart';
 
 import 'package:my_tie/models/db_names.dart';
 import 'package:my_tie/models/fly.dart';
+import 'package:my_tie/models/fly_attribute.dart';
 import 'package:my_tie/models/new_fly_form_transfer.dart';
 import 'package:my_tie/models/new_fly_form_template.dart';
 import 'package:my_tie/services/network/auth_service.dart';
@@ -31,7 +33,8 @@ class NewFlyBloc {
   final FlyFormTemplateService flyFormTemplateService;
 
   // Coming from app.
-  StreamController<Fly> newFlyAttributesSink = StreamController<Fly>();
+  StreamController<FlyAttributeChange> newFlyAttributesSink =
+      StreamController<FlyAttributeChange>();
   StreamController<FlyMaterialAddOrUpdate> newFlyMaterialSink =
       StreamController<FlyMaterialAddOrUpdate>();
   StreamController<FlyInstructionChange> newFlyInstructionSink =
@@ -170,16 +173,39 @@ class NewFlyBloc {
     return _handleDeleteFlyMaterial(materialUpdate);
   }
 
-  Future _handleAddNewFlyAttributes(Fly flyInProgress) async {
+  Future _handleAddNewFlyAttributes(
+      FlyAttributeChange flyAttributeChange) async {
+    //  Add file uris to storage.
+    Future<List<String>> addedUris = newFlyService.addFilesToStorage(
+      uid: authService.currentUser.uid,
+      images: flyAttributeChange.imagesToAdd,
+    );
+
     Map<String, String> formAttributeData = {};
-    flyInProgress.attributes.forEach((flyAttribute) =>
+    flyAttributeChange.updatedAttributes.forEach((flyAttribute) =>
         formAttributeData = {...formAttributeData, ...flyAttribute.toMap()});
 
-    return newFlyService.addNewFlyAttributes(
-      docId: flyInProgress.docId,
+    newFlyService.addNewFlyAttributes(
+      docId: flyAttributeChange.prevFly.docId,
       uid: authService.currentUser.uid,
-      flyName: flyInProgress.flyName,
+      flyName: flyAttributeChange.updatedAttributes
+          .firstWhere((attr) => attr.name == DbNames.flyName)
+          .value,
       attributes: formAttributeData,
+      topLevelImageUris: flyAttributeChange.imageUrisToKeep,
+    );
+
+    newFlyService.addNewFlyAttributes(
+      docId: flyAttributeChange.prevFly.docId,
+      uid: authService.currentUser.uid,
+      flyName: flyAttributeChange.updatedAttributes
+          .firstWhere((attr) => attr.name == DbNames.flyName)
+          .value,
+      attributes: formAttributeData,
+      topLevelImageUris: [
+        ...flyAttributeChange.imageUrisToKeep,
+        ...(await addedUris)
+      ],
     );
   }
 
