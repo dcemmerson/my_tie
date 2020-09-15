@@ -17,37 +17,31 @@ import 'package:my_tie/routes/fly_form_routes.dart';
 
 import 'package:my_tie/styles/styles.dart';
 
+import '../fly_in_progress_review_form_stream_builder.dart';
 import 'attribute_review.dart';
 import 'instruction_review.dart';
 import 'material_review.dart';
 
-class NewFlyFormPublish extends StatefulWidget {
+// ignore: must_be_immutable
+class NewFlyFormPublish extends StatelessWidget {
   final _spaceBetweenDropdowns = AppPadding.p6;
-
-  @override
-  _NewFlyFormPublishState createState() => _NewFlyFormPublishState();
-}
-
-class _NewFlyFormPublishState extends State<NewFlyFormPublish> {
+  BuildContext _context;
   Widget _attributesHeader;
   Widget _materialsHeader;
   Widget _instructionsHeader;
 
   NewFlyBloc _newFlyBloc;
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-
+  void _buildDependencies() {
     // Font related
     _attributesHeader = Container(
         padding: EdgeInsets.all(AppPadding.p2),
         child: Opacity(
             opacity: 0.9,
-            child: Text('Attributes',
+            child: Text('Overview',
                 style: TextStyle(
                   fontSize: AppFonts.h3,
-                  color: Theme.of(context).colorScheme.secondaryVariant,
+                  color: Theme.of(_context).colorScheme.secondaryVariant,
                   decoration: TextDecoration.underline,
                 ))));
     _materialsHeader = Container(
@@ -57,7 +51,7 @@ class _NewFlyFormPublishState extends State<NewFlyFormPublish> {
             child: Text('Materials',
                 style: TextStyle(
                   fontSize: AppFonts.h3,
-                  color: Theme.of(context).colorScheme.secondaryVariant,
+                  color: Theme.of(_context).colorScheme.secondaryVariant,
                   decoration: TextDecoration.underline,
                 ))));
     _instructionsHeader = Container(
@@ -67,10 +61,10 @@ class _NewFlyFormPublishState extends State<NewFlyFormPublish> {
             child: Text('Instructions',
                 style: TextStyle(
                   fontSize: AppFonts.h3,
-                  color: Theme.of(context).colorScheme.secondaryVariant,
+                  color: Theme.of(_context).colorScheme.secondaryVariant,
                   decoration: TextDecoration.underline,
                 ))));
-    _newFlyBloc = MyTieStateContainer.of(context).blocProvider.newFlyBloc;
+    _newFlyBloc = MyTieStateContainer.of(_context).blocProvider.newFlyBloc;
   }
 
   void _deleteFlyInProgress(Fly fly) {
@@ -79,7 +73,7 @@ class _NewFlyFormPublishState extends State<NewFlyFormPublish> {
 
   void _promptDeleteFlyInProgress(Fly fly) async {
     bool deleteForm = await showDialog<bool>(
-        context: context,
+        context: _context,
         builder: (BuildContext ctx) {
           return CupertinoAlertDialog(
             title: Text('Clear form?'),
@@ -94,35 +88,30 @@ class _NewFlyFormPublishState extends State<NewFlyFormPublish> {
                 onPressed: () => Navigator.of(ctx).pop(true),
                 child: Text('Clear form',
                     style:
-                        TextStyle(color: Theme.of(context).colorScheme.error)),
+                        TextStyle(color: Theme.of(_context).colorScheme.error)),
               ),
               FlatButton(
                 key: ValueKey('confirmClearFormCancelButton'),
                 onPressed: () => Navigator.of(ctx).pop(false),
                 child: Text('Cancel',
                     style: TextStyle(
-                        color: Theme.of(context).colorScheme.secondaryVariant)),
+                        color:
+                            Theme.of(_context).colorScheme.secondaryVariant)),
               )
             ],
           );
         });
     if (deleteForm != null && deleteForm) {
       _deleteFlyInProgress(fly);
-      Navigator.of(context).pop();
+      Navigator.of(_context).pop();
     }
-  }
-
-  Widget _buildLoading() {
-    return Center(
-      child: CircularProgressIndicator(),
-    );
   }
 
   Widget _buildForm(NewFlyFormTransfer flyFormTransfer) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        SizedBox(height: widget._spaceBetweenDropdowns),
+        SizedBox(height: _spaceBetweenDropdowns),
         _attributesHeader,
         AttributeReview(newFlyFormTransfer: flyFormTransfer),
         _materialsHeader,
@@ -155,13 +144,13 @@ class _NewFlyFormPublishState extends State<NewFlyFormPublish> {
             padding: EdgeInsets.all(0),
             child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
               Icon(Icons.delete_forever,
-                  color: Theme.of(context).colorScheme.error),
+                  color: Theme.of(_context).colorScheme.error),
               Padding(
                 padding:
                     EdgeInsets.fromLTRB(0, 0, AppPadding.p2, AppPadding.p2),
                 child: Text('Clear form',
                     style:
-                        TextStyle(color: Theme.of(context).colorScheme.error)),
+                        TextStyle(color: Theme.of(_context).colorScheme.error)),
               ),
             ]),
             onPressed: () =>
@@ -172,16 +161,16 @@ class _NewFlyFormPublishState extends State<NewFlyFormPublish> {
             padding: EdgeInsets.all(0),
             child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
               Icon(Icons.art_track,
-                  color: Theme.of(context).colorScheme.primary),
+                  color: Theme.of(_context).colorScheme.primary),
               Padding(
                 padding:
                     EdgeInsets.fromLTRB(0, 0, AppPadding.p2, AppPadding.p2),
                 child: Text('Preview',
                     style: TextStyle(
-                        color: Theme.of(context).colorScheme.primary)),
+                        color: Theme.of(_context).colorScheme.primary)),
               ),
             ]),
-            onPressed: () => FlyFormRoutes.previewPublishPage(context),
+            onPressed: () => FlyFormRoutes.previewPublishPage(_context),
           ),
         ]),
       ],
@@ -190,24 +179,12 @@ class _NewFlyFormPublishState extends State<NewFlyFormPublish> {
 
   @override
   Widget build(BuildContext context) {
+    _context = context;
+    _newFlyBloc = MyTieStateContainer.of(context).blocProvider.newFlyBloc;
+    _buildDependencies();
+
     return SingleChildScrollView(
-      child: StreamBuilder(
-          stream: _newFlyBloc.newFlyFormReview,
-          builder: (context, AsyncSnapshot<NewFlyFormTransfer> snapshot) {
-            if (snapshot.hasError) {
-              print(snapshot.error);
-              return Text('error occurred');
-            }
-            switch (snapshot.connectionState) {
-              case (ConnectionState.done):
-              case (ConnectionState.active):
-                return _buildForm(snapshot.data);
-              case (ConnectionState.none):
-              case (ConnectionState.waiting):
-              default:
-                return _buildLoading();
-            }
-          }),
+      child: FlyInProgressReviewFormStreamBuilder(child: _buildForm),
     );
   }
 }
