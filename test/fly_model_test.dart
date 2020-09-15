@@ -9,6 +9,19 @@ import 'package:my_tie/models/new_fly_form_template.dart';
 import 'mock_data.dart';
 
 void main() {
+  group('Fly miscellaneous - ', () {
+    test('Test isMaterialsStarted', () {
+      Fly fly = Fly();
+      assert(fly.isMaterialsStarted == false);
+
+      fly.materials.add(FlyMaterials(name: 'faked', props: [
+        {'color': 'red', 'size': 'small'}
+      ]));
+
+      assert(fly.isMaterialsStarted == true);
+    });
+  });
+
   group('Fly form template - ', () {
     NewFlyFormTemplate nfft;
     Fly fly;

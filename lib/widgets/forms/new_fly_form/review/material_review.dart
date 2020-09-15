@@ -10,6 +10,7 @@
 import 'package:flutter/material.dart';
 import 'package:my_tie/models/fly_materials.dart';
 import 'package:my_tie/models/form_page_number.dart';
+import 'package:my_tie/models/keys.dart';
 import 'package:my_tie/models/new_fly_form_template.dart';
 import 'package:my_tie/models/new_fly_form_transfer.dart';
 import 'package:my_tie/routes/fly_form_routes.dart';
@@ -21,8 +22,10 @@ class MaterialReview extends StatefulWidget {
   final _iconButtonPadding = 8.0;
   final _semanticLabel = 'Tap to edit';
   final _startMaterials = 'Add fly materials!';
+  final _resumeMaterials = 'Pick up where you left off!';
+
   final _animationDuration = const Duration(milliseconds: 500);
-  final _initDist = -1.0;
+  final _initDist = 0.0;
   final _offsetDelta = -1.0;
 
   final NewFlyFormTransfer nfft;
@@ -61,7 +64,7 @@ class _MaterialReviewState extends State<MaterialReview>
     double offset = widget._initDist;
     for (int i = 0; i < template.flyFormMaterials.length; i++) {
       _offsetAnimations.add(Tween<Offset>(
-              begin: Offset(offset, 0), end: Offset.zero)
+              begin: Offset(0, offset), end: Offset.zero)
           .animate(CurvedAnimation(parent: _controller, curve: Curves.linear)));
 
       offset += widget._offsetDelta;
@@ -208,9 +211,39 @@ class _MaterialReviewState extends State<MaterialReview>
                   children: [
                     Icon(
                       Icons.add,
-                      // key: ValueKey(Keys.addInstructionKey),
+                      key: ValueKey(Keys.startMaterialsKey),
                     ),
                     Text(widget._startMaterials,
+                        style: TextStyle(fontSize: AppFonts.h6))
+                  ],
+                ),
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildResumeMaterials() {
+    return Card(
+      color: Theme.of(context).colorScheme.surface,
+      margin: EdgeInsets.fromLTRB(0, AppPadding.p2, 0, AppPadding.p4),
+      child: Padding(
+        padding: EdgeInsets.fromLTRB(0, AppPadding.p2, 0, AppPadding.p4),
+        child: Column(
+          children: [
+            Container(
+              padding: EdgeInsets.all(AppPadding.p4),
+              child: GestureDetector(
+                onTap: () => setState(() => _showMaterialsForm = true),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.repeat,
+                      key: ValueKey(Keys.startMaterialsKey),
+                    ),
+                    Text(widget._resumeMaterials,
                         style: TextStyle(fontSize: AppFonts.h6))
                   ],
                 ),
@@ -226,6 +259,9 @@ class _MaterialReviewState extends State<MaterialReview>
   Widget build(BuildContext context) {
     if (_showMaterialsForm) {
       return _buildShowMaterialsForm();
+    } else if (widget.nfft.flyInProgress.isMaterialsStarted) {
+      print('mats started');
+      return _buildResumeMaterials();
     } else {
       return _buildStartMaterials();
     }

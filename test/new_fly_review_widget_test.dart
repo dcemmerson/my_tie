@@ -13,8 +13,8 @@ import 'package:my_tie/models/new_fly_form_transfer.dart';
 import 'package:my_tie/styles/string_format.dart';
 import 'package:my_tie/widgets/forms/new_fly_form/review/attribute_review.dart';
 import 'package:my_tie/widgets/forms/new_fly_form/review/material_review.dart';
-
 import 'mock_data.dart';
+import 'test_value_keys.dart';
 
 void main() {
   testWidgets(
@@ -89,7 +89,8 @@ void main() {
       newFlyFormTransfer: nfft,
     ));
     await tester.pumpWidget(widget);
-//    await tester.pumpAndSettle(const Duration(seconds: 1));
+    await tester.tap(find.byKey(ValueKey(TestValueKeys.startMaterialsKey)));
+    await tester.pumpAndSettle();
 
     // We should find the title of each material (eg 'Beads', 'Dubbings', etc)
     flyInProgress.materials.forEach((flyMaterials) {
@@ -115,7 +116,8 @@ void main() {
       newFlyFormTransfer: nfft,
     ));
     await tester.pumpWidget(widget);
-    await tester.pumpAndSettle(const Duration(seconds: 1));
+    await tester.tap(find.byKey(ValueKey(TestValueKeys.startMaterialsKey)));
+    await tester.pumpAndSettle();
 
     // We should find the title of each material (eg 'Beads', 'Dubbings', etc)
     flyInProgress.materials.forEach((flyMaterials) {

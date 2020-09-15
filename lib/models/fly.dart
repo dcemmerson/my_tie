@@ -173,4 +173,14 @@ class Fly {
     else
       return 1;
   }
+
+  bool get isMaterialsStarted {
+    // Check all flyMaterials if user has already entered any materials previously.
+    return null !=
+        materials.firstWhere(
+            (material) =>
+                material.flyMaterials != null &&
+                material.flyMaterials.length > 0,
+            orElse: () => null);
+  }
 }

@@ -88,10 +88,12 @@ void main() {
       await newFlyFormTestManager.deleteFlyInProgress(driver);
       print('FINISH TEST 1');
     });
+
     test('Add and delete materials', () async {
       //  Enter back into new fly form
       final addNewFlyButton = find.byValueKey(TestValueKeys.addNewFlyButton);
       await driver.tap(addNewFlyButton);
+      await driver.tap(find.byValueKey(TestValueKeys.startMaterialsKey));
 
       // Scroll to bottom and clear form.
       // final clearFormButton = find.byValueKey(TestValueKeys.clearFormButton);

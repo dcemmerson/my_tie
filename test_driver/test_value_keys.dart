@@ -17,6 +17,8 @@ class TestValueKeys {
   static const targetAttributeReview = 'targetAttributeReview';
 
   // Material related
+  static const startMaterialsKey = 'startMaterialsKey';
+
   static const beadsCard = 'beadsCard';
   static const dubbingssCard = 'dubbingssCard';
   static const eyessCard = 'eyessCard';

@@ -12,7 +12,10 @@ import 'package:my_tie/services/network/auth_service.dart';
 import 'package:my_tie/services/network/fly_form_template_service.dart';
 import 'package:my_tie/services/network/new_fly_service.dart';
 
+// import 'package:flutter/scheduler.dart' show timeDilation;
+
 void main() async {
+  // timeDilation = 2.0;
   runApp(await initApp());
 }
 
