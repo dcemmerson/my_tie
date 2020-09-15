@@ -22,17 +22,24 @@ import 'attribute_review.dart';
 import 'instruction_review.dart';
 import 'material_review.dart';
 
-// ignore: must_be_immutable
-class NewFlyFormPublish extends StatelessWidget {
+class NewFlyFormPublish extends StatefulWidget {
+  @override
+  _NewFlyFormPublishState createState() => _NewFlyFormPublishState();
+}
+
+class _NewFlyFormPublishState extends State<NewFlyFormPublish> {
   final _spaceBetweenDropdowns = AppPadding.p6;
-  BuildContext _context;
+
   Widget _attributesHeader;
   Widget _materialsHeader;
   Widget _instructionsHeader;
 
   NewFlyBloc _newFlyBloc;
 
-  void _buildDependencies() {
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _newFlyBloc = MyTieStateContainer.of(context).blocProvider.newFlyBloc;
     // Font related
     _attributesHeader = Container(
         padding: EdgeInsets.all(AppPadding.p2),
@@ -41,7 +48,7 @@ class NewFlyFormPublish extends StatelessWidget {
             child: Text('Overview',
                 style: TextStyle(
                   fontSize: AppFonts.h3,
-                  color: Theme.of(_context).colorScheme.secondaryVariant,
+                  color: Theme.of(context).colorScheme.secondaryVariant,
                   decoration: TextDecoration.underline,
                 ))));
     _materialsHeader = Container(
@@ -51,7 +58,7 @@ class NewFlyFormPublish extends StatelessWidget {
             child: Text('Materials',
                 style: TextStyle(
                   fontSize: AppFonts.h3,
-                  color: Theme.of(_context).colorScheme.secondaryVariant,
+                  color: Theme.of(context).colorScheme.secondaryVariant,
                   decoration: TextDecoration.underline,
                 ))));
     _instructionsHeader = Container(
@@ -61,10 +68,10 @@ class NewFlyFormPublish extends StatelessWidget {
             child: Text('Instructions',
                 style: TextStyle(
                   fontSize: AppFonts.h3,
-                  color: Theme.of(_context).colorScheme.secondaryVariant,
+                  color: Theme.of(context).colorScheme.secondaryVariant,
                   decoration: TextDecoration.underline,
                 ))));
-    _newFlyBloc = MyTieStateContainer.of(_context).blocProvider.newFlyBloc;
+    _newFlyBloc = MyTieStateContainer.of(context).blocProvider.newFlyBloc;
   }
 
   void _deleteFlyInProgress(Fly fly) {
@@ -73,7 +80,7 @@ class NewFlyFormPublish extends StatelessWidget {
 
   void _promptDeleteFlyInProgress(Fly fly) async {
     bool deleteForm = await showDialog<bool>(
-        context: _context,
+        context: context,
         builder: (BuildContext ctx) {
           return CupertinoAlertDialog(
             title: Text('Clear form?'),
@@ -88,22 +95,21 @@ class NewFlyFormPublish extends StatelessWidget {
                 onPressed: () => Navigator.of(ctx).pop(true),
                 child: Text('Clear form',
                     style:
-                        TextStyle(color: Theme.of(_context).colorScheme.error)),
+                        TextStyle(color: Theme.of(context).colorScheme.error)),
               ),
               FlatButton(
                 key: ValueKey('confirmClearFormCancelButton'),
                 onPressed: () => Navigator.of(ctx).pop(false),
                 child: Text('Cancel',
                     style: TextStyle(
-                        color:
-                            Theme.of(_context).colorScheme.secondaryVariant)),
+                        color: Theme.of(context).colorScheme.secondaryVariant)),
               )
             ],
           );
         });
     if (deleteForm != null && deleteForm) {
       _deleteFlyInProgress(fly);
-      Navigator.of(_context).pop();
+      Navigator.of(context).pop();
     }
   }
 
@@ -144,13 +150,13 @@ class NewFlyFormPublish extends StatelessWidget {
             padding: EdgeInsets.all(0),
             child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
               Icon(Icons.delete_forever,
-                  color: Theme.of(_context).colorScheme.error),
+                  color: Theme.of(context).colorScheme.error),
               Padding(
                 padding:
                     EdgeInsets.fromLTRB(0, 0, AppPadding.p2, AppPadding.p2),
                 child: Text('Clear form',
                     style:
-                        TextStyle(color: Theme.of(_context).colorScheme.error)),
+                        TextStyle(color: Theme.of(context).colorScheme.error)),
               ),
             ]),
             onPressed: () =>
@@ -161,16 +167,16 @@ class NewFlyFormPublish extends StatelessWidget {
             padding: EdgeInsets.all(0),
             child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
               Icon(Icons.art_track,
-                  color: Theme.of(_context).colorScheme.primary),
+                  color: Theme.of(context).colorScheme.primary),
               Padding(
                 padding:
                     EdgeInsets.fromLTRB(0, 0, AppPadding.p2, AppPadding.p2),
                 child: Text('Preview',
                     style: TextStyle(
-                        color: Theme.of(_context).colorScheme.primary)),
+                        color: Theme.of(context).colorScheme.primary)),
               ),
             ]),
-            onPressed: () => FlyFormRoutes.previewPublishPage(_context),
+            onPressed: () => FlyFormRoutes.previewPublishPage(context),
           ),
         ]),
       ],
@@ -179,10 +185,6 @@ class NewFlyFormPublish extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    _context = context;
-    _newFlyBloc = MyTieStateContainer.of(context).blocProvider.newFlyBloc;
-    _buildDependencies();
-
     return SingleChildScrollView(
       child: FlyInProgressReviewFormStreamBuilder(child: _buildForm),
     );

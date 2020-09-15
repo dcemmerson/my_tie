@@ -20,14 +20,16 @@ import 'package:my_tie/widgets/forms/new_fly_form/review/review_edit_button.dart
 class MaterialReview extends StatefulWidget {
   final _iconButtonPadding = 8.0;
   final _semanticLabel = 'Tap to edit';
+  final _startMaterials = 'Add fly materials!';
   final _animationDuration = const Duration(milliseconds: 500);
   final _initDist = -1.0;
   final _offsetDelta = -1.0;
 
   final NewFlyFormTransfer nfft;
 
-  MaterialReview({@required NewFlyFormTransfer newFlyFormTransfer})
-      : nfft = newFlyFormTransfer;
+  MaterialReview({
+    @required NewFlyFormTransfer newFlyFormTransfer,
+  }) : nfft = newFlyFormTransfer;
 
   @override
   _MaterialReviewState createState() => _MaterialReviewState();
@@ -37,6 +39,7 @@ class _MaterialReviewState extends State<MaterialReview>
     with SingleTickerProviderStateMixin {
   AnimationController _controller;
   List<Animation<Offset>> _offsetAnimations = [];
+  bool _showMaterialsForm = false;
 
   @override
   void initState() {
@@ -44,8 +47,8 @@ class _MaterialReviewState extends State<MaterialReview>
 
     // Animation related
     _controller =
-        AnimationController(duration: widget._animationDuration, vsync: this)
-          ..forward();
+        AnimationController(duration: widget._animationDuration, vsync: this);
+    // ..forward();
   }
 
   @override
@@ -137,9 +140,9 @@ class _MaterialReviewState extends State<MaterialReview>
     return nextSubGroup;
   }
 
-  @override
-  Widget build(BuildContext context) {
+  Widget _buildShowMaterialsForm() {
     calculateAnimationOffsets(widget.nfft.newFlyFormTemplate);
+    _controller.forward();
 
     // Think of rows as the list of groups of materials, eg beads.
     List<Widget> rows = [];
@@ -187,5 +190,44 @@ class _MaterialReviewState extends State<MaterialReview>
     return Column(
       children: rows,
     );
+  }
+
+  Widget _buildStartMaterials() {
+    return Card(
+      color: Theme.of(context).colorScheme.surface,
+      margin: EdgeInsets.fromLTRB(0, AppPadding.p2, 0, AppPadding.p4),
+      child: Padding(
+        padding: EdgeInsets.fromLTRB(0, AppPadding.p2, 0, AppPadding.p4),
+        child: Column(
+          children: [
+            Container(
+              padding: EdgeInsets.all(AppPadding.p4),
+              child: GestureDetector(
+                onTap: () => setState(() => _showMaterialsForm = true),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.add,
+                      // key: ValueKey(Keys.addInstructionKey),
+                    ),
+                    Text(widget._startMaterials,
+                        style: TextStyle(fontSize: AppFonts.h6))
+                  ],
+                ),
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_showMaterialsForm) {
+      return _buildShowMaterialsForm();
+    } else {
+      return _buildStartMaterials();
+    }
   }
 }
