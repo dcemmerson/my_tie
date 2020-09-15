@@ -10,6 +10,7 @@ enum SubPageType {
   NewFlyMaterialsPage,
   NewFlyInstructionPage,
   NewFlyPublishPage,
+  NewFlyPreviewPublishPage,
   AddNewAttributePage,
   AddNewPropertyPage,
 }

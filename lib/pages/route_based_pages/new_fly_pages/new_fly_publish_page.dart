@@ -3,7 +3,7 @@ import 'package:my_tie/widgets/forms/new_fly_form/review/new_fly_form_publish.da
 
 class NewFlyPublishPage extends StatelessWidget {
   static const title = 'Publish Fly';
-  static const route = '/new_fly/public';
+  static const route = '/new_fly/publish';
 
   @override
   Widget build(BuildContext context) {

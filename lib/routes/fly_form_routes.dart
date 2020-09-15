@@ -19,6 +19,7 @@ import 'package:my_tie/pages/route_based_pages/new_fly_pages/add_new_property_pa
 import 'package:my_tie/pages/route_based_pages/new_fly_pages/new_fly_attributes_page.dart';
 import 'package:my_tie/pages/route_based_pages/new_fly_pages/new_fly_instruction_page.dart';
 import 'package:my_tie/pages/route_based_pages/new_fly_pages/new_fly_materials_page.dart';
+import 'package:my_tie/pages/route_based_pages/new_fly_pages/new_fly_preview_publish_page.dart';
 import 'package:my_tie/pages/route_based_pages/new_fly_pages/new_fly_publish_page.dart';
 import 'package:my_tie/routes/route_guard.dart';
 
@@ -33,6 +34,10 @@ class FlyFormRoutes {
             SubPageContainer(subPageType: SubPageType.NewFlyInstructionPage)),
     NewFlyPublishPage.route: (context) => RouteGuard(
         child: SubPageContainer(subPageType: SubPageType.NewFlyPublishPage)),
+    NewFlyPreviewPublishPage.route: (context) => RouteGuard(
+            child: SubPageContainer(
+          subPageType: SubPageType.NewFlyPreviewPublishPage,
+        )),
 
     // DB new fly form editting routes.
     AddNewAttributePage.route: (context) => RouteGuard(
@@ -66,4 +71,7 @@ class FlyFormRoutes {
           InstructionPageAttribute instructionPageAttribute) =>
       Navigator.pushNamed(context, NewFlyInstructionPage.route,
           arguments: instructionPageAttribute);
+
+  static Future previewPublishPage(BuildContext context) =>
+      Navigator.pushNamed(context, NewFlyPreviewPublishPage.route);
 }

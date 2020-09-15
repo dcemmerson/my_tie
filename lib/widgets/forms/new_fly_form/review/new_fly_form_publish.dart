@@ -13,6 +13,7 @@ import 'package:my_tie/bloc/new_fly_bloc.dart';
 import 'package:my_tie/models/fly.dart';
 
 import 'package:my_tie/models/new_fly_form_transfer.dart';
+import 'package:my_tie/routes/fly_form_routes.dart';
 
 import 'package:my_tie/styles/styles.dart';
 
@@ -180,7 +181,7 @@ class _NewFlyFormPublishState extends State<NewFlyFormPublish> {
                         color: Theme.of(context).colorScheme.primary)),
               ),
             ]),
-            onPressed: () => print('unimplmented'),
+            onPressed: () => FlyFormRoutes.previewPublishPage(context),
           ),
         ]),
       ],

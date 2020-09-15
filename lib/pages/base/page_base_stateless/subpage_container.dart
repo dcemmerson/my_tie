@@ -17,6 +17,7 @@ import 'package:my_tie/pages/route_based_pages/new_fly_pages/add_new_property_pa
 
 import 'package:my_tie/pages/route_based_pages/new_fly_pages/new_fly_attributes_page.dart';
 import 'package:my_tie/pages/route_based_pages/new_fly_pages/new_fly_materials_page.dart';
+import 'package:my_tie/pages/route_based_pages/new_fly_pages/new_fly_preview_publish_page.dart';
 import 'package:my_tie/pages/route_based_pages/new_fly_pages/new_fly_publish_page.dart';
 
 class SubPageContainer extends SubPageBase {
@@ -44,6 +45,9 @@ class SubPageContainer extends SubPageBase {
         break;
       case SubPageType.NewFlyInstructionPage:
         page = NewFlyInstructionPage();
+        break;
+      case SubPageType.NewFlyPreviewPublishPage:
+        page = NewFlyPreviewPublishPage();
         break;
       // DB new fly form template editing routes:
       case SubPageType.AddNewAttributePage:
@@ -79,7 +83,8 @@ class SubPageContainer extends SubPageBase {
         return AddNewPropertyPage.title;
       case SubPageType.NewFlyInstructionPage:
         return NewFlyInstructionPage.title;
-
+      case SubPageType.NewFlyPreviewPublishPage:
+        return NewFlyPreviewPublishPage.title;
       default:
         return NewFlyMaterialsPage.title;
     }
