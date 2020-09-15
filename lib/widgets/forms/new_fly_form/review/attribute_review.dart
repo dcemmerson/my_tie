@@ -37,8 +37,10 @@ class AttributeReview extends StatelessWidget {
         child: Column(children: [
           Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
             SizedBox(
-              width: Theme.of(context).iconTheme.size + 4 * _iconButtonPadding,
-              height: Theme.of(context).iconTheme.size + 2 * _iconButtonPadding,
+              width: Theme.of(context).iconTheme.size ??
+                  24 + 4 * _iconButtonPadding,
+              height: Theme.of(context).iconTheme.size ??
+                  24 + 2 * _iconButtonPadding,
             ),
             Text(nfft.flyInProgress.flyName,
                 key: ValueKey(_attributeNameReview),

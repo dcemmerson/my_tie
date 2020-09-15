@@ -10,13 +10,15 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:my_tie/models/fly.dart';
 import 'package:my_tie/models/new_fly_form_template.dart';
 import 'package:my_tie/models/new_fly_form_transfer.dart';
+import 'package:my_tie/styles/string_format.dart';
 import 'package:my_tie/widgets/forms/new_fly_form/review/attribute_review.dart';
+import 'package:my_tie/widgets/forms/new_fly_form/review/material_review.dart';
 
 import 'mock_data.dart';
 
 void main() {
   testWidgets(
-      'Test AttributeReview widget. Pass in mock fly in progress doc and empty fly in progress',
+      'Test AttributeReview widget. Pass in mock template doc and empty fly in progress',
       (WidgetTester tester) async {
     final newFlyFormTemplate =
         NewFlyFormTemplate.fromDoc(MockData.mockNewFlyFormDoc);
@@ -44,7 +46,7 @@ void main() {
   });
 
   testWidgets(
-      'Test AttributeReview widget. Pass in mock fly in progress doc and mock fly in progress doc',
+      'Test AttributeReview widget. Pass in mock template doc and mock fly in progress doc',
       (WidgetTester tester) async {
     final newFlyFormTemplate =
         NewFlyFormTemplate.fromDoc(MockData.mockNewFlyFormDoc);
@@ -71,27 +73,64 @@ void main() {
   });
 
   testWidgets(
-      'Test MaterialReview widget. Pass in mock fly in progress doc and mock fly in progress doc',
+      'Test Material Review widget. Pass in mock template doc and empty fly in progress doc',
       (WidgetTester tester) async {
     final newFlyFormTemplate =
         NewFlyFormTemplate.fromDoc(MockData.mockNewFlyFormDoc);
-    final flyInProgress = Fly(
-        flyName: MockData.flyInProgressDoc['fly_name'],
-        attrs: MockData.flyInProgressDoc['attributes']);
+    final flyInProgress =
+        Fly.formattedForReview(flyFormTemplate: newFlyFormTemplate);
 
     final nfft = NewFlyFormTransfer(
         flyInProgress: flyInProgress, newFlyFormTemplate: newFlyFormTemplate);
+
     // Build our app and trigger a frame.
     Widget widget = TestWidgetWrapper(
-        child: AttributeReview(
+        child: MaterialReview(
       newFlyFormTransfer: nfft,
     ));
     await tester.pumpWidget(widget);
+//    await tester.pumpAndSettle(const Duration(seconds: 1));
 
-    // Check that each attribute key and value text appear in widget.
-    flyInProgress.attributes.forEach((attr) {
-      expect(find.text(attr.name), findsOneWidget);
-      expect(find.text(attr.value), findsOneWidget);
+    // We should find the title of each material (eg 'Beads', 'Dubbings', etc)
+    flyInProgress.materials.forEach((flyMaterials) {
+      expect(find.text(flyMaterials.name.toTitleCase()), findsOneWidget);
+    });
+  });
+
+  testWidgets(
+      'Test Material Review widget. Pass in mock template doc and fly in progress doc',
+      (WidgetTester tester) async {
+    final newFlyFormTemplate =
+        NewFlyFormTemplate.fromDoc(MockData.mockNewFlyFormDoc);
+    final flyInProgress = Fly.formattedForReview(
+        mats: MockData.flyInProgressDoc['materials'],
+        flyFormTemplate: newFlyFormTemplate);
+
+    final nfft = NewFlyFormTransfer(
+        flyInProgress: flyInProgress, newFlyFormTemplate: newFlyFormTemplate);
+
+    // Build our app and trigger a frame.
+    Widget widget = TestWidgetWrapper(
+        child: MaterialReview(
+      newFlyFormTransfer: nfft,
+    ));
+    await tester.pumpWidget(widget);
+    await tester.pumpAndSettle(const Duration(seconds: 1));
+
+    // We should find the title of each material (eg 'Beads', 'Dubbings', etc)
+    flyInProgress.materials.forEach((flyMaterials) {
+      expect(find.text(flyMaterials.name.toTitleCase()), findsOneWidget);
+      flyMaterials.flyMaterials?.asMap()?.forEach((propertyIndex, flyMaterial) {
+        // Use propertyIndex to locat this material subgroup ValueKey.
+        flyMaterial.properties.forEach((propName, propValue) {
+          expect(
+              find.descendant(
+                  of: find.byKey(
+                      ValueKey(flyMaterial.name + propertyIndex.toString())),
+                  matching: find.text(propValue)),
+              findsOneWidget);
+        });
+      });
     });
   });
 }
@@ -107,7 +146,7 @@ class TestWidgetWrapper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Scaffold(body: child),
+      home: Scaffold(body: SingleChildScrollView(child: child)),
     );
   }
 }

@@ -68,9 +68,10 @@ class _MaterialReviewState extends State<MaterialReview>
   Widget _buildMaterialHeader(FlyMaterials mat, int index) {
     return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
       SizedBox(
-        width: Theme.of(context).iconTheme.size + 4 * widget._iconButtonPadding,
-        height:
-            Theme.of(context).iconTheme.size + 2 * widget._iconButtonPadding,
+        width: Theme.of(context).iconTheme.size ??
+            24 + 4 * widget._iconButtonPadding,
+        height: Theme.of(context).iconTheme.size ??
+            24 + 2 * widget._iconButtonPadding,
       ),
       Text(mat.name.toTitleCase(), style: AppTextStyles.header),
       IconButton(
@@ -155,6 +156,9 @@ class _MaterialReviewState extends State<MaterialReview>
         nextGroup.add(Container(
             padding: EdgeInsets.fromLTRB(0, 0, 0, AppPadding.p4),
             child: Column(
+              //  This value key should be something like 'beads1', which is used
+              //  in widget and integration tests to differentiate between potentially
+              //  more than one bead, or other material.
               key: ValueKey(flyMaterial.name + propertyIndex.toString()),
               children: _buildMaterialSubGroups(
                   flyMaterial, materialIndex, propertyIndex),
