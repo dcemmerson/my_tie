@@ -114,6 +114,7 @@ class _NewFlyFormAttributesState extends State<NewFlyFormAttributes> {
         ..._buildDropdowns(flyFormTransfer),
         FlyTopLevelPhotoInput(
           label: 'Add one or more photos of completed fly',
+          imageUris: flyFormTransfer.flyInProgress.topLevelImageUris,
           attribute: DbNames.topLevelImageUris,
         ),
         SizedBox(height: widget._spaceBetweenDropdowns),

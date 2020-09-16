@@ -84,7 +84,7 @@ class Fly {
   }
 
   static List<String> _toListOfString(List list) =>
-      list?.map((el) => el.toString());
+      list?.map((el) => el.toString())?.toList();
 
   static List<FlyAttribute> _toAttributeListForEditing(
       Map attrs, NewFlyFormTemplate flyFormTemplate) {

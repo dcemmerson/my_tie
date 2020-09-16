@@ -16,7 +16,6 @@ import 'package:my_tie/models/bloc_transfer_related/fly_material_add_or_update.d
 
 import 'package:my_tie/models/db_names.dart';
 import 'package:my_tie/models/fly.dart';
-import 'package:my_tie/models/fly_attribute.dart';
 import 'package:my_tie/models/new_fly_form_transfer.dart';
 import 'package:my_tie/models/new_fly_form_template.dart';
 import 'package:my_tie/services/network/auth_service.dart';
@@ -80,6 +79,9 @@ class NewFlyBloc {
               flyName: flyInProgressDoc?.docs[0]?.data()[DbNames.flyName],
               attrs: flyInProgressDoc?.docs[0]?.data()[DbNames.attributes],
               mats: flyInProgressDoc?.docs[0]?.data()[DbNames.materials],
+              instr: flyInProgressDoc?.docs[0]?.data()[DbNames.instructions],
+              imageUris:
+                  flyInProgressDoc?.docs[0]?.data()[DbNames.topLevelImageUris],
               flyFormTemplate: newFlyFormTemplate);
         } else {
           newFlyService.createFlyInProgressDoc(
@@ -122,6 +124,8 @@ class NewFlyBloc {
             attrs: flyInProgressDoc?.docs[0]?.data()[DbNames.attributes],
             mats: flyInProgressDoc?.docs[0]?.data()[DbNames.materials],
             instr: flyInProgressDoc?.docs[0]?.data()[DbNames.instructions],
+            imageUris:
+                flyInProgressDoc?.docs[0]?.data()[DbNames.topLevelImageUris],
             flyFormTemplate: newFlyFormTemplate,
           );
         }
