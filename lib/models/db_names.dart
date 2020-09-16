@@ -70,3 +70,10 @@ class DbNames {
   static const instructionImageUris = 'instruction_image_uris';
   static const instructionImages = 'instruction_images';
 }
+
+class FlyForm {
+  static const style = 'style';
+  static const difficulty = 'difficulty';
+  static const type = 'type';
+  static const target = 'target';
+}

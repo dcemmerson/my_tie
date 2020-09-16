@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 class ThemeManager {
   final bool darkMode;
 
-  ThemeData _themeLight = ThemeData(
+  final ThemeData _themeLight = ThemeData(
     // Define the default brightness and colors.
     //    buttonColor: ,
     buttonTheme: ButtonThemeData(
@@ -44,7 +44,7 @@ class ThemeManager {
     ),
   );
 
-  ThemeData _themeDark = ThemeData(
+  final ThemeData _themeDark = ThemeData(
     // Define the default brightness and colors.
     brightness: Brightness.dark,
     primaryColor: Colors.orange,

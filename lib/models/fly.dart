@@ -171,15 +171,9 @@ class Fly {
     return flyInstructions;
   }
 
-  String getAttribute(String name) {
-    var attrFound =
-        attributes.firstWhere((attr) => attr.name == name, orElse: () => null);
-
-    if (attrFound != null) {
-      return attrFound.value;
-    }
-    return null;
-  }
+  String getAttribute(String name) => attributes
+      .firstWhere((attr) => attr.name == name, orElse: () => null)
+      ?.value;
 
   static int sortBySteps(a, b) {
     if (a.step < b.step)

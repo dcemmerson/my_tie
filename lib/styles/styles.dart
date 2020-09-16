@@ -45,3 +45,24 @@ class AppTextStyles {
   static const subHeader =
       const TextStyle(fontSize: AppFonts.h6, fontWeight: FontWeight.w500);
 }
+
+class AppIcons {
+  static final success = Colors.green[700];
+  static final warning = Colors.yellow[700];
+  static final danger = Colors.red[700];
+
+  static const small = 16.0;
+
+  static Color getColorByDifficulty(String difficulty) {
+    switch (difficulty) {
+      case 'easy':
+        return success;
+      case 'medium':
+        return warning;
+      case 'hard':
+        return danger;
+      default:
+        return success;
+    }
+  }
+}
