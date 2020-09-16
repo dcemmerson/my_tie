@@ -89,6 +89,10 @@ class InstructionsTestManager {
           false);
 
       deletedInstructions++;
+      // Wait a short period to ensure our the instruction step code reorg
+      // has plenty of time to run, and for those changes to appear in
+      // instructions overview.
+      await Future.delayed(Duration(milliseconds: 100));
     });
 
     // Find 1st instruction in instructions, tap edit, verify info, on edit
@@ -100,8 +104,7 @@ class InstructionsTestManager {
     // We should be on the instructions review screen at this point.
 
     if (instrs == null) instrs = instructions;
-    print('instrs  = ');
-    print(instrs);
+
     await Future.forEach(instrs, (Instruction instr) async {
       print(instr.stepNumber);
       final stepNumberFinder = find.text('Step ${instr.stepNumber}');

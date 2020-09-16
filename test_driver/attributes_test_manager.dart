@@ -111,6 +111,11 @@ class AttributesTestManager {
     await driver.tap(targetDropdown);
     await driver.tap(find.text(flyTarget));
 
+    await driver.tap(find.descendant(
+        of: find.byType('FormBuilderImagePicker'),
+        matching: find.byType('Icon')));
+    await driver.tap(find.text('Camera'));
+
     final saveAttributesButton = find.text('Save');
     await driver.tap(saveAttributesButton);
   }
