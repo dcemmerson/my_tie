@@ -77,6 +77,8 @@ class NewFlyBloc {
           flyInProgress = Fly.formattedForEditing(
               docId: flyInProgressDoc?.docs[0].id,
               flyName: flyInProgressDoc?.docs[0]?.data()[DbNames.flyName],
+              flyDescription:
+                  flyInProgressDoc?.docs[0]?.data()[DbNames.flyDescription],
               attrs: flyInProgressDoc?.docs[0]?.data()[DbNames.attributes],
               mats: flyInProgressDoc?.docs[0]?.data()[DbNames.materials],
               instr: flyInProgressDoc?.docs[0]?.data()[DbNames.instructions],
@@ -121,6 +123,8 @@ class NewFlyBloc {
           flyInProgress = Fly.formattedForReview(
             docId: flyInProgressDoc?.docs[0]?.id,
             flyName: flyInProgressDoc?.docs[0]?.data()[DbNames.flyName],
+            flyDescription:
+                flyInProgressDoc?.docs[0]?.data()[DbNames.flyDescription],
             attrs: flyInProgressDoc?.docs[0]?.data()[DbNames.attributes],
             mats: flyInProgressDoc?.docs[0]?.data()[DbNames.materials],
             instr: flyInProgressDoc?.docs[0]?.data()[DbNames.instructions],
@@ -185,10 +189,12 @@ class NewFlyBloc {
       images: flyAttributeChange.imagesToAdd,
     );
 
+    //  Collect form attributes.
     Map<String, String> formAttributeData = {};
     flyAttributeChange.updatedAttributes.forEach((flyAttribute) =>
         formAttributeData = {...formAttributeData, ...flyAttribute.toMap()});
 
+    //  Now add attributes to firestore without newly added photo urls.
     newFlyService.addNewFlyAttributes(
       docId: flyAttributeChange.prevFly.docId,
       uid: authService.currentUser.uid,
@@ -199,6 +205,7 @@ class NewFlyBloc {
       topLevelImageUris: flyAttributeChange.imageUrisToKeep,
     );
 
+    //  Finally re-add attributes to firestore with newly added photo urls.
     newFlyService.addNewFlyAttributes(
       docId: flyAttributeChange.prevFly.docId,
       uid: authService.currentUser.uid,

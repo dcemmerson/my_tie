@@ -15,6 +15,7 @@ class DbNames {
   static const topLevelImageUris = 'top_level_image_uris';
 
   static const flyName = 'fly_name';
+  static const flyDescription = 'fly_description';
 
   static const flyDifficulty = 'fly_difficulty';
   static const flyDifficulties = 'fly_difficulties';

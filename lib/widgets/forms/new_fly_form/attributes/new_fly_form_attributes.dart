@@ -101,6 +101,14 @@ class _NewFlyFormAttributesState extends State<NewFlyFormAttributes> {
     );
   }
 
+  Widget _buildDescriptionInput(String description) {
+    return FlyNameTextInput(
+      attribute: DbNames.flyDescription,
+      label: 'Fly Description',
+      flyInProgressName: description,
+    );
+  }
+
   Widget _buildForm(NewFlyFormTransfer flyFormTransfer) {
     return Column(
       //  Must use a key here to disconnect old widget when re-rendering based
@@ -110,6 +118,7 @@ class _NewFlyFormAttributesState extends State<NewFlyFormAttributes> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         _buildNameInput(flyFormTransfer.flyInProgress.flyName),
+        _buildDescriptionInput(flyFormTransfer.flyInProgress.flyDescription),
         // SizedBox(height: widget._spaceBetweenDropdowns),
         ..._buildDropdowns(flyFormTransfer),
         FlyTopLevelPhotoInput(

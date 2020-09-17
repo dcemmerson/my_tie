@@ -17,6 +17,7 @@ class Fly {
 
   final String docId;
   final String flyName;
+  final String flyDescription;
   final List<FlyAttribute> attributes;
   final List<FlyMaterials> materials;
   final List<FlyInstruction> instructions;
@@ -26,6 +27,7 @@ class Fly {
   Fly({
     this.docId,
     this.flyName,
+    this.flyDescription,
     List imageUris,
     Map attrs,
     Map mats,
@@ -42,14 +44,16 @@ class Fly {
     this.docId,
     List imageUris,
     String flyName,
+    String flyDescription,
     Map attrs,
     Map mats,
     NewFlyFormTemplate flyFormTemplate,
     Map instr,
   })  : this.flyName =
-            flyName ?? 'No name', // Must set flyName here rather than
+            flyName ?? '[No name]', // Must set flyName here rather than
         //  default arg (because if value doesnt exist in firebase, flyName will
         //  be explicitly set to null, even if we provide default arg)
+        this.flyDescription = flyDescription ?? '[No description]',
         this.attributes =
             _toAttributeListForReview(attrs ?? {}, flyFormTemplate),
         this.materials = _toMaterialListForReview(mats ?? {}, flyFormTemplate),
@@ -59,6 +63,7 @@ class Fly {
   Fly.formattedForEditing({
     this.docId,
     this.flyName,
+    this.flyDescription,
     List imageUris,
     Map attrs,
     Map mats,

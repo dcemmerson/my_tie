@@ -16,6 +16,7 @@ class AttributeReview extends StatelessWidget {
   // ValueKeys
   static const _editAttributes = 'editAttributesIcon';
   static const _attributeNameReview = 'nameAttributeReview';
+  static const _attributeDescriptionReview = 'descriptionAttributeReview';
 
   final _iconButtonPadding = 8.0;
 
@@ -37,14 +38,19 @@ class AttributeReview extends StatelessWidget {
         child: Column(children: [
           Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
             SizedBox(
-              width: Theme.of(context).iconTheme.size ??
-                  24 + 4 * _iconButtonPadding,
-              height: Theme.of(context).iconTheme.size ??
+              width: 2 * Theme.of(context).iconTheme.size ??
+                  24 + 2 * _iconButtonPadding,
+              height: 2 * Theme.of(context).iconTheme.size ??
                   24 + 2 * _iconButtonPadding,
             ),
-            Text(nfft.flyInProgress.flyName,
-                key: ValueKey(_attributeNameReview),
-                style: AppTextStyles.header),
+            Column(children: [
+              Text(nfft.flyInProgress.flyName,
+                  key: ValueKey(_attributeNameReview),
+                  style: AppTextStyles.header),
+              Text(nfft.flyInProgress.flyDescription,
+                  key: ValueKey(_attributeDescriptionReview),
+                  style: AppTextStyles.subHeader),
+            ]),
             IconButton(
               key: ValueKey(_editAttributes),
               onPressed: () => FlyFormRoutes.newFlyAttributesPage(context),
@@ -52,7 +58,7 @@ class AttributeReview extends StatelessWidget {
                 Icons.edit,
                 semanticLabel: _semanticLabel,
               ),
-            )
+            ),
           ]),
           ...nfft.newFlyFormTemplate.flyFormAttributes
               .map(

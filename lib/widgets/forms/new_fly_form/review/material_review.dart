@@ -73,13 +73,19 @@ class _MaterialReviewState extends State<MaterialReview>
 
   Widget _buildMaterialHeader(FlyMaterials mat, int index) {
     return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-      SizedBox(
-        width: Theme.of(context).iconTheme.size ??
-            24 + 4 * widget._iconButtonPadding,
-        height: Theme.of(context).iconTheme.size ??
-            24 + 2 * widget._iconButtonPadding,
+      Container(
+        padding: EdgeInsets.all(widget._iconButtonPadding),
+        child: Icon(mat.icon),
       ),
-      Text(mat.name.toTitleCase(), style: AppTextStyles.header),
+      // SizedBox(
+      //   width: Theme.of(context).iconTheme.size ??
+      //       24 + 4 * widget._iconButtonPadding,
+      //   height: Theme.of(context).iconTheme.size ??
+      //       24 + 2 * widget._iconButtonPadding,
+      // ),
+      Row(children: [
+        Text(mat.name.toTitleCase(), style: AppTextStyles.header)
+      ]),
       IconButton(
         key: ValueKey('${mat.name}AddIcon'),
         onPressed: () => FlyFormRoutes.newFlyMaterialsPage(context,

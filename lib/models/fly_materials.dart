@@ -1,3 +1,7 @@
+import 'package:flutter/widgets.dart' show IconData;
+import 'package:my_tie/custom_icons/custom_icons_icons.dart';
+import 'package:my_tie/models/db_names.dart';
+
 /// filename: fly_material.dart
 /// description: FlyMaterial represents fly material properties for a fly.
 ///   A material has an attribute name, and properites which are represented in
@@ -31,6 +35,37 @@ class FlyMaterials {
 
   FlyMaterials.formattedForEditing({this.name, List props})
       : flyMaterials = _toListFlyMaterials(name, props);
+
+  IconData get icon {
+    switch (name) {
+      case DbNames.beads:
+        return CustomIcons.bead;
+      // case DbNames.dubbings:
+      //   return CustomIcons.;
+      case DbNames.eyes:
+        return CustomIcons.eye;
+      case DbNames.feathers:
+        return CustomIcons.feather;
+      // case DbNames.flosses:
+      //   return ;
+      case DbNames.furs:
+        return CustomIcons.fur;
+      case DbNames.hooks:
+        return CustomIcons.hook_slanted;
+      // case DbNames.synthetics:
+      //   return;
+      case DbNames.threads:
+        return CustomIcons.thread;
+      case DbNames.tinsels:
+        return CustomIcons.tinsel;
+      case DbNames.wires:
+        return CustomIcons.wire;
+      case DbNames.yarns:
+        return CustomIcons.yarn;
+      default:
+        return CustomIcons.hook;
+    }
+  }
 
   /// name: _toListFlyMaterialReplaceNull
   /// description: Iterate through list from db and just convert list of
