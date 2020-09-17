@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart' show IconData;
 import 'package:my_tie/custom_icons/custom_icons_icons.dart';
 import 'package:my_tie/models/db_names.dart';
@@ -20,6 +21,57 @@ class FlyMaterial {
   final String name; // Name of material
 
   FlyMaterial({this.properties, this.name});
+
+  IconData get icon {
+    switch (name) {
+      case DbNames.beads:
+        return CustomIcons.bead;
+      // case DbNames.dubbings:
+      //   return CustomIcons.;
+      case DbNames.eyes:
+        return CustomIcons.eye;
+      case DbNames.feathers:
+        return CustomIcons.feather;
+      // case DbNames.flosses:
+      //   return ;
+      case DbNames.furs:
+        return CustomIcons.fur;
+      case DbNames.hooks:
+        return CustomIcons.hook_slanted;
+      // case DbNames.synthetics:
+      //   return;
+      case DbNames.threads:
+        return CustomIcons.thread;
+      case DbNames.tinsels:
+        return CustomIcons.tinsel;
+      case DbNames.wires:
+        return CustomIcons.wire;
+      case DbNames.yarns:
+        return CustomIcons.yarn;
+      default:
+        return CustomIcons.hook;
+    }
+  }
+
+  Color get color {
+    switch (properties['color']) {
+      case 'red':
+        return Colors.red;
+      case 'black':
+        return Colors.black;
+      case 'olive':
+        return Colors.lightGreen[900];
+      case 'gray':
+        return Colors.grey;
+      case 'gold':
+        return Colors.amber[900];
+      default:
+        return null;
+    }
+  }
+
+  String get value =>
+      properties.values.fold('', (prev, prop) => prev + prop + ' ');
 }
 
 class FlyMaterials {

@@ -26,7 +26,8 @@ class MaterialReview extends StatefulWidget {
 
   final _animationDuration = const Duration(milliseconds: 500);
   final _initDist = 0.0;
-  final _offsetDelta = -1.0;
+  final _offsetDelta = -0.5;
+  // final _offsetDelta = -1.0;
 
   final NewFlyFormTransfer nfft;
 
@@ -266,7 +267,6 @@ class _MaterialReviewState extends State<MaterialReview>
     if (_showMaterialsForm) {
       return _buildShowMaterialsForm();
     } else if (widget.nfft.flyInProgress.isMaterialsStarted) {
-      print('mats started');
       return _buildResumeMaterials();
     } else {
       return _buildStartMaterials();

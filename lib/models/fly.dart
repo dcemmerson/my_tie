@@ -88,6 +88,15 @@ class Fly {
         .properties[propertyName];
   }
 
+  List<FlyMaterial> get materialList {
+    final materialList = List<FlyMaterial>();
+    materials.forEach((matType) {
+      if (matType.flyMaterials != null)
+        materialList.addAll((matType.flyMaterials));
+    });
+    return materialList;
+  }
+
   static List<String> _toListOfString(List list) =>
       list?.map((el) => el.toString())?.toList();
 
