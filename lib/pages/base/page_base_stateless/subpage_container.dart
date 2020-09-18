@@ -56,6 +56,9 @@ class SubPageContainer extends SubPageBase {
       case SubPageType.AddNewPropertyPage:
         page = AddNewPropertyPage();
         break;
+      // case SubPageType.InstructionStepDetailPage:
+      //   page = InstructionStepDetailPage();
+      //   break;
 
       default:
         page = NewFlyStartPage();
@@ -85,6 +88,8 @@ class SubPageContainer extends SubPageBase {
         return NewFlyInstructionPage.title;
       case SubPageType.NewFlyPreviewPublishPage:
         return NewFlyPreviewPublishPage.title;
+      // case SubPageType.InstructionStepDetailPage:
+      //   return InstructionStepDetailPage.title;
       default:
         return NewFlyMaterialsPage.title;
     }
