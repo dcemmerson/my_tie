@@ -32,6 +32,7 @@ class NewFlyBloc {
   final FlyFormTemplateService flyFormTemplateService;
 
   // Coming from app.
+  StreamController<Fly> publishFlySink = StreamController<Fly>();
   StreamController<FlyAttributeChange> newFlyAttributesSink =
       StreamController<FlyAttributeChange>();
   StreamController<FlyMaterialAddOrUpdate> newFlyMaterialSink =
@@ -46,6 +47,7 @@ class NewFlyBloc {
 
   NewFlyBloc(
       {this.newFlyService, this.authService, this.flyFormTemplateService}) {
+    publishFlySink.stream.listen(_handlePublishFly);
     newFlyAttributesSink.stream.listen(_handleAddNewFlyAttributes);
     newFlyMaterialSink.stream.listen(_handleAddNewFlyMaterial);
     newFlyInstructionSink.stream.listen(_handleAddNewFlyInstruction);
@@ -149,6 +151,16 @@ class NewFlyBloc {
         .transform(DocumentToFlyInstruction(ipa.stepNumber));
   }
 
+  Future _handlePublishFly(Fly flyFromUi) async {
+    Map flyFromDb = (await newFlyService
+            .getFlyInProgressDocStream(authService.currentUser.uid)
+            .first)
+        .docs[0]
+        .data();
+    return newFlyService.publishFly(
+        flyFromDb, flyFromUi.docId, authService.currentUser.uid);
+  }
+
   Future _handleDeleteFlyMaterial(FlyMaterialAddOrUpdate materialUpdate) async {
     if (materialUpdate.prev != null) {
       return newFlyService.deleteFlyInProgressMaterial(
@@ -189,10 +201,16 @@ class NewFlyBloc {
       images: flyAttributeChange.imagesToAdd,
     );
 
-    //  Collect form attributes.
+    //  Collect form attributes. Filter out fly name and description as we store
+    //  these as top level properties in the doc.
     Map<String, String> formAttributeData = {};
-    flyAttributeChange.updatedAttributes.forEach((flyAttribute) =>
-        formAttributeData = {...formAttributeData, ...flyAttribute.toMap()});
+    flyAttributeChange.updatedAttributes
+        .where((flyAttribute) => (flyAttribute.name != DbNames.flyName &&
+            flyAttribute.name != DbNames.flyDescription))
+        .forEach((flyAttribute) => formAttributeData = {
+              ...formAttributeData,
+              ...flyAttribute.toMap()
+            });
 
     //  Now add attributes to firestore without newly added photo urls.
     newFlyService.addNewFlyAttributes(
@@ -201,18 +219,17 @@ class NewFlyBloc {
       flyName: flyAttributeChange.updatedAttributes
           .firstWhere((attr) => attr.name == DbNames.flyName)
           .value,
+      flyDescription: flyAttributeChange.updatedAttributes
+          .firstWhere((attr) => attr.name == DbNames.flyDescription)
+          .value,
       attributes: formAttributeData,
       topLevelImageUris: flyAttributeChange.imageUrisToKeep,
     );
 
-    //  Finally re-add attributes to firestore with newly added photo urls.
+    //  Finally add image uris to firestore.
     newFlyService.addNewFlyAttributes(
       docId: flyAttributeChange.prevFly.docId,
       uid: authService.currentUser.uid,
-      flyName: flyAttributeChange.updatedAttributes
-          .firstWhere((attr) => attr.name == DbNames.flyName)
-          .value,
-      attributes: formAttributeData,
       topLevelImageUris: [
         ...flyAttributeChange.imageUrisToKeep,
         ...(await addedUris)
@@ -257,6 +274,7 @@ class NewFlyBloc {
   }
 
   void close() {
+    publishFlySink.close();
     newFlyAttributesSink.close();
     newFlyMaterialSink.close();
     deleteFlyMaterialSink.close();

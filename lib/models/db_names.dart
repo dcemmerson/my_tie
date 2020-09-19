@@ -4,7 +4,16 @@
 ///   defined as in firestore. Use throughout app to avoid littering string
 ///   names in app code.
 
+class DbCollections {
+  static const flyInProgress = 'fly_in_progress';
+  static const fly = 'fly';
+  static const flyIncoming = 'fly_incoming';
+}
+
 class DbNames {
+  static const fly_is_moved = 'fly_is_moved';
+
+  // Field names
   static const lastModified = 'last_modified';
   static const uploadedBy = 'uploaded_by';
   static const created = 'created';

@@ -13,7 +13,6 @@ import 'package:my_tie/pages/route_based_pages/waste_detail_page.dart';
 import 'package:my_tie/routes/route_guard.dart';
 
 import 'fly_form_routes.dart';
-import 'modal_routes.dart';
 
 class Routes {
   static final routes = {

@@ -25,4 +25,5 @@ class FlyAttribute {
   FlyAttribute.formattedForEditing({this.name, this.value});
 
   Map<String, String> toMap() => {name: value};
+  MapEntry toMapEntry() => MapEntry(name, value);
 }

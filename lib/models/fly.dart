@@ -6,6 +6,7 @@
 
 import 'package:my_tie/models/fly_form_material.dart';
 
+import 'db_names.dart';
 import 'fly_attribute.dart';
 import 'fly_form_attribute.dart';
 import 'fly_instruction.dart';
@@ -74,6 +75,17 @@ class Fly {
         this.materials = _toMaterialListForEditing(mats ?? {}, flyFormTemplate),
         this.instructions = _toInstructionsList(instr),
         this.topLevelImageUris = _toListOfString(imageUris);
+
+  Map<String, dynamic> toMap() {
+    return {
+      // DbNames.flyName: flyName,
+      DbNames.attributes:
+          attributes.asMap().map((k, attr) => attr.toMapEntry()),
+      DbNames.materials: materials.asMap().map((k, mat) => mat.toMapEntry()),
+      // DbNames.materials: materials.toMap(),
+      // DbNames.instructions: instructions.toMap(),
+    };
+  }
 
   String getMaterial(
       int materialIndex, int propertyIndex, String propertyName) {

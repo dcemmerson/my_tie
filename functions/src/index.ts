@@ -87,8 +87,15 @@ exports.editNewFlyInstruction = functions.firestore.document('/fly_in_progress/{
 
     if (instructionsOutOfOrder(change.after)) {
       await normalizeInstructionStepsOrder(change.after);
+      return;
     }
-    await cleanupUnusedPhotosFromStorage(change);
+
+    // If fly_is_moved is set to true, this means the fly in progress has been
+    //  published by user, effectively moving the fly in progress to the fly_incoming
+    //  collection, which would then be validated and moved to the fly collection by admin.
+    if (change.after.data()?.fly_is_moved !== true) {
+      await cleanupUnusedPhotosFromStorage(change);
+    }
 
     return;
 
@@ -148,7 +155,6 @@ async function cleanupUnusedPhotosFromStorage(change: functions.Change<DocumentS
   const imageUrisToDelete: Array<string> = extractImageUrlsToDelete(change.after, change.before);
   const storage = admin.storage().bucket(`gs://${BUCKET_URL}`);
 
-  console.log(imageUrisToDelete);
   const deletions = imageUrisToDelete.map(async (uri: string) => {
     const file = storage.file(extractImagePathFromUrl(uri));
     return file.delete();

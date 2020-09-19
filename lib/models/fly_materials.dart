@@ -17,8 +17,8 @@ import 'package:my_tie/models/db_names.dart';
 import 'fly.dart';
 
 class FlyMaterial {
-  final Map<String, String> properties;
-  final String name; // Name of material
+  final Map<String, String> properties; // eg: {'color': 'red', 'size': 'small'}
+  final String name; // Name of material, eg: 'beads'
 
   FlyMaterial({this.properties, this.name});
 
@@ -87,6 +87,9 @@ class FlyMaterials {
 
   FlyMaterials.formattedForEditing({this.name, List props})
       : flyMaterials = _toListFlyMaterials(name, props);
+
+  MapEntry toMapEntry() =>
+      MapEntry(name, flyMaterials?.map((mat) => mat.properties)?.toList());
 
   IconData get icon {
     switch (name) {

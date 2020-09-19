@@ -4,7 +4,6 @@ import 'package:my_tie/models/arguments/fly_instruction_modal_transfer.dart';
 import 'package:my_tie/models/fly_instruction.dart';
 import 'package:my_tie/routes/modal_routes.dart';
 import 'package:my_tie/styles/styles.dart';
-import 'package:my_tie/widgets/forms/new_fly_form/preview_publish/instruction_preview/instruction_preview_carousel.dart';
 
 class NewFlyInstructionsPreview extends StatelessWidget {
   static const _imagePadding = 10.0;

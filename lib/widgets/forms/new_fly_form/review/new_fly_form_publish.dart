@@ -1,5 +1,3 @@
-import 'package:flutter/cupertino.dart';
-
 /// filename: new_fly_form_publish.dart
 /// description: Entry widget containg final page for using adding a new fly,
 ///   before publishing. Allows user to review all fly attributes and materials,
@@ -7,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 ///   property.
 
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 
 import 'package:my_tie/bloc/state/my_tie_state.dart';
 import 'package:my_tie/bloc/new_fly_bloc.dart';
@@ -140,7 +139,8 @@ class _NewFlyFormPublishState extends State<NewFlyFormPublish> {
                   ),
                   Icon(Icons.cloud_upload),
                 ]),
-                onPressed: () => print('save not implemented yet...'),
+                onPressed: () => _newFlyBloc.publishFlySink
+                    .add(flyFormTransfer.flyInProgress),
               ),
             ),
           ),
