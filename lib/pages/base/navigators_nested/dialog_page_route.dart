@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
-class DialogRoute<T> extends PageRoute<T> {
-  DialogRoute({this.builder}) : super();
+class DialogPageRoute<T> extends PageRoute<T> {
+  // final RouteSettings settings;
+
+  DialogPageRoute({this.builder}) : super();
 
   final WidgetBuilder builder;
 
@@ -12,7 +14,7 @@ class DialogRoute<T> extends PageRoute<T> {
   bool get barrierDismissible => true;
 
   @override
-  Duration get transitionDuration => const Duration(milliseconds: 350);
+  Duration get transitionDuration => const Duration(milliseconds: 300);
 
   @override
   bool get maintainState => true;
@@ -23,9 +25,10 @@ class DialogRoute<T> extends PageRoute<T> {
   @override
   Widget buildTransitions(BuildContext context, Animation<double> animation,
       Animation<double> secondaryAnimation, Widget child) {
-    return new FadeTransition(
-        opacity: new CurvedAnimation(parent: animation, curve: Curves.easeOut),
-        child: child);
+    return FadeTransition(
+      opacity: CurvedAnimation(parent: animation, curve: Curves.easeOut),
+      child: child,
+    );
   }
 
   @override

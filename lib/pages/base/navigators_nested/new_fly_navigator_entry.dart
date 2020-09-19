@@ -6,7 +6,7 @@ import 'new_fly_navigator.dart';
 
 class NewFlyNavigatorEntry extends BottomNavPageBase {
   static const _title = 'New Tie Fly';
-  static const route = 'new_fly_start';
+  // static const route = 'new_fly_start';
 
   @override
   get title => _title;

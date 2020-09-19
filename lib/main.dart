@@ -15,7 +15,7 @@ import 'package:my_tie/services/network/new_fly_service.dart';
 // import 'package:flutter/scheduler.dart' show timeDilation;
 
 void main() async {
-  // timeDilation = 2.0;
+  // timeDilation = 3.0;
   runApp(await initApp());
 }
 

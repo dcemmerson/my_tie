@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:my_tie/models/arguments/fly_instruction_modal_transfer.dart';
 import 'package:my_tie/models/fly_instruction.dart';
 import 'package:my_tie/routes/modal_routes.dart';
 import 'package:my_tie/styles/styles.dart';
@@ -57,10 +58,10 @@ class NewFlyInstructionsPreview extends StatelessWidget {
   Widget _buildImage(
       FlyInstruction instruction, String uri, BuildContext context) {
     return LayoutBuilder(
-      builder: (context, constraints) => Hero(
-        tag: uri,
-        child: GestureDetector(
-          onTap: () => instructionDetailDialog(instruction, uri, context),
+      builder: (context, constraints) => GestureDetector(
+        onTap: () => instructionDetailDialog(instruction, uri, context),
+        child: Hero(
+          tag: uri,
           child: Image.network(
             uri,
             width: constraints.maxWidth / 2,
@@ -85,7 +86,13 @@ class NewFlyInstructionsPreview extends StatelessWidget {
 
   Future instructionDetailDialog(
       FlyInstruction instruction, String uri, BuildContext context) async {
-    await ModalRoutes.instructionStepModalPage(context);
+    print('from');
+    print(uri);
+
+    await ModalRoutes.instructionStepModalPage(
+        context,
+        FlyInstructionModalTransfer(
+            initImageUri: uri, flyInstruction: instruction));
   }
 
   @override
