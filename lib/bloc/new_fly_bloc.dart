@@ -152,13 +152,12 @@ class NewFlyBloc {
   }
 
   Future _handlePublishFly(Fly flyFromUi) async {
-    Map flyFromDb = (await newFlyService
-            .getFlyInProgressDocStream(authService.currentUser.uid)
-            .first)
-        .docs[0]
-        .data();
-    return newFlyService.publishFly(
-        flyFromDb, flyFromUi.docId, authService.currentUser.uid);
+    // Map flyFromDb = (await newFlyService
+    //         .getFlyInProgressDocStream(authService.currentUser.uid)
+    //         .first)
+    //     .docs[0]
+    //     .data();
+    return newFlyService.publishFly(flyFromUi.docId);
   }
 
   Future _handleDeleteFlyMaterial(FlyMaterialAddOrUpdate materialUpdate) async {

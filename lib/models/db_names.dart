@@ -11,7 +11,9 @@ class DbCollections {
 }
 
 class DbNames {
-  static const fly_is_moved = 'fly_is_moved';
+  // static const fly_is_moved = 'fly_is_moved';
+  // static const editable = 'editable';
+  static const toBePublished = 'to_be_published';
 
   // Field names
   static const lastModified = 'last_modified';

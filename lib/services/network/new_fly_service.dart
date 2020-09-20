@@ -10,6 +10,7 @@ import 'dart:io';
 ///   'fly_in_progress' collection whose id corresponds to the logged in user id.
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:uuid/uuid.dart';
 import 'package:my_tie/models/db_names.dart';
@@ -18,13 +19,14 @@ class NewFlyService {
   Future createFlyInProgressDoc({String uid}) {
     return FirebaseFirestore.instance
         .collection(DbCollections.flyInProgress)
-        .add({DbNames.uploadedBy: uid});
+        .add({DbNames.uploadedBy: uid, DbNames.toBePublished: false});
   }
 
   Stream<QuerySnapshot> getFlyInProgressDocStream(String uid) {
     return FirebaseFirestore.instance
         .collection(DbCollections.flyInProgress)
         .where(DbNames.uploadedBy, isEqualTo: uid)
+        .where(DbNames.toBePublished, isEqualTo: false)
         // OrderBy is not necessary beause a cloud function ensures one user
         //  can only ever have one fly_in_progress doc at a time.
 //        .orderBy(DbNames.created, descending: true)
@@ -174,17 +176,23 @@ class NewFlyService {
         .delete();
   }
 
-  Future publishFly(Map fly, String prevDocId, String uid) async {
-    print(fly);
-    await FirebaseFirestore.instance.collection(DbCollections.flyIncoming).add({
-      ...fly,
-      DbNames.uploadedBy: uid,
-      DbNames.lastModified: DateTime.now(),
-    });
-    return FirebaseFirestore.instance
+  Future publishFly(String prevDocId) async {
+    // All we do from client is set the to_be_published flag to true and call
+    // the cloud function which will at some point sanitize and publish the fly.
+    // Server side sanitization performs same checks as client side, meaning
+    // the server side sanitization shouldn't fail unless malicious attempt
+    // made. This allows us to quickly update user ui, even in offline mode.
+
+    final updateFlyInProgress = FirebaseFirestore.instance
         .collection(DbCollections.flyInProgress)
         .doc(prevDocId)
-        .set({DbNames.fly_is_moved: true});
+        .set({DbNames.toBePublished: true}, SetOptions(merge: true));
+
+    final triggerCloudFunction = CloudFunctions.instance
+        .getHttpsCallable(functionName: 'publishFly')
+        .call({'docId': prevDocId});
+
+    return Future.wait([updateFlyInProgress, triggerCloudFunction]);
   }
 }
 

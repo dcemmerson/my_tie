@@ -33,10 +33,11 @@ const editNewFlyInstructions = functions.firestore.document('/fly_in_progress/{d
       return;
     }
 
-    // If fly_is_moved is set to true, this means the fly in progress has been
+    // If fly_is_moved or to_be_published is set to true, this means the fly in progress has been
     //  published by user, effectively moving the fly in progress to the fly_incoming
     //  collection, which would then be validated and moved to the fly collection by admin.
-    if (change.after.data()?.fly_is_moved !== true) {
+    if (change.after.data() !== null && change.after.data() !== undefined &&
+      change.after.data()?.fly_is_moved !== true && !change.after.data()?.to_be_published) {
       await cleanupUnusedPhotosFromStorage(change);
     }
 
@@ -165,7 +166,7 @@ function extractImageUrlsToDelete(newDoc: DocumentSnapshot, prevDoc: DocumentSna
   }
 
   function extractTopLevelImageUrlsToDelete(): Array<string> {
-      
+
     const prevTopLevelImageUris: Array<string> = prevDoc.data()?.top_level_image_uris;
     const newTopLevelImageUris: Array<string> = newDoc.data()?.top_level_image_uris;
 

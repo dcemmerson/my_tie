@@ -5,7 +5,11 @@ admin.initializeApp();
 
 import * as newFlyFormIncoming from './new_fly_form_incoming';
 import * as editNewFlyInstructions from './edit_new_fly_instructions';
+import * as publishFly from './publish_fly';
 
+//  Firestore events.
 exports.addToNewFlyFormTemplate = newFlyFormIncoming.addToNewFlyFormTemplate;
 exports.editNewFlyInstructions = editNewFlyInstructions.editNewFlyInstructions;
 
+//  Https callable functions.
+exports.publishFly = publishFly.publishFly;
