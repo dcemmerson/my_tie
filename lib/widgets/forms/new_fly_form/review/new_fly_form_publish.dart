@@ -28,6 +28,7 @@ class NewFlyFormPublish extends StatefulWidget {
 
 class _NewFlyFormPublishState extends State<NewFlyFormPublish> {
   final _spaceBetweenDropdowns = AppPadding.p6;
+  final _formKey = GlobalKey<FormState>();
 
   Widget _attributesHeader;
   Widget _materialsHeader;
@@ -112,75 +113,96 @@ class _NewFlyFormPublishState extends State<NewFlyFormPublish> {
     }
   }
 
+  void publish(Fly flyInProgress) {
+    print(_formKey.currentState.validate());
+    // print(_formKey.currentState.)
+
+    // if (flyInProgress.isValid) {
+    // _newFlyBloc.publishFlySink.add(flyInProgress);
+    // }
+  }
+
   Widget _buildForm(NewFlyFormTransfer flyFormTransfer) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        SizedBox(height: _spaceBetweenDropdowns),
-        _attributesHeader,
-        AttributeReview(newFlyFormTransfer: flyFormTransfer),
-        // FlyTopLevelImagesReview(),
-        _materialsHeader,
-        MaterialReview(newFlyFormTransfer: flyFormTransfer),
-        _instructionsHeader,
-        InstructionReview(newFlyFormTransfer: flyFormTransfer),
-        Row(children: [
-          Expanded(
-            child: Container(
-              child: RaisedButton(
-                child:
-                    Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                  Padding(
-                    padding: EdgeInsets.fromLTRB(
-                        0, AppPadding.p6, AppPadding.p6, AppPadding.p6),
-                    child: Text(
-                      'Publish',
-                    ),
-                  ),
-                  Icon(Icons.cloud_upload),
-                ]),
-                onPressed: () => _newFlyBloc.publishFlySink
-                    .add(flyFormTransfer.flyInProgress),
+    return Form(
+      key: _formKey,
+      autovalidate: false,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          SizedBox(height: _spaceBetweenDropdowns),
+          _attributesHeader,
+          FormField(
+            validator: (value) {
+              return 'Fields required';
+            },
+            builder: (field) => AttributeReview(
+                newFlyFormTransfer: flyFormTransfer, field: field),
+          ),
+          // FlyTopLevelImagesReview(),
+          _materialsHeader,
+          MaterialReview(newFlyFormTransfer: flyFormTransfer),
+          _instructionsHeader,
+          InstructionReview(newFlyFormTransfer: flyFormTransfer),
+          Row(children: [
+            Expanded(
+              child: Container(
+                child: RaisedButton(
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.fromLTRB(
+                              0, AppPadding.p6, AppPadding.p6, AppPadding.p6),
+                          child: Text(
+                            'Publish',
+                          ),
+                        ),
+                        Icon(Icons.cloud_upload),
+                      ]),
+                  onPressed: () => publish(flyFormTransfer.flyInProgress),
+                ),
               ),
             ),
-          ),
-        ]),
-        Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-          FlatButton(
-            key: ValueKey('clearFormButton'),
-            padding: EdgeInsets.all(0),
-            child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-              Icon(Icons.delete_forever,
-                  color: Theme.of(context).colorScheme.error),
-              Padding(
-                padding:
-                    EdgeInsets.fromLTRB(0, 0, AppPadding.p2, AppPadding.p2),
-                child: Text('Clear form',
-                    style:
-                        TextStyle(color: Theme.of(context).colorScheme.error)),
-              ),
-            ]),
-            onPressed: () =>
-                _promptDeleteFlyInProgress(flyFormTransfer.flyInProgress),
-          ),
-          FlatButton(
-            key: ValueKey('previewFormButton'),
-            padding: EdgeInsets.all(0),
-            child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-              Icon(Icons.art_track,
-                  color: Theme.of(context).colorScheme.primary),
-              Padding(
-                padding:
-                    EdgeInsets.fromLTRB(0, 0, AppPadding.p2, AppPadding.p2),
-                child: Text('Preview',
-                    style: TextStyle(
-                        color: Theme.of(context).colorScheme.primary)),
-              ),
-            ]),
-            onPressed: () => FlyFormRoutes.previewPublishPage(context),
-          ),
-        ]),
-      ],
+          ]),
+          Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+            FlatButton(
+              key: ValueKey('clearFormButton'),
+              padding: EdgeInsets.all(0),
+              child:
+                  Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                Icon(Icons.delete_forever,
+                    color: Theme.of(context).colorScheme.error),
+                Padding(
+                  padding:
+                      EdgeInsets.fromLTRB(0, 0, AppPadding.p2, AppPadding.p2),
+                  child: Text('Clear form',
+                      style: TextStyle(
+                          color: Theme.of(context).colorScheme.error)),
+                ),
+              ]),
+              onPressed: () =>
+                  _promptDeleteFlyInProgress(flyFormTransfer.flyInProgress),
+            ),
+            FlatButton(
+              key: ValueKey('previewFormButton'),
+              padding: EdgeInsets.all(0),
+              child:
+                  Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                Icon(Icons.art_track,
+                    color: Theme.of(context).colorScheme.primary),
+                Padding(
+                  padding:
+                      EdgeInsets.fromLTRB(0, 0, AppPadding.p2, AppPadding.p2),
+                  child: Text('Preview',
+                      style: TextStyle(
+                          color: Theme.of(context).colorScheme.primary)),
+                ),
+              ]),
+              onPressed: () => FlyFormRoutes.previewPublishPage(context),
+            ),
+          ]),
+        ],
+      ),
     );
   }
 

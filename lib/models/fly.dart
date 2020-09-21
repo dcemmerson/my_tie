@@ -15,6 +15,8 @@ import 'new_fly_form_template.dart';
 
 class Fly {
   static const nullReplacement = '[None]';
+  static const nullNameReplacement = '[No name]';
+  static const nullDescriptionReplacement = '[No description]';
 
   final String docId;
   final String flyName;
@@ -51,10 +53,10 @@ class Fly {
     NewFlyFormTemplate flyFormTemplate,
     Map instr,
   })  : this.flyName =
-            flyName ?? '[No name]', // Must set flyName here rather than
+            flyName ?? nullNameReplacement, // Must set flyName here rather than
         //  default arg (because if value doesnt exist in firebase, flyName will
         //  be explicitly set to null, even if we provide default arg)
-        this.flyDescription = flyDescription ?? '[No description]',
+        this.flyDescription = flyDescription ?? nullDescriptionReplacement,
         this.attributes =
             _toAttributeListForReview(attrs ?? {}, flyFormTemplate),
         this.materials = _toMaterialListForReview(mats ?? {}, flyFormTemplate),

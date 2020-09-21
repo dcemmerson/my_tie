@@ -51,7 +51,13 @@ class AppIcons {
   static final warning = Colors.yellow[700];
   static final danger = Colors.red[700];
 
+  static Icon errorSmall(context) => Icon(Icons.error,
+      size: small, color: Theme.of(context).colorScheme.error);
+  static Icon errorExtraSmall(context) => Icon(Icons.error,
+      size: extraSmall, color: Theme.of(context).colorScheme.error);
+
   static const small = 16.0;
+  static const extraSmall = 14.0;
 
   static Color getColorByDifficulty(String difficulty) {
     switch (difficulty) {
