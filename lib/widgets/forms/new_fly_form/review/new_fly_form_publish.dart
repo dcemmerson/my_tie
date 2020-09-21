@@ -115,11 +115,38 @@ class _NewFlyFormPublishState extends State<NewFlyFormPublish> {
 
   void publish(Fly flyInProgress) {
     print(_formKey.currentState.validate());
+
     // print(_formKey.currentState.)
 
     // if (flyInProgress.isValid) {
     // _newFlyBloc.publishFlySink.add(flyInProgress);
     // }
+  }
+
+  String _validateAttributes(Fly flyInProgress) {
+    bool hasError = flyInProgress.attributes.fold(
+        false,
+        (prev, attr) => (attr.value == Fly.nullNameReplacement ||
+            attr.value == Fly.nullDescriptionReplacement ||
+            attr.value == Fly.nullReplacement));
+    if (hasError)
+      return 'Fields required';
+    else
+      return null;
+  }
+
+  String _validateMaterials(Fly flyInProgress) {
+    if (flyInProgress.materialList.length == 0)
+      return 'Please choose materials';
+    else
+      return null;
+  }
+
+  String _validateInstructions(Fly flyInProgress) {
+    if (flyInProgress.instructions.length == 0)
+      return 'Please add instructions';
+    else
+      return null;
   }
 
   Widget _buildForm(NewFlyFormTransfer flyFormTransfer) {
@@ -132,20 +159,30 @@ class _NewFlyFormPublishState extends State<NewFlyFormPublish> {
           SizedBox(height: _spaceBetweenDropdowns),
           _attributesHeader,
           FormField(
-            validator: (value) {
-              return 'Fields required';
-            },
+            validator: (value) =>
+                _validateAttributes(flyFormTransfer.flyInProgress),
             builder: (field) => AttributeReview(
                 newFlyFormTransfer: flyFormTransfer, field: field),
           ),
           // FlyTopLevelImagesReview(),
           _materialsHeader,
-          MaterialReview(newFlyFormTransfer: flyFormTransfer),
+          FormField(
+            validator: (value) =>
+                _validateMaterials(flyFormTransfer.flyInProgress),
+            builder: (field) => MaterialReview(
+                newFlyFormTransfer: flyFormTransfer, field: field),
+          ),
           _instructionsHeader,
-          InstructionReview(newFlyFormTransfer: flyFormTransfer),
+          FormField(
+            validator: (value) =>
+                _validateInstructions(flyFormTransfer.flyInProgress),
+            builder: (field) => InstructionReview(
+                newFlyFormTransfer: flyFormTransfer, field: field),
+          ),
           Row(children: [
             Expanded(
               child: Container(
+                padding: EdgeInsets.fromLTRB(0, AppPadding.p6, 0, 0),
                 child: RaisedButton(
                   child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,

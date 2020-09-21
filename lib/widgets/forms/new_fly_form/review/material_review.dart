@@ -30,10 +30,11 @@ class MaterialReview extends StatefulWidget {
   // final _offsetDelta = -1.0;
 
   final NewFlyFormTransfer nfft;
+  final FormFieldState field;
 
-  MaterialReview({
-    @required NewFlyFormTransfer newFlyFormTransfer,
-  }) : nfft = newFlyFormTransfer;
+  MaterialReview(
+      {@required NewFlyFormTransfer newFlyFormTransfer, @required this.field})
+      : nfft = newFlyFormTransfer;
 
   @override
   _MaterialReviewState createState() => _MaterialReviewState();
@@ -264,12 +265,19 @@ class _MaterialReviewState extends State<MaterialReview>
 
   @override
   Widget build(BuildContext context) {
-    if (_showMaterialsForm) {
-      return _buildShowMaterialsForm();
-    } else if (widget.nfft.flyInProgress.isMaterialsStarted) {
-      return _buildResumeMaterials();
-    } else {
-      return _buildStartMaterials();
-    }
+    return Column(children: [
+      _showMaterialsForm
+          ? _buildShowMaterialsForm()
+          : (widget.nfft.flyInProgress.isMaterialsStarted)
+              ? _buildResumeMaterials()
+              : _buildStartMaterials(),
+      if (widget.field.hasError)
+        Row(
+          children: [
+            AppIcons.errorSmall(context),
+            Text(widget.field.errorText)
+          ],
+        )
+    ]);
   }
 }

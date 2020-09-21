@@ -18,8 +18,10 @@ class InstructionReview extends StatelessWidget {
   static const _addNextStep = 'Add next step!';
 
   final NewFlyFormTransfer nfft;
+  final FormFieldState field;
 
-  InstructionReview({@required NewFlyFormTransfer newFlyFormTransfer})
+  InstructionReview(
+      {@required NewFlyFormTransfer newFlyFormTransfer, @required this.field})
       : nfft = newFlyFormTransfer;
 
   Widget _buildNextStep(BuildContext context, {int nextStepNumber: 1}) {
@@ -115,7 +117,11 @@ class InstructionReview extends StatelessWidget {
     return Column(children: [
       ..._buildInstructionsPreview(context, nfft.flyInProgress.instructions),
       _buildNextStep(context,
-          nextStepNumber: nfft.flyInProgress.instructions.length + 1)
+          nextStepNumber: nfft.flyInProgress.instructions.length + 1),
+      if (field.hasError)
+        Row(
+          children: [AppIcons.errorSmall(context), Text(field.errorText)],
+        )
     ]);
   }
 }
