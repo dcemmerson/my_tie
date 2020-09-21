@@ -28,17 +28,19 @@ export { editNewFlyInstructions };
 const editNewFlyInstructions = functions.firestore.document('/fly_in_progress/{docId}')
   .onWrite(async (change, context) => {
 
-    if (instructionsOutOfOrder(change.after)) {
-      await normalizeInstructionStepsOrder(change.after);
-      return;
-    }
+    if (change.after.data() !== null && change.after.data() !== undefined) {
 
-    // If fly_is_moved or to_be_published is set to true, this means the fly in progress has been
-    //  published by user, effectively moving the fly in progress to the fly_incoming
-    //  collection, which would then be validated and moved to the fly collection by admin.
-    if (change.after.data() !== null && change.after.data() !== undefined &&
-      change.after.data()?.fly_is_moved !== true && !change.after.data()?.to_be_published) {
-      await cleanupUnusedPhotosFromStorage(change);
+      if (instructionsOutOfOrder(change.after)) {
+        await normalizeInstructionStepsOrder(change.after);
+        return;
+      }
+
+      // If fly_is_moved or to_be_published is set to true, this means the fly in progress has been
+      //  published by user, effectively moving the fly in progress to the fly_incoming
+      //  collection, which would then be validated and moved to the fly collection by admin.
+      if (!change.after.data()?.to_be_published && change.after.data()?.fly_is_moved !== true) {
+        await cleanupUnusedPhotosFromStorage(change);
+      }
     }
 
     return;

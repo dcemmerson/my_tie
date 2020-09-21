@@ -114,13 +114,13 @@ class _NewFlyFormPublishState extends State<NewFlyFormPublish> {
   }
 
   void publish(Fly flyInProgress) {
-    print(_formKey.currentState.validate());
+    // print(_formKey.currentState.validate());
 
     // print(_formKey.currentState.)
 
-    // if (flyInProgress.isValid) {
-    // _newFlyBloc.publishFlySink.add(flyInProgress);
-    // }
+    if (_formKey.currentState.validate()) {
+      _newFlyBloc.publishFlySink.add(flyInProgress);
+    }
   }
 
   String _validateAttributes(Fly flyInProgress) {

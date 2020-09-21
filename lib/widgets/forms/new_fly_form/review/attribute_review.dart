@@ -34,6 +34,8 @@ class AttributeReview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (field.hasError) Scrollable.ensureVisible(context);
+
     return Column(children: [
       Card(
         color: Theme.of(context).colorScheme.surface,
