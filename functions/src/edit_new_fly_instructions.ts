@@ -50,11 +50,13 @@ const editNewFlyInstructions = functions.firestore.document('/fly_in_progress/{d
       const instructions = changedDoc.data()?.instructions;
       let currInstruction = 0;
 
-      for (const [, instruction] of Object.entries(instructions)) {
-        currInstruction++;
-        const instr = instruction as Instruction;
-        if (instr.step_number !== currInstruction) {
-          return true;
+      if (instructions) {
+        for (const [, instruction] of Object.entries(instructions)) {
+          currInstruction++;
+          const instr = instruction as Instruction;
+          if (instr.step_number !== currInstruction) {
+            return true;
+          }
         }
       }
       return false;
@@ -174,7 +176,9 @@ function extractImageUrlsToDelete(newDoc: DocumentSnapshot, prevDoc: DocumentSna
 
     if (!newTopLevelImageUris) {
       // Case where user deleted entrie doc.
+     if(prevTopLevelImageUris)
       return prevTopLevelImageUris;
+      else return [];
     }
     else if (!prevTopLevelImageUris) {
       return [];

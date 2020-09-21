@@ -196,7 +196,13 @@ class _NewFlyFormPublishState extends State<NewFlyFormPublish> {
                         ),
                         Icon(Icons.cloud_upload),
                       ]),
-                  onPressed: () => publish(flyFormTransfer.flyInProgress),
+                  onPressed: () {
+                    publish(flyFormTransfer.flyInProgress);
+                    Navigator.of(context).pop({
+                      'flyAddedToDb': true,
+                      'flyAdded': flyFormTransfer.flyInProgress
+                    });
+                  },
                 ),
               ),
             ),
