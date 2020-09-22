@@ -1,7 +1,7 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:my_tie/models/db_names.dart';
-import 'package:my_tie/models/fly.dart';
+import 'package:my_tie/models/new_fly/fly.dart';
 import 'package:my_tie/styles/string_format.dart';
 import 'package:my_tie/styles/styles.dart';
 

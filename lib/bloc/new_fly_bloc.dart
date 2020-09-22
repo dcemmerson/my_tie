@@ -15,9 +15,9 @@ import 'package:my_tie/models/bloc_transfer_related/fly_instruction_transfer.dar
 import 'package:my_tie/models/bloc_transfer_related/fly_material_add_or_update.dart';
 
 import 'package:my_tie/models/db_names.dart';
-import 'package:my_tie/models/fly.dart';
-import 'package:my_tie/models/new_fly_form_transfer.dart';
-import 'package:my_tie/models/new_fly_form_template.dart';
+import 'package:my_tie/models/new_fly/fly.dart';
+import 'package:my_tie/models/new_fly/new_fly_form_transfer.dart';
+import 'package:my_tie/models/new_fly/new_fly_form_template.dart';
 import 'package:my_tie/services/network/auth_service.dart';
 import 'package:my_tie/services/network/fly_form_template_service.dart';
 

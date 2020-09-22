@@ -9,9 +9,9 @@ import 'package:flutter/cupertino.dart';
 
 import 'package:my_tie/bloc/state/my_tie_state.dart';
 import 'package:my_tie/bloc/new_fly_bloc.dart';
-import 'package:my_tie/models/fly.dart';
+import 'package:my_tie/models/new_fly/fly.dart';
 
-import 'package:my_tie/models/new_fly_form_transfer.dart';
+import 'package:my_tie/models/new_fly/new_fly_form_transfer.dart';
 import 'package:my_tie/routes/fly_form_routes.dart';
 
 import 'package:my_tie/styles/styles.dart';

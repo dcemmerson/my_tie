@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:my_tie/bloc/state/my_tie_state.dart';
 import 'package:my_tie/pages/base/navigators_nested/new_fly_navigator_entry.dart';
 import 'package:my_tie/pages/base/page_base_stateful/app_bottom_navigation_bar.dart';
-import 'package:my_tie/pages/bottom_navigation_based_pages/account_page.dart';
+import 'package:my_tie/pages/bottom_navigation_based_pages/profile_page.dart';
 import 'package:my_tie/pages/bottom_navigation_based_pages/bottom_nav_page_base.dart';
 import 'package:my_tie/pages/bottom_navigation_based_pages/home_page.dart';
 import 'package:my_tie/styles/theme_manager.dart';
@@ -34,7 +34,7 @@ class PageHome extends StatefulWidget {
       icon: Icon(Icons.add_box),
     ),
     BottomNavPage(
-      page: AccountPage(),
+      page: ProfilePage(),
       icon: Icon(Icons.account_box),
     ),
   ];

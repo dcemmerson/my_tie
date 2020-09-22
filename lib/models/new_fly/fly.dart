@@ -1,17 +1,17 @@
+import '../db_names.dart';
+import 'new_fly_form_template.dart';
+import 'fly_attribute.dart';
+
 /// filename: fly.dart
 /// description: Model class representing a fly. A fly has a name, attributes
 ///   (eg difficulty to tie the fly, type of fly, etc), materials need to tie
 ///   the fly (eg hook size, threads, etc), and instructional steps to tie
 ///   the fly.
 
-import 'package:my_tie/models/fly_form_material.dart';
-
-import 'db_names.dart';
-import 'fly_attribute.dart';
 import 'fly_form_attribute.dart';
+import 'fly_form_material.dart';
 import 'fly_instruction.dart';
 import 'fly_materials.dart';
-import 'new_fly_form_template.dart';
 
 class Fly {
   static const nullReplacement = '[None]';

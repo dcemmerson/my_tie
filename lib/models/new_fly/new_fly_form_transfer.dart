@@ -1,5 +1,4 @@
-import 'package:my_tie/models/fly.dart';
-
+import 'fly.dart';
 import 'new_fly_form_template.dart';
 
 class NewFlyFormTransfer {

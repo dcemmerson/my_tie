@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:my_tie/models/arguments/add_property_argument.dart';
-import 'package:my_tie/models/fly.dart';
-import 'package:my_tie/models/fly_form_material.dart';
-import 'package:my_tie/models/form_page_number.dart';
+import 'package:my_tie/models/new_fly/fly.dart';
+import 'package:my_tie/models/new_fly/fly_form_material.dart';
+import 'package:my_tie/models/new_fly/form_page_number.dart';
+
 import 'package:my_tie/styles/styles.dart';
 
 import '../field_long_press_wrapper.dart';

@@ -1,6 +1,5 @@
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:my_tie/models/fly_instruction.dart';
+import 'package:my_tie/models/new_fly/fly_instruction.dart';
 
 class InstructionPreviewCarousel extends StatelessWidget {
   final FlyInstruction instruction;

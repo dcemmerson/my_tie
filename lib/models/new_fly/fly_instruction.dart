@@ -1,7 +1,8 @@
 import 'dart:io';
 
-import 'db_names.dart';
 import 'package:my_tie/styles/string_format.dart';
+
+import '../db_names.dart';
 
 class FlyInstruction {
   final String title;

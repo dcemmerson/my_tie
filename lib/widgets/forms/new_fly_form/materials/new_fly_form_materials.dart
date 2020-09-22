@@ -12,11 +12,12 @@ import 'package:my_tie/bloc/state/fly_form_state.dart';
 import 'package:my_tie/bloc/state/my_tie_state.dart';
 
 import 'package:my_tie/models/bloc_transfer_related/fly_material_add_or_update.dart';
-import 'package:my_tie/models/fly.dart';
-import 'package:my_tie/models/fly_materials.dart';
-import 'package:my_tie/models/new_fly_form_template.dart';
-import 'package:my_tie/models/new_fly_form_transfer.dart';
-import 'package:my_tie/models/form_page_number.dart';
+import 'package:my_tie/models/new_fly/fly.dart';
+import 'package:my_tie/models/new_fly/fly_materials.dart';
+import 'package:my_tie/models/new_fly/form_page_number.dart';
+
+import 'package:my_tie/models/new_fly/new_fly_form_template.dart';
+import 'package:my_tie/models/new_fly/new_fly_form_transfer.dart';
 import 'package:my_tie/styles/styles.dart';
 import 'package:my_tie/widgets/forms/new_fly_form/fly_in_progress_form_stream_builder.dart';
 

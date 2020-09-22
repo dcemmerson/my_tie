@@ -10,10 +10,10 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:my_tie/models/new_fly/fly.dart';
 
 import '../db_names.dart';
-import '../fly.dart';
-import '../fly_attribute.dart';
+import '../new_fly/fly_attribute.dart';
 
 class FlyAttributeChange {
   final Fly prevFly;

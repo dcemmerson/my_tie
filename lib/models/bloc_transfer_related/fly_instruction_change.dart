@@ -11,10 +11,10 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:my_tie/models/new_fly/fly.dart';
+import 'package:my_tie/models/new_fly/fly_instruction.dart';
 
 import '../db_names.dart';
-import '../fly.dart';
-import '../fly_instruction.dart';
 
 class FlyInstructionChange {
   final Fly fly;

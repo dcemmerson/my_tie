@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:confetti/confetti.dart';
-import 'package:my_tie/models/fly.dart';
+import 'package:my_tie/models/new_fly/fly.dart';
 import 'package:my_tie/routes/fly_form_routes.dart';
 import 'package:my_tie/styles/styles.dart';
 import 'package:my_tie/widgets/forms/new_fly_form/preview_publish/new_fly_attribute_preview.dart';

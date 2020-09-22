@@ -1,10 +1,10 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:my_tie/models/fly.dart';
-import 'package:my_tie/models/fly_attribute.dart';
-import 'package:my_tie/models/fly_form_attribute.dart';
-import 'package:my_tie/models/fly_form_material.dart';
-import 'package:my_tie/models/fly_materials.dart';
-import 'package:my_tie/models/new_fly_form_template.dart';
+import 'package:my_tie/models/new_fly/fly.dart';
+import 'package:my_tie/models/new_fly/fly_attribute.dart';
+import 'package:my_tie/models/new_fly/fly_form_attribute.dart';
+import 'package:my_tie/models/new_fly/fly_form_material.dart';
+import 'package:my_tie/models/new_fly/fly_materials.dart';
+import 'package:my_tie/models/new_fly/new_fly_form_template.dart';
 
 import 'mock_data.dart';
 

@@ -6,9 +6,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:my_tie/models/arguments/instruction_page_attribute.dart';
-import 'package:my_tie/models/fly_instruction.dart';
 import 'package:my_tie/models/keys.dart';
-import 'package:my_tie/models/new_fly_form_transfer.dart';
+import 'package:my_tie/models/new_fly/fly_instruction.dart';
+import 'package:my_tie/models/new_fly/new_fly_form_transfer.dart';
 import 'package:my_tie/routes/fly_form_routes.dart';
 import 'package:my_tie/styles/styles.dart';
 import 'package:my_tie/widgets/forms/new_fly_form/review/review_edit_button.dart';

@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:my_tie/models/arguments/add_attribute_argument.dart';
 import 'package:my_tie/models/arguments/add_property_argument.dart';
 import 'package:my_tie/models/arguments/instruction_page_attribute.dart';
-import 'package:my_tie/models/form_page_number.dart';
+import 'package:my_tie/models/new_fly/form_page_number.dart';
 import 'package:my_tie/pages/base/page_base_stateless/subpage_base.dart';
 import 'package:my_tie/pages/base/page_base_stateless/subpage_container.dart';
 import 'package:my_tie/pages/route_based_pages/new_fly_pages/add_new_attribute_page.dart';

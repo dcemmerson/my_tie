@@ -11,6 +11,9 @@ import 'package:my_tie/bloc/state/my_tie_state.dart';
 import 'package:my_tie/services/network/auth_service.dart';
 import 'package:my_tie/services/network/fly_form_template_service.dart';
 import 'package:my_tie/services/network/new_fly_service.dart';
+import 'package:my_tie/services/network/user_service.dart';
+
+import 'bloc/user_bloc.dart';
 
 // import 'package:flutter/scheduler.dart' show timeDilation;
 
@@ -33,6 +36,9 @@ Future<Widget> initApp() async {
   final authService = AuthService(remoteConfig: await initRemoteConfig());
   final authBloc = AuthBloc(authService);
 
+  final userService = UserService();
+  final userBloc = UserBloc(userService: userService, authService: authService);
+
   final flyFormTemplateService = FlyFormTemplateService();
   final editNewFlyTemplateBloc = EditNewFlyTemplateBloc(
       authService: authService, flyFormTemplateService: flyFormTemplateService);
@@ -47,8 +53,9 @@ Future<Widget> initApp() async {
   return MyTieStateContainer(
     blocProvider: BlocProvider(
       authBloc: authBloc,
-      newFlyBloc: newFlyBloc,
       editNewFlyTemplateBloc: editNewFlyTemplateBloc,
+      newFlyBloc: newFlyBloc,
+      userBloc: userBloc,
     ),
     child: MyTieApp(),
   );

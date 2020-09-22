@@ -7,9 +7,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:my_tie/models/fly.dart';
-import 'package:my_tie/models/new_fly_form_template.dart';
-import 'package:my_tie/models/new_fly_form_transfer.dart';
+import 'package:my_tie/models/new_fly/fly.dart';
+import 'package:my_tie/models/new_fly/new_fly_form_template.dart';
+import 'package:my_tie/models/new_fly/new_fly_form_transfer.dart';
 import 'package:my_tie/styles/string_format.dart';
 import 'package:my_tie/widgets/forms/new_fly_form/review/attribute_review.dart';
 import 'package:my_tie/widgets/forms/new_fly_form/review/material_review.dart';

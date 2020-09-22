@@ -1,3 +1,6 @@
+import 'package:my_tie/models/new_fly/fly.dart';
+import 'package:my_tie/models/new_fly/fly_instruction.dart';
+
 /// filename: fly_instruction_transfer.dart
 /// last modified; 09/07/2020
 /// description: Helper class used for transfering a fly instruction either
@@ -5,9 +8,6 @@
 ///   to both the entire fly, as well as an individual flyInstruction to explicitly
 ///   expose the flyInstruction that we intend to use, perform an operation on,
 ///   etc.
-
-import '../fly.dart';
-import '../fly_instruction.dart';
 
 class FlyInstructionTransfer {
   final Fly fly;

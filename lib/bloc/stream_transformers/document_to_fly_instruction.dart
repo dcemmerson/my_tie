@@ -1,10 +1,9 @@
 import 'dart:async';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:my_tie/models/bloc_transfer_related/fly_instruction_transfer.dart';
 import 'package:my_tie/models/db_names.dart';
-import 'package:my_tie/models/fly.dart';
-import 'package:my_tie/models/fly_instruction.dart';
+import 'package:my_tie/models/new_fly/fly.dart';
+import 'package:my_tie/models/new_fly/fly_instruction.dart';
 
 class DocumentToFlyInstruction<S, T> extends StreamTransformerBase<S, T> {
   final StreamTransformer<S, T> transformer;
@@ -16,10 +15,10 @@ class DocumentToFlyInstruction<S, T> extends StreamTransformerBase<S, T> {
   Stream<T> bind(Stream<S> stream) => transformer.bind(stream);
 
   static StreamTransformer<S, T> createTransformer<S, T>(int stepNumber) =>
-      new StreamTransformer((Stream inputStream, bool cancelOnError) {
+      StreamTransformer((Stream inputStream, bool cancelOnError) {
         StreamController controller;
         StreamSubscription subscription;
-        controller = new StreamController<T>(
+        controller = StreamController<T>(
           onListen: () {
             subscription = inputStream.listen((snapshot) {
               Fly fly;

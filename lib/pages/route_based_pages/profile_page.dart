@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:my_tie/widgets/account.dart';
+import 'package:my_tie/widgets/bottom_navigation/profile.dart';
 
 class AccountPage extends StatelessWidget {
   static const route = '/account';
@@ -7,6 +7,6 @@ class AccountPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Account();
+    return Profile();
   }
 }

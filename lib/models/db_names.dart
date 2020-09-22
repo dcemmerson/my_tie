@@ -8,9 +8,17 @@ class DbCollections {
   static const flyInProgress = 'fly_in_progress';
   static const fly = 'fly';
   static const flyIncoming = 'fly_incoming';
+  static const user = 'user';
 }
 
 class DbNames {
+  // User collecion related
+  static const name = 'name';
+  static const uid = 'uid';
+  static const phoneNumber = 'phone_number';
+  static const user = 'user';
+  static const materialsOnHand = 'materials_on_hand';
+
   // static const fly_is_moved = 'fly_is_moved';
   // static const editable = 'editable';
   static const toBePublished = 'to_be_published';

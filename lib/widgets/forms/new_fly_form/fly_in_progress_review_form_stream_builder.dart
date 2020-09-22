@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my_tie/bloc/state/my_tie_state.dart';
-import 'package:my_tie/models/new_fly_form_transfer.dart';
+import 'package:my_tie/models/new_fly/new_fly_form_transfer.dart';
 
 typedef BuildPage = Widget Function(NewFlyFormTransfer);
 

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:my_tie/models/fly_materials.dart';
+import 'package:my_tie/models/new_fly/fly_materials.dart';
 import 'package:my_tie/styles/string_format.dart';
 import 'package:my_tie/styles/styles.dart';
 

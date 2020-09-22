@@ -1,4 +1,4 @@
-import '../fly_instruction.dart';
+import 'package:my_tie/models/new_fly/fly_instruction.dart';
 
 class FlyInstructionModalTransfer {
   final FlyInstruction flyInstruction;

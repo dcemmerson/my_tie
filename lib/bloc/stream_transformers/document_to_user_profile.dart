@@ -1,11 +1,10 @@
 import 'dart:async';
+import 'package:my_tie/models/user_profile/user_profile.dart';
 
-import 'package:my_tie/models/new_fly/new_fly_form_template.dart';
-
-class DocumentToFlyFormTemplate<S, T> extends StreamTransformerBase<S, T> {
+class DocumentToUserProfile<S, T> extends StreamTransformerBase<S, T> {
   final StreamTransformer<S, T> transformer;
 
-  DocumentToFlyFormTemplate() : transformer = createTransformer();
+  DocumentToUserProfile() : transformer = createTransformer();
 
   @override
   Stream<T> bind(Stream<S> stream) => transformer.bind(stream);
@@ -17,11 +16,10 @@ class DocumentToFlyFormTemplate<S, T> extends StreamTransformerBase<S, T> {
         controller = StreamController<T>(
           onListen: () {
             subscription = inputStream.listen((snapshot) {
-              List flyFormTemplate = snapshot.documents.map((document) {
-                return NewFlyFormTemplate.fromDoc(document);
-              }).toList();
+              final userProfile =
+                  UserProfile.fromDoc(snapshot.documents[0].data());
 
-              controller.add(flyFormTemplate);
+              controller.add(userProfile);
             },
                 onDone: controller.close,
                 onError: controller.addError,

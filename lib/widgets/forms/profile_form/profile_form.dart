@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class AccountForm extends StatelessWidget {
+class ProfileForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(alignment: Alignment.center, child: Text('ehllo'));
