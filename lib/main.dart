@@ -36,12 +36,15 @@ Future<Widget> initApp() async {
   final authService = AuthService(remoteConfig: await initRemoteConfig());
   final authBloc = AuthBloc(authService);
 
-  final userService = UserService();
-  final userBloc = UserBloc(userService: userService, authService: authService);
-
   final flyFormTemplateService = FlyFormTemplateService();
   final editNewFlyTemplateBloc = EditNewFlyTemplateBloc(
       authService: authService, flyFormTemplateService: flyFormTemplateService);
+
+  final userService = UserService();
+  final userBloc = UserBloc(
+      userService: userService,
+      authService: authService,
+      flyFormTemplateService: flyFormTemplateService);
 
   final newFlyService = NewFlyService();
 

@@ -185,8 +185,6 @@ class _MaterialReviewState extends State<MaterialReview>
       rows.add(SlideTransition(
         position: _offsetAnimations.removeAt(0),
         child: Card(
-          // key: ValueKey(
-          // widget.nfft.flyInProgress.materials[materialIndex].name + 'Card'),
           color: Theme.of(context).colorScheme.surface,
           margin: EdgeInsets.fromLTRB(0, AppPadding.p2, 0, AppPadding.p4),
           child: Padding(

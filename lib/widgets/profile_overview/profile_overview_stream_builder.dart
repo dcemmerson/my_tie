@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:my_tie/bloc/state/my_tie_state.dart';
-import 'package:my_tie/models/new_fly/new_fly_form_transfer.dart';
-import 'package:my_tie/models/user_profile/user_profile.dart';
+import 'package:my_tie/models/user_profile/user_materials_transfer.dart';
 
-typedef BuildPage = Widget Function(UserProfile);
+typedef BuildPage = Widget Function(UserMaterialsTransfer);
 
 class ProfileOverviewStreamBuilder extends StatelessWidget {
   final BuildPage child;
@@ -18,9 +17,11 @@ class ProfileOverviewStreamBuilder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-        stream:
-            MyTieStateContainer.of(context).blocProvider.userBloc.userProfile,
-        builder: (context, AsyncSnapshot<UserProfile> snapshot) {
+        stream: MyTieStateContainer.of(context)
+            .blocProvider
+            .userBloc
+            .userMaterialsProfile,
+        builder: (context, AsyncSnapshot<UserMaterialsTransfer> snapshot) {
           print(snapshot.connectionState);
           if (snapshot.hasError) {
             print(snapshot.error);
