@@ -5,7 +5,7 @@
 ///   other photos.
 
 import 'package:flutter/material.dart';
-import 'package:my_tie/models/arguments/fly_instruction_modal_transfer.dart';
+import 'package:my_tie/models/arguments/routes_based/fly_instruction_modal_transfer.dart';
 import 'package:my_tie/styles/styles.dart';
 
 class InstructionStepModal extends StatelessWidget {

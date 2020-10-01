@@ -43,9 +43,10 @@ class NewFlyInstructionsPreview extends StatelessWidget {
                   subtitle: Text(instr.description),
                 ),
                 Wrap(
-                    children: instr.imageUris
-                        .map((uri) => _buildImage(instr, uri, context))
-                        .toList()),
+                  children: instr.imageUris
+                      .map((uri) => _buildImage(instr, uri, context))
+                      .toList(),
+                ),
               ],
             ),
           ),

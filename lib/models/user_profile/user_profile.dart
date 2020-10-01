@@ -7,8 +7,9 @@ class UserProfile {
   final String user;
   final String name;
   final String phoneNumber;
+  final List<FlyMaterials> materialsOnHand;
 
-  final List<FlyMaterial> materialsOnHand;
+  // final List<FlyMaterial> materialsOnHand;
 
   UserProfile(
       {this.name, this.phoneNumber, this.uid, this.user, this.materialsOnHand});
@@ -18,10 +19,25 @@ class UserProfile {
         uid = doc[DbNames.uid].toString(),
         phoneNumber = doc[DbNames.phoneNumber].toString(),
         user = doc[DbNames.user].toString(),
-        materialsOnHand = _toListFlyMaterial(doc[DbNames.materialsOnHand]);
+        materialsOnHand = _toMaterialsList(doc[DbNames.materialsOnHand]);
+  // materialsOnHand = _toListFlyMaterial(doc[DbNames.materialsOnHand]);
 
-  static List<FlyMaterial> _toListFlyMaterial(List mats) => mats
-      .map((mat) =>
-          FlyMaterial(name: mat['name'], properties: mat['properties']))
-      .toList();
+  List<FlyMaterial> getMaterials(String name) {
+    FlyMaterials mats = materialsOnHand.firstWhere((mat) => mat.name == name,
+        orElse: () => null);
+    if (mats != null) return mats.flyMaterials;
+    return [];
+  }
+
+  // static List<FlyMaterial> _toListFlyMaterial(List mats) => mats
+  //     .map((mat) =>
+  //         FlyMaterial(name: mat['name'], properties: mat['properties']))
+  //     .toList();
+
+  static List<FlyMaterials> _toMaterialsList(Map mats) {
+    List<FlyMaterials> flyMaterials = [];
+    mats?.forEach((k, v) => flyMaterials.add(FlyMaterials(name: k, props: v)));
+
+    return flyMaterials;
+  }
 }

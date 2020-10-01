@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:my_tie/widgets/profile_overview/profile_overview.dart';
+import 'package:my_tie/widgets/profile/profile_overview/profile_overview.dart';
 
 class Profile extends StatelessWidget {
   @override

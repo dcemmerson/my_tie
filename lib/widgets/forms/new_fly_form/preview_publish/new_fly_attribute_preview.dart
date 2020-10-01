@@ -88,13 +88,14 @@ class NewFlyAttributePreview extends StatelessWidget {
   Widget _buildCarousel() {
     return CarouselSlider(
       items: flyInProgress.topLevelImageUris
-          .map((uri) => _toImageWithLoadingBar(uri))
-          .toList(),
+          ?.map((uri) => _toImageWithLoadingBar(uri))
+          ?.toList(),
       options: CarouselOptions(
         height: 300,
         viewportFraction: 1,
         initialPage: 0,
-        enableInfiniteScroll: flyInProgress.topLevelImageUris.length > 1,
+        enableInfiniteScroll: flyInProgress.topLevelImageUris != null &&
+            flyInProgress.topLevelImageUris.length > 1,
         reverse: false,
         autoPlay: true,
         autoPlayInterval: Duration(seconds: 3),
