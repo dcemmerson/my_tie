@@ -22,8 +22,6 @@ class InstructionStepModal extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print('to');
-    print(fimt.initImageUri);
     return Center(
       child: AlertDialog(
         title: ListTile(

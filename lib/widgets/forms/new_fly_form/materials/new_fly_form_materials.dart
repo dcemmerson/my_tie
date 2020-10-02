@@ -7,8 +7,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:my_tie/bloc/new_fly_bloc.dart';
-
-import 'package:my_tie/bloc/state/fly_form_state.dart';
 import 'package:my_tie/bloc/state/my_tie_state.dart';
 
 import 'package:my_tie/models/bloc_transfer_related/fly_material_add_or_update.dart';
@@ -19,7 +17,9 @@ import 'package:my_tie/models/new_fly/form_page_number.dart';
 import 'package:my_tie/models/new_fly/new_fly_form_template.dart';
 import 'package:my_tie/models/new_fly/new_fly_form_transfer.dart';
 import 'package:my_tie/styles/styles.dart';
+import 'package:my_tie/styles/string_format.dart';
 import 'package:my_tie/widgets/forms/new_fly_form/fly_in_progress_form_stream_builder.dart';
+import 'package:my_tie/widgets/title/title_group.dart';
 
 import 'fly_material_dropdown.dart';
 
@@ -36,8 +36,6 @@ class _NewFlyFormMaterialsState extends State<NewFlyFormMaterials>
 
   NewFlyBloc _newFlyBloc;
   FormPageNumber _formPageNumber;
-  bool _showSkipToEnd;
-
   bool _formChanged = false;
 
   @override
@@ -49,7 +47,6 @@ class _NewFlyFormMaterialsState extends State<NewFlyFormMaterials>
     _formPageNumber =
         ModalRoute.of(context).settings.arguments ?? FormPageNumber();
     _newFlyBloc = MyTieStateContainer.of(context).blocProvider.newFlyBloc;
-    _showSkipToEnd = FlyFormStateContainer.of(context).isSkippableToEnd;
   }
 
   void _onFormChanged(Map form) {
@@ -90,9 +87,13 @@ class _NewFlyFormMaterialsState extends State<NewFlyFormMaterials>
           : fly.materials[_formPageNumber.pageNumber]
               .flyMaterials[_formPageNumber.propertyIndex];
 
-      final updated = FlyMaterial(
+      // final updated = FlyMaterial(
+      //   name: fly.materials[_formPageNumber.pageNumber].name,
+      //   properties: inputs.map((k, v) => MapEntry(k, v)),
+      // );
+      final updated = FlyMaterial.fromMap(
         name: fly.materials[_formPageNumber.pageNumber].name,
-        properties: inputs.map((k, v) => MapEntry(k, v)),
+        properties: inputs,
       );
 
       _newFlyBloc.newFlyMaterialSink
@@ -130,8 +131,12 @@ class _NewFlyFormMaterialsState extends State<NewFlyFormMaterials>
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         SizedBox(height: widget._spaceBetweenDropdowns),
+        TitleGroup(
+            title: flyFormTemplate
+                .flyFormMaterials[_formPageNumber.pageNumber].name
+                .toTitleCase()),
         FlyMaterialDropdown(
-          flyMaterials:
+          flyFormMaterial:
               flyFormTemplate.flyFormMaterials[_formPageNumber.pageNumber],
           fly: fly,
           formPageNumber: _formPageNumber,
@@ -144,7 +149,7 @@ class _NewFlyFormMaterialsState extends State<NewFlyFormMaterials>
               }
             },
             child: Text('Save')),
-        if (_formPageNumber.propertyIndex != null)
+        if (_formPageNumber?.propertyIndex != null)
           // This is indicative that user is editing existing material
           RaisedButton(
               color: Theme.of(context).colorScheme.error,

@@ -4,6 +4,7 @@ import '../db_names.dart';
 
 class UserProfile {
   final String uid;
+  final String docId;
   final String user;
   final String name;
   final String phoneNumber;
@@ -12,9 +13,14 @@ class UserProfile {
   // final List<FlyMaterial> materialsOnHand;
 
   UserProfile(
-      {this.name, this.phoneNumber, this.uid, this.user, this.materialsOnHand});
+      {this.name,
+      this.phoneNumber,
+      this.uid,
+      this.docId,
+      this.user,
+      this.materialsOnHand});
 
-  UserProfile.fromDoc(Map doc)
+  UserProfile.fromDoc(Map doc, {this.docId})
       : name = doc[DbNames.name].toString(),
         uid = doc[DbNames.uid].toString(),
         phoneNumber = doc[DbNames.phoneNumber].toString(),
@@ -29,10 +35,22 @@ class UserProfile {
     return [];
   }
 
-  // static List<FlyMaterial> _toListFlyMaterial(List mats) => mats
-  //     .map((mat) =>
-  //         FlyMaterial(name: mat['name'], properties: mat['properties']))
-  //     .toList();
+  bool contains({String name, Map properties}) {
+    bool matAlreadyExists = false;
+    materialsOnHand.forEach((matGroup) {
+      if (matGroup.name == name) {
+        matGroup.flyMaterials.forEach((mat) {
+          bool materialMatch = true;
+          mat.properties.keys.forEach((k) {
+            materialMatch =
+                materialMatch && (mat.properties[k] == properties[k]);
+          });
+          matAlreadyExists = matAlreadyExists || materialMatch;
+        });
+      }
+    });
+    return matAlreadyExists;
+  }
 
   static List<FlyMaterials> _toMaterialsList(Map mats) {
     List<FlyMaterials> flyMaterials = [];

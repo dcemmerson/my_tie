@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:my_tie/models/arguments/fly_instruction_modal_transfer.dart';
+import 'package:my_tie/models/arguments/routes_based/fly_instruction_modal_transfer.dart';
 import 'package:my_tie/widgets/forms/new_fly_form/preview_publish/instruction_preview/instruction_step_modal.dart';
 
 class HeroDialogPartialPage extends StatelessWidget {

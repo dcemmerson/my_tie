@@ -22,6 +22,12 @@ class FlyMaterial {
 
   FlyMaterial({this.properties, this.name});
 
+  FlyMaterial.fromMap({Map properties, this.name})
+      : this.properties = _toStringStringMap(properties);
+
+  static Map<String, String> _toStringStringMap(Map props) =>
+      props.map((k, v) => MapEntry(k.toString(), v.toString()));
+
   IconData get icon {
     switch (name) {
       case DbNames.beads:

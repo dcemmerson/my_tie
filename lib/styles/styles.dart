@@ -4,6 +4,7 @@ class AppColors {
   static const background = const Color(0xF0F0F0F0);
   static final success = Colors.green[400];
   static final error = Colors.red[400];
+  static final delete = Colors.red[700];
 }
 
 class AppFonts {
@@ -33,6 +34,9 @@ class AppPadding {
   static const p10 = 35.0;
   static const p11 = 40.0;
   static const p12 = 45.0;
+
+  static const defaultIconPadding = 2;
+  static const defaultIconButtonPadding = 8;
 }
 
 class AppTextStyles {
@@ -47,6 +51,8 @@ class AppTextStyles {
 }
 
 class AppIcons {
+  static const defaultIconSize = 24;
+
   static final success = Colors.green[700];
   static final warning = Colors.yellow[700];
   static final danger = Colors.red[700];

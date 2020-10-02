@@ -10,23 +10,26 @@ import 'package:my_tie/styles/styles.dart';
 import '../field_long_press_wrapper.dart';
 
 class FlyMaterialDropdown extends StatelessWidget {
-  final FlyFormMaterial flyMaterials;
+  final FlyFormMaterial flyFormMaterial;
   final Fly fly;
   final FormPageNumber formPageNumber;
 
-  FlyMaterialDropdown({this.flyMaterials, this.fly, this.formPageNumber});
+  FlyMaterialDropdown({this.flyFormMaterial, this.fly, this.formPageNumber});
 
   List<Widget> _buildDropdown(BuildContext context) {
     List<Widget> dropdowns = [];
 
-    flyMaterials.properties.forEach((String materialType, List<String> values) {
-      final String initialValue = fly.getMaterial(formPageNumber.pageNumber,
-          formPageNumber.propertyIndex, materialType);
+    flyFormMaterial.properties
+        .forEach((String materialType, List<String> values) {
+      final String initialValue = (formPageNumber == null || fly == null)
+          ? null
+          : fly.getMaterial(formPageNumber.pageNumber,
+              formPageNumber.propertyIndex, materialType);
       dropdowns.add(
         FieldLongPressWrapper(
           wrapperType: AddPropertyType.Material,
           properties: values,
-          materialName: flyMaterials.name,
+          materialName: flyFormMaterial.name,
           label: materialType,
           context: context,
           child: FormBuilderDropdown(
@@ -56,7 +59,7 @@ class FlyMaterialDropdown extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Text(flyMaterials.name, style: AppTextStyles.dropdownLabel),
+        // Text(flyFormMaterial.name, style: AppTextStyles.dropdownLabel),
         ..._buildDropdown(context),
       ],
     );

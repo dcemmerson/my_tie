@@ -1,5 +1,3 @@
-import 'dart:io';
-
 /// filename: new_fly_service.dart
 /// last modified: 09/03/2020
 /// description: This file contains app related communication with firestore
@@ -8,6 +6,8 @@ import 'dart:io';
 ///
 ///   Note that firestore security permits user to only read/write a doc in
 ///   'fly_in_progress' collection whose id corresponds to the logged in user id.
+///
+import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
@@ -39,7 +39,7 @@ class NewFlyService {
     String uid,
     String name,
     Map<String, String> properties,
-  }) async {
+  }) {
     return FirebaseFirestore.instance
         .collection(DbCollections.flyInProgress)
         .doc(docId)
@@ -59,7 +59,7 @@ class NewFlyService {
     String docId,
     String name,
     Map<String, String> properties,
-  }) async {
+  }) {
     return FirebaseFirestore.instance
         .collection(DbCollections.flyInProgress)
         .doc(docId)
@@ -176,7 +176,7 @@ class NewFlyService {
         .delete();
   }
 
-  Future publishFly(String prevDocId) async {
+  Future publishFly(String prevDocId) {
     // All we do from client is set the to_be_published flag to true and call
     // the cloud function which will at some point sanitize and publish the fly.
     // Server side sanitization performs same checks as client side, meaning

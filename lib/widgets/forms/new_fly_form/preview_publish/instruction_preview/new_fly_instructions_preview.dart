@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:my_tie/models/arguments/fly_instruction_modal_transfer.dart';
+import 'package:my_tie/models/arguments/routes_based/fly_instruction_modal_transfer.dart';
 import 'package:my_tie/models/new_fly/fly_instruction.dart';
 import 'package:my_tie/routes/modal_routes.dart';
 import 'package:my_tie/styles/styles.dart';

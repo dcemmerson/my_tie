@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:my_tie/models/arguments/fly_instruction_modal_transfer.dart';
+import 'package:my_tie/models/arguments/routes_based/fly_instruction_modal_transfer.dart';
 import 'package:my_tie/pages/base/navigators_nested/dialog_page_route.dart';
 
 import 'package:my_tie/pages/route_based_pages/hero_dialog_partial_page.dart';

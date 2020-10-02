@@ -20,5 +20,6 @@ class UserProfileRoutes {
 
   static Future userProfileEditPage(BuildContext context,
           EditUserMaterialPageTransfer editUserMaterialPageTransfer) =>
-      Navigator.pushNamed(context, UserProfileEditPage.route);
+      Navigator.pushNamed(context, UserProfileEditPage.route,
+          arguments: editUserMaterialPageTransfer);
 }
