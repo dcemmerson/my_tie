@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:my_tie/pages/base/page_base_stateful/page_home.dart';
+import 'package:my_tie/pages/base/page_base_stateful/page_main.dart';
 import 'package:my_tie/pages/base/page_base_stateless/page_base.dart';
 import 'package:my_tie/pages/base/page_base_stateless/page_container.dart';
 import 'package:my_tie/pages/base/page_base_stateless/subpage_base.dart';
@@ -16,7 +16,7 @@ import 'user_profile_routes.dart';
 
 class Routes {
   static final routes = {
-    HomePage.route: (context) => RouteGuard(child: PageHome()),
+    HomePage.route: (context) => RouteGuard(child: PageMain()),
     // AccountPage.route: (context) =>
     //     RouteGuard(child: PageContainer(pageType: PageType.AccountPage)),
     NewFlyStartPage.route: (context) => RouteGuard(

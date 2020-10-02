@@ -5,13 +5,13 @@ import 'package:my_tie/styles/styles.dart';
 import 'package:my_tie/styles/theme_manager.dart';
 
 enum SubPageType {
+  // new fly related
   NewFlyStartPage,
   NewFlyAttributesPage,
   NewFlyMaterialsPage,
   NewFlyInstructionPage,
   NewFlyPublishPage,
   NewFlyPreviewPublishPage,
-  // InstructionStepDetailPage,
   AddNewAttributePage,
   AddNewPropertyPage,
 }
@@ -67,7 +67,10 @@ abstract class SubPageBase extends StatelessWidget {
             primary: false,
             title: Text(subPageTitle, style: AppTextStyles.subHeader),
             textTheme: Theme.of(context).primaryTextTheme,
+            // toolbarHeight: 0,
             toolbarHeight: _appBarSize,
+
+            // bottomOpacity: 1,
           ),
           body: body,
         ),

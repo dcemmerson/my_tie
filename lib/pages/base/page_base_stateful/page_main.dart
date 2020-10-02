@@ -21,7 +21,7 @@ class BottomNavPage {
   BottomNavPage({this.page, this.icon});
 }
 
-class PageHome extends StatefulWidget {
+class PageMain extends StatefulWidget {
   final _pageTransitionDuration = Duration(milliseconds: 200);
 
   final _pages = [
@@ -40,10 +40,10 @@ class PageHome extends StatefulWidget {
   ];
 
   @override
-  _PageHomeState createState() => _PageHomeState();
+  _PageMainState createState() => _PageMainState();
 }
 
-class _PageHomeState extends State<PageHome> {
+class _PageMainState extends State<PageMain> {
   PageController _pageController;
   int _selectedPageIndex;
 
@@ -90,33 +90,45 @@ class _PageHomeState extends State<PageHome> {
           elevation: 0.0,
           title: Text(widget._pages[_selectedPageIndex].page.title),
           textTheme: Theme.of(context).primaryTextTheme,
+          toolbarHeight: 0,
           actions: [
             SettingsDrawerIcon(),
           ],
         ),
         endDrawer: SettingsDrawer(),
-        body: PageView(
-          controller: _pageController,
-          onPageChanged: (int index) => setSelectedPage(index, animate: false),
-          children: widget._pages.map((p) => p.page).toList(),
+        body: CustomScrollView(
+          slivers: [
+            SliverAppBar(
+              snap: true,
+              floating: true,
+              centerTitle: true,
+              elevation: 0,
+              title: Text(widget._pages[_selectedPageIndex].page.title),
+              textTheme: Theme.of(context).primaryTextTheme,
+              actions: [
+                SettingsDrawerIcon(),
+              ],
+            ),
+            SliverFillRemaining(
+              child: PageView(
+                controller: _pageController,
+                onPageChanged: (int index) =>
+                    setSelectedPage(index, animate: false),
+                children: widget._pages.map((p) => p.page).toList(),
+              ),
+            ),
+          ],
         ),
+        //     PageView(
+        //   controller: _pageController,
+        //   onPageChanged: (int index) => setSelectedPage(index, animate: false),
+        //   children: widget._pages.map((p) => p.page).toList(),
+        // ),
         bottomNavigationBar: AppBottomNavigationBar(
           selectedBottomAppBarIndex: _selectedPageIndex,
           bottomNavPages: widget._pages,
           setBottomNavPage: setSelectedPage,
         ),
-        // floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-        // floatingActionButton: Semantics(
-        //   button: true,
-        //   enabled: true,
-        //   label: 'New Waste Post',
-        //   hint: 'Add new waste post',
-        //   child: FloatingActionButton(
-        //       key: Key('addWastePost'),
-        //       onPressed: () => print('unimplemented'),
-        //       /* Routes.addWastedPost(context), */
-        //       child: Icon(Icons.add_a_photo)),
-        // ),
       ),
     );
   }

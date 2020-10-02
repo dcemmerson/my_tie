@@ -40,6 +40,7 @@ class PageContainer extends PageBase {
         return AuthenticationPage.title;
       case PageType.AccountPage:
         return AccountPage.title;
+      // Profile related.
       case PageType.UserProfileEditPage:
         return UserProfileEditPage.title;
       default:

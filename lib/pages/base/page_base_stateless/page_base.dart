@@ -8,6 +8,7 @@ enum PageType {
   HomePage,
   AuthenticationPage,
   AccountPage,
+  // user profile related
   UserProfileEditPage,
 }
 
@@ -32,6 +33,7 @@ abstract class PageBase extends StatelessWidget {
         appBar: AppBar(
           centerTitle: true,
           elevation: 0.0,
+          // floating: true,
           title: Text(pageTitle),
           textTheme: Theme.of(context).primaryTextTheme,
           actions: [

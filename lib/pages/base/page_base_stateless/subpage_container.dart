@@ -19,6 +19,7 @@ import 'package:my_tie/pages/route_based_pages/new_fly_pages/new_fly_attributes_
 import 'package:my_tie/pages/route_based_pages/new_fly_pages/new_fly_materials_page.dart';
 import 'package:my_tie/pages/route_based_pages/new_fly_pages/new_fly_preview_publish_page.dart';
 import 'package:my_tie/pages/route_based_pages/new_fly_pages/new_fly_publish_page.dart';
+import 'package:my_tie/pages/route_based_pages/user_profile_pages/user_profile_edit_page.dart';
 
 class SubPageContainer extends SubPageBase {
   final SubPageType _subPageType;
@@ -31,6 +32,7 @@ class SubPageContainer extends SubPageBase {
   Widget get body {
     var page;
     switch (subPageType) {
+      // New fly related.
       case SubPageType.NewFlyStartPage:
         page = NewFlyStartPage();
         break;
@@ -56,9 +58,7 @@ class SubPageContainer extends SubPageBase {
       case SubPageType.AddNewPropertyPage:
         page = AddNewPropertyPage();
         break;
-      // case SubPageType.InstructionStepDetailPage:
-      //   page = InstructionStepDetailPage();
-      //   break;
+      // Profile related.
 
       default:
         page = NewFlyStartPage();
@@ -72,6 +72,7 @@ class SubPageContainer extends SubPageBase {
   @override
   String get subPageTitle {
     switch (subPageType) {
+      // New fly related.
       case SubPageType.NewFlyStartPage:
         return NewFlyStartPage.route;
       case SubPageType.NewFlyAttributesPage:
@@ -88,8 +89,6 @@ class SubPageContainer extends SubPageBase {
         return NewFlyInstructionPage.title;
       case SubPageType.NewFlyPreviewPublishPage:
         return NewFlyPreviewPublishPage.title;
-      // case SubPageType.InstructionStepDetailPage:
-      //   return InstructionStepDetailPage.title;
       default:
         return NewFlyMaterialsPage.title;
     }

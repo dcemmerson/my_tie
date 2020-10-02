@@ -5,7 +5,7 @@
 ///   implemented in the containing widget.
 
 import 'package:flutter/material.dart';
-import 'package:my_tie/pages/base/page_base_stateful/page_home.dart';
+import 'package:my_tie/pages/base/page_base_stateful/page_main.dart';
 
 typedef void SetBottomNavPage(int index);
 
