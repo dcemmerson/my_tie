@@ -91,7 +91,8 @@ class _PageMainState extends State<PageMain> {
           elevation: 7,
           title: Text(widget._pages[_selectedPageIndex].page.title),
           textTheme: Theme.of(context).primaryTextTheme,
-          toolbarHeight: 0,
+          toolbarHeight:
+              _selectedPageIndex == 0 || _selectedPageIndex == 1 ? 50 : 0,
           actions: [
             SettingsDrawerIcon(),
           ],
@@ -102,19 +103,26 @@ class _PageMainState extends State<PageMain> {
           children: widget._pages
               .map(
                 (p) => NestedScrollView(
+                  physics: BouncingScrollPhysics(),
                   headerSliverBuilder: (context, innerBoxIsScrolled) => [
-                    SliverAppBar(
-                      snap: true,
-                      floating: true,
-                      centerTitle: true,
-                      elevation: 7,
-                      shadowColor: Colors.grey,
-                      title: Text(widget._pages[_selectedPageIndex].page.title),
-                      textTheme: Theme.of(context).primaryTextTheme,
-                      actions: [
-                        SettingsDrawerIcon(),
-                      ],
-                      forceElevated: innerBoxIsScrolled,
+                    SliverVisibility(
+                      visible:
+                          _selectedPageIndex != 0 && _selectedPageIndex != 1,
+                      sliver: SliverAppBar(
+                        snap: true,
+                        floating: true,
+                        centerTitle: true,
+                        elevation: 7,
+                        shadowColor: Colors.grey,
+                        title:
+                            Text(widget._pages[_selectedPageIndex].page.title),
+                        textTheme: Theme.of(context).primaryTextTheme,
+                        expandedHeight: 10,
+                        actions: [
+                          SettingsDrawerIcon(),
+                        ],
+                        forceElevated: innerBoxIsScrolled,
+                      ),
                     ),
                   ],
                   body: p.page,
