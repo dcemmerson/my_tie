@@ -87,7 +87,8 @@ class _PageMainState extends State<PageMain> {
       child: Scaffold(
         appBar: AppBar(
           centerTitle: true,
-          elevation: 0.0,
+          shadowColor: Colors.grey,
+          elevation: 7,
           title: Text(widget._pages[_selectedPageIndex].page.title),
           textTheme: Theme.of(context).primaryTextTheme,
           toolbarHeight: 0,
@@ -95,35 +96,32 @@ class _PageMainState extends State<PageMain> {
             SettingsDrawerIcon(),
           ],
         ),
-        endDrawer: SettingsDrawer(),
-        body: CustomScrollView(
-          slivers: [
-            SliverAppBar(
-              snap: true,
-              floating: true,
-              centerTitle: true,
-              elevation: 0,
-              title: Text(widget._pages[_selectedPageIndex].page.title),
-              textTheme: Theme.of(context).primaryTextTheme,
-              actions: [
-                SettingsDrawerIcon(),
-              ],
-            ),
-            SliverFillRemaining(
-              child: PageView(
-                controller: _pageController,
-                onPageChanged: (int index) =>
-                    setSelectedPage(index, animate: false),
-                children: widget._pages.map((p) => p.page).toList(),
-              ),
-            ),
-          ],
+        body: PageView(
+          controller: _pageController,
+          onPageChanged: (int index) => setSelectedPage(index, animate: false),
+          children: widget._pages
+              .map(
+                (p) => NestedScrollView(
+                  headerSliverBuilder: (context, innerBoxIsScrolled) => [
+                    SliverAppBar(
+                      snap: true,
+                      floating: true,
+                      centerTitle: true,
+                      elevation: 7,
+                      shadowColor: Colors.grey,
+                      title: Text(widget._pages[_selectedPageIndex].page.title),
+                      textTheme: Theme.of(context).primaryTextTheme,
+                      actions: [
+                        SettingsDrawerIcon(),
+                      ],
+                      forceElevated: innerBoxIsScrolled,
+                    ),
+                  ],
+                  body: p.page,
+                ),
+              )
+              .toList(),
         ),
-        //     PageView(
-        //   controller: _pageController,
-        //   onPageChanged: (int index) => setSelectedPage(index, animate: false),
-        //   children: widget._pages.map((p) => p.page).toList(),
-        // ),
         bottomNavigationBar: AppBottomNavigationBar(
           selectedBottomAppBarIndex: _selectedPageIndex,
           bottomNavPages: widget._pages,
