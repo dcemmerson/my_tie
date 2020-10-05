@@ -75,10 +75,6 @@ class _LoginButtonState extends State<LoginButton>
     _loggedInController..forward();
   }
 
-  void _goToAccountSettings() {
-    Routes.accountPage(context);
-  }
-
   void _expandLogoutDropdown() {
     if (_expanded) {
       _loggedOutController..reverse();
@@ -159,43 +155,43 @@ class _LoginButtonState extends State<LoginButton>
     );
   }
 
-  Widget _goToAccountSettingsButton({double dropdownDistance: AppFonts.h4}) {
-    return Visibility(
-      visible: _expanded,
-      child: PositionedTransition(
-        rect: RelativeRectTween(
-          begin: RelativeRect.fromLTRB(0, 0, 0, 0),
-          end: RelativeRect.fromLTRB(0, dropdownDistance, 0, 0),
-        ).animate(CurvedAnimation(
-            parent: _loggedOutController, curve: Curves.easeOut)),
-        child: Container(
-          alignment: Alignment.topRight,
-          child: GestureDetector(
-            onTap: _goToAccountSettings,
-            child: FadeTransition(
-              opacity: _fadeAnimation,
-              child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-                Text(
-                  'Account',
-                  overflow: TextOverflow.fade,
-                  softWrap: false,
-                  style: TextStyle(
-                      fontSize: AppFonts.h8,
-                      color: Theme.of(context).primaryColorLight),
-                ),
-                Padding(
-                  padding: widget._dropdownItemInsets,
-                  child: _waitingForServer
-                      ? widget._circularProgressIndicator
-                      : Icon(Icons.account_circle),
-                ),
-              ]),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
+  // Widget _goToAccountSettingsButton({double dropdownDistance: AppFonts.h4}) {
+  //   return Visibility(
+  //     visible: _expanded,
+  //     child: PositionedTransition(
+  //       rect: RelativeRectTween(
+  //         begin: RelativeRect.fromLTRB(0, 0, 0, 0),
+  //         end: RelativeRect.fromLTRB(0, dropdownDistance, 0, 0),
+  //       ).animate(CurvedAnimation(
+  //           parent: _loggedOutController, curve: Curves.easeOut)),
+  //       child: Container(
+  //         alignment: Alignment.topRight,
+  //         child: GestureDetector(
+  //           onTap: _goToAccountSettings,
+  //           child: FadeTransition(
+  //             opacity: _fadeAnimation,
+  //             child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+  //               Text(
+  //                 'Account',
+  //                 overflow: TextOverflow.fade,
+  //                 softWrap: false,
+  //                 style: TextStyle(
+  //                     fontSize: AppFonts.h8,
+  //                     color: Theme.of(context).primaryColorLight),
+  //               ),
+  //               Padding(
+  //                 padding: widget._dropdownItemInsets,
+  //                 child: _waitingForServer
+  //                     ? widget._circularProgressIndicator
+  //                     : Icon(Icons.account_circle),
+  //               ),
+  //             ]),
+  //           ),
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
 
   Widget _switchAccountButton({double dropdownDistance: 2 * AppFonts.h4}) {
     return Visibility(
@@ -277,8 +273,8 @@ class _LoginButtonState extends State<LoginButton>
   Widget _buildLoggedInDropdown(String email) {
     return Stack(fit: StackFit.expand, children: [
       _tappableEmailDropdown(email),
-      _goToAccountSettingsButton(dropdownDistance: AppFonts.h4),
-      _logoutButton(dropdownDistance: 2 * AppFonts.h4),
+      // _goToAccountSettingsButton(dropdownDistance: AppFonts.h4),
+      _logoutButton(dropdownDistance: AppFonts.h4),
     ]);
   }
 

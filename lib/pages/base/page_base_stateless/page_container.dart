@@ -11,7 +11,6 @@ import 'package:my_tie/pages/route_based_pages/new_fly_pages/new_fly_instruction
 import 'package:my_tie/pages/route_based_pages/new_fly_pages/new_fly_materials_page.dart';
 import 'package:my_tie/pages/route_based_pages/new_fly_pages/new_fly_preview_publish_page.dart';
 import 'package:my_tie/pages/route_based_pages/new_fly_pages/new_fly_publish_page.dart';
-import 'package:my_tie/pages/route_based_pages/user_profile_pages/profile_page.dart';
 import 'package:my_tie/pages/route_based_pages/user_profile_pages/user_profile_edit_page.dart';
 
 class PageContainer extends PageBase {
@@ -66,7 +65,7 @@ class PageContainer extends PageBase {
         page = AddNewPropertyPage();
         break;
       default:
-        page = AccountPage();
+        page = ProfilePage();
     }
     return Padding(
       padding: EdgeInsets.zero,
@@ -79,8 +78,8 @@ class PageContainer extends PageBase {
     switch (pageType) {
       case PageType.AuthenticationPage:
         return AuthenticationPage.title;
-      case PageType.AccountPage:
-        return AccountPage.title;
+      // case PageType.AccountPage:
+      //   return AccountPage.title;
       // Start/Home page related.
       case PageType.HomePage:
         return HomePage.route;
@@ -107,7 +106,7 @@ class PageContainer extends PageBase {
       case PageType.NewFlyPreviewPublishPage:
         return NewFlyPreviewPublishPage.title;
       default:
-        return AccountPage.title;
+        return ProfilePage.route;
     }
   }
 
