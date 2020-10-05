@@ -1,6 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:my_tie/pages/authentication_page.dart';
 import 'package:my_tie/pages/base/page_base_stateless/page_base.dart';
+import 'package:my_tie/pages/bottom_navigation_based_pages/home_page.dart';
+import 'package:my_tie/pages/bottom_navigation_based_pages/new_fly_start_page.dart';
+import 'package:my_tie/pages/bottom_navigation_based_pages/profile_page.dart';
+import 'package:my_tie/pages/route_based_pages/new_fly_pages/add_new_attribute_page.dart';
+import 'package:my_tie/pages/route_based_pages/new_fly_pages/add_new_property_page.dart';
+import 'package:my_tie/pages/route_based_pages/new_fly_pages/new_fly_attributes_page.dart';
+import 'package:my_tie/pages/route_based_pages/new_fly_pages/new_fly_instruction_page.dart';
+import 'package:my_tie/pages/route_based_pages/new_fly_pages/new_fly_materials_page.dart';
+import 'package:my_tie/pages/route_based_pages/new_fly_pages/new_fly_preview_publish_page.dart';
+import 'package:my_tie/pages/route_based_pages/new_fly_pages/new_fly_publish_page.dart';
 import 'package:my_tie/pages/route_based_pages/user_profile_pages/profile_page.dart';
 import 'package:my_tie/pages/route_based_pages/user_profile_pages/user_profile_edit_page.dart';
 
@@ -18,11 +28,42 @@ class PageContainer extends PageBase {
       case PageType.AuthenticationPage:
         page = AuthenticationPage();
         break;
-      case PageType.AccountPage:
-        page = AccountPage();
+      // Start/Home page related.
+      case PageType.HomePage:
+        page = HomePage();
+        break;
+      // User profile related.
+      case PageType.ProfilePage:
+        page = ProfilePage();
         break;
       case PageType.UserProfileEditPage:
         page = UserProfileEditPage();
+        break;
+      // New fly related.
+      case PageType.NewFlyStartPage:
+        page = NewFlyStartPage();
+        break;
+      case PageType.NewFlyAttributesPage:
+        page = NewFlyAttributesPage();
+        break;
+      case PageType.NewFlyMaterialsPage:
+        page = NewFlyMaterialsPage();
+        break;
+      case PageType.NewFlyPublishPage:
+        page = NewFlyPublishPage();
+        break;
+      case PageType.NewFlyInstructionPage:
+        page = NewFlyInstructionPage();
+        break;
+      case PageType.NewFlyPreviewPublishPage:
+        page = NewFlyPreviewPublishPage();
+        break;
+      // DB new fly form template editing routes:
+      case PageType.AddNewAttributePage:
+        page = AddNewAttributePage();
+        break;
+      case PageType.AddNewPropertyPage:
+        page = AddNewPropertyPage();
         break;
       default:
         page = AccountPage();
@@ -40,9 +81,31 @@ class PageContainer extends PageBase {
         return AuthenticationPage.title;
       case PageType.AccountPage:
         return AccountPage.title;
+      // Start/Home page related.
+      case PageType.HomePage:
+        return HomePage.route;
       // Profile related.
+      case PageType.ProfilePage:
+        return ProfilePage.route;
       case PageType.UserProfileEditPage:
         return UserProfileEditPage.title;
+      // New fly related.
+      case PageType.NewFlyStartPage:
+        return NewFlyStartPage.route;
+      case PageType.NewFlyAttributesPage:
+        return NewFlyAttributesPage.title;
+      case PageType.NewFlyMaterialsPage:
+        return NewFlyMaterialsPage.title;
+      case PageType.NewFlyPublishPage:
+        return NewFlyPublishPage.title;
+      case PageType.AddNewAttributePage:
+        return AddNewAttributePage.title;
+      case PageType.AddNewPropertyPage:
+        return AddNewPropertyPage.title;
+      case PageType.NewFlyInstructionPage:
+        return NewFlyInstructionPage.title;
+      case PageType.NewFlyPreviewPublishPage:
+        return NewFlyPreviewPublishPage.title;
       default:
         return AccountPage.title;
     }

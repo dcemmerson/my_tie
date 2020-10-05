@@ -19,7 +19,6 @@ import 'package:my_tie/pages/route_based_pages/new_fly_pages/new_fly_attributes_
 import 'package:my_tie/pages/route_based_pages/new_fly_pages/new_fly_materials_page.dart';
 import 'package:my_tie/pages/route_based_pages/new_fly_pages/new_fly_preview_publish_page.dart';
 import 'package:my_tie/pages/route_based_pages/new_fly_pages/new_fly_publish_page.dart';
-import 'package:my_tie/pages/route_based_pages/user_profile_pages/user_profile_edit_page.dart';
 
 class SubPageContainer extends SubPageBase {
   final SubPageType _subPageType;

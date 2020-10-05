@@ -4,7 +4,9 @@ import 'bottom_nav_page_base.dart';
 
 class ProfilePage extends BottomNavPageBase {
   static const _title = 'Profile';
+  static const route = 'profile';
 
+  @override
   get title => _title;
 
   @override

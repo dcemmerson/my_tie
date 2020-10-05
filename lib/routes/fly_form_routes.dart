@@ -10,8 +10,9 @@ import 'package:my_tie/models/arguments/add_attribute_argument.dart';
 import 'package:my_tie/models/arguments/add_property_argument.dart';
 import 'package:my_tie/models/arguments/instruction_page_attribute.dart';
 import 'package:my_tie/models/new_fly/form_page_number.dart';
-import 'package:my_tie/pages/base/page_base_stateless/subpage_base.dart';
-import 'package:my_tie/pages/base/page_base_stateless/subpage_container.dart';
+import 'package:my_tie/pages/base/page_base_stateless/page_base.dart';
+import 'package:my_tie/pages/base/page_base_stateless/page_container.dart';
+import 'package:my_tie/pages/bottom_navigation_based_pages/new_fly_start_page.dart';
 import 'package:my_tie/pages/route_based_pages/new_fly_pages/add_new_attribute_page.dart';
 import 'package:my_tie/pages/route_based_pages/new_fly_pages/add_new_property_page.dart';
 import 'package:my_tie/pages/route_based_pages/new_fly_pages/new_fly_attributes_page.dart';
@@ -23,18 +24,19 @@ import 'package:my_tie/routes/route_guard.dart';
 
 class FlyFormRoutes {
   static final routes = {
+    NewFlyStartPage.route: (context) =>
+        RouteGuard(child: PageContainer(pageType: PageType.NewFlyStartPage)),
     NewFlyAttributesPage.route: (context) => RouteGuard(
-        child: SubPageContainer(subPageType: SubPageType.NewFlyAttributesPage)),
+        child: PageContainer(pageType: PageType.NewFlyAttributesPage)),
     NewFlyMaterialsPage.route: (context) => RouteGuard(
-        child: SubPageContainer(subPageType: SubPageType.NewFlyMaterialsPage)),
+        child: PageContainer(pageType: PageType.NewFlyMaterialsPage)),
     NewFlyInstructionPage.route: (context) => RouteGuard(
-        child:
-            SubPageContainer(subPageType: SubPageType.NewFlyInstructionPage)),
-    NewFlyPublishPage.route: (context) => RouteGuard(
-        child: SubPageContainer(subPageType: SubPageType.NewFlyPublishPage)),
+        child: PageContainer(pageType: PageType.NewFlyInstructionPage)),
+    NewFlyPublishPage.route: (context) =>
+        RouteGuard(child: PageContainer(pageType: PageType.NewFlyPublishPage)),
     NewFlyPreviewPublishPage.route: (context) => RouteGuard(
-            child: SubPageContainer(
-          subPageType: SubPageType.NewFlyPreviewPublishPage,
+            child: PageContainer(
+          pageType: PageType.NewFlyPreviewPublishPage,
         )),
 
     // InstructionStepDetailPage.route: (context) => RouteGuard(
@@ -44,9 +46,9 @@ class FlyFormRoutes {
 
     // DB new fly form editting routes.
     AddNewAttributePage.route: (context) => RouteGuard(
-        child: SubPageContainer(subPageType: SubPageType.AddNewAttributePage)),
-    AddNewPropertyPage.route: (context) => RouteGuard(
-        child: SubPageContainer(subPageType: SubPageType.AddNewPropertyPage)),
+        child: PageContainer(pageType: PageType.AddNewAttributePage)),
+    AddNewPropertyPage.route: (context) =>
+        RouteGuard(child: PageContainer(pageType: PageType.AddNewPropertyPage)),
   };
 
   static Future newFlyAttributesPage(BuildContext context) =>

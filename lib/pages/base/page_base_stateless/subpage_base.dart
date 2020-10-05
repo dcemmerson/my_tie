@@ -45,6 +45,7 @@ abstract class SubPageBase extends StatelessWidget {
   Widget build(BuildContext context) {
     themeManager =
         ThemeManager(darkMode: MyTieStateContainer.of(context).isDarkMode);
+
     if (subPageType == SubPageType.NewFlyStartPage) {
       // Then don't show the appbar.
       return FlyFormStateContainer(
@@ -64,7 +65,7 @@ abstract class SubPageBase extends StatelessWidget {
             centerTitle: true,
             elevation: 0.0,
             leading: _subNavPopButton(context),
-            primary: false,
+            primary: true,
             title: Text(subPageTitle, style: AppTextStyles.subHeader),
             textTheme: Theme.of(context).primaryTextTheme,
             // toolbarHeight: 0,

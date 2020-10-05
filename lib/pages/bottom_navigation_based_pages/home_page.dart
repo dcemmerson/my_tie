@@ -4,6 +4,7 @@ import 'bottom_nav_page_base.dart';
 
 class HomePage extends BottomNavPageBase {
   static const _title = 'Home';
+  static const route = 'home';
 
   @override
   get title => _title;

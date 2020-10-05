@@ -9,7 +9,17 @@ enum PageType {
   AuthenticationPage,
   AccountPage,
   // user profile related
+  ProfilePage,
   UserProfileEditPage,
+  // new fly related
+  NewFlyStartPage,
+  NewFlyAttributesPage,
+  NewFlyMaterialsPage,
+  NewFlyInstructionPage,
+  NewFlyPublishPage,
+  NewFlyPreviewPublishPage,
+  AddNewAttributePage,
+  AddNewPropertyPage,
 }
 
 abstract class PageBase extends StatelessWidget {
@@ -30,18 +40,25 @@ abstract class PageBase extends StatelessWidget {
     return Theme(
       data: themeManager.themeData,
       child: Scaffold(
-        appBar: AppBar(
-          centerTitle: true,
-          elevation: 0.0,
-          // floating: true,
-          title: Text(pageTitle),
-          textTheme: Theme.of(context).primaryTextTheme,
-          actions: [
-            SettingsDrawerIcon(),
-          ],
-        ),
+        appBar: AppBar(toolbarHeight: 0),
         endDrawer: SettingsDrawer(),
-        body: body,
+        body: NestedScrollView(
+          headerSliverBuilder: (context, innerBoxIsScrolled) => [
+            SliverAppBar(
+              snap: true,
+              floating: true,
+              centerTitle: true,
+              elevation: 0.0,
+              // floating: true,
+              title: Text(pageTitle),
+              textTheme: Theme.of(context).primaryTextTheme,
+              actions: [
+                SettingsDrawerIcon(),
+              ],
+            ),
+          ],
+          body: body,
+        ),
       ),
     );
   }
