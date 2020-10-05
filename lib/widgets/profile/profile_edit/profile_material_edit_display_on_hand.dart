@@ -69,24 +69,24 @@ class ProfileMaterialEditDisplayOnHand extends StatelessWidget {
       color: Theme.of(context).colorScheme.surface,
       margin: EdgeInsets.fromLTRB(0, AppPadding.p2, 0, AppPadding.p4),
       child: Column(children: [
-        Padding(
-          padding: EdgeInsets.all(AppPadding.p4),
-          child:
-              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-            Icon(flyFormMaterial.icon),
-            Text(flyFormMaterial.name.toTitleCase(),
-                style: AppTextStyles.header),
-            Container(
-                width: (2 * AppPadding.defaultIconButtonPadding +
-                        2 * AppPadding.defaultIconPadding +
-                        AppIcons.defaultIconSize)
-                    .toDouble(),
-                height: (2 * AppPadding.defaultIconButtonPadding +
-                        2 * AppPadding.defaultIconPadding +
-                        AppIcons.defaultIconSize)
-                    .toDouble())
-          ]),
-        ),
+        // Padding(
+        //   padding: EdgeInsets.all(AppPadding.p4),
+        //   child:
+        //       Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+        //     Icon(flyFormMaterial.icon),
+        //     Text(flyFormMaterial.name.toTitleCase(),
+        //         style: AppTextStyles.header),
+        //     Container(
+        //         width: (2 * AppPadding.defaultIconButtonPadding +
+        //                 2 * AppPadding.defaultIconPadding +
+        //                 AppIcons.defaultIconSize)
+        //             .toDouble(),
+        //         height: (2 * AppPadding.defaultIconButtonPadding +
+        //                 2 * AppPadding.defaultIconPadding +
+        //                 AppIcons.defaultIconSize)
+        //             .toDouble())
+        //   ]),
+        // ),
         if (userMaterialsTransfer.userProfile
                 .getMaterials(flyFormMaterial.name)
                 .length >
@@ -97,7 +97,14 @@ class ProfileMaterialEditDisplayOnHand extends StatelessWidget {
                 .getMaterials(flyFormMaterial.name)
                 .length ==
             0)
-          Text('None selected'),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Padding(
+                  padding: EdgeInsets.all(AppPadding.p4),
+                  child: Text('None selected'))
+            ],
+          ),
       ]),
       // ),
     );

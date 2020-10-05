@@ -7,7 +7,7 @@ import 'package:my_tie/widgets/profile/profile_overview_stream_builder.dart';
 import 'package:my_tie/styles/string_format.dart';
 import 'package:my_tie/widgets/title/title_group.dart';
 
-import 'profile_material_edit_on_hand.dart';
+import 'profile_material_edit_display_on_hand.dart';
 
 class UserProfileEdit extends StatelessWidget {
   Widget _buildProfileEdit(
