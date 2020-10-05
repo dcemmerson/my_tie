@@ -12,13 +12,14 @@ import 'package:my_tie/pages/route_based_pages/new_fly_pages/new_fly_materials_p
 import 'package:my_tie/pages/route_based_pages/new_fly_pages/new_fly_preview_publish_page.dart';
 import 'package:my_tie/pages/route_based_pages/new_fly_pages/new_fly_publish_page.dart';
 import 'package:my_tie/pages/route_based_pages/user_profile_pages/user_profile_edit_page.dart';
+import 'package:my_tie/pages/tab_based_pages/tab_page.dart';
 
 class PageContainer extends PageBase {
   final PageType _pageType;
 
-  PageContainer({Key key, @required pageType})
+  PageContainer({Key key, @required pageType, List<TabPage> tabPages})
       : this._pageType = pageType,
-        super(key: key);
+        super(key: key, tabPages: tabPages);
 
   @override
   Widget get body {
