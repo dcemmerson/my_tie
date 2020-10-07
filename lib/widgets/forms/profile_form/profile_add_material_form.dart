@@ -4,7 +4,6 @@ import 'package:my_tie/bloc/state/my_tie_state.dart';
 import 'package:my_tie/bloc/user_bloc.dart';
 import 'package:my_tie/models/bloc_transfer_related/user_profile_fly_material_add_or_delete.dart';
 import 'package:my_tie/models/new_fly/fly_form_material.dart';
-import 'package:my_tie/models/new_fly/fly_materials.dart';
 import 'package:my_tie/models/user_profile/user_profile.dart';
 import 'package:my_tie/styles/styles.dart';
 import 'package:my_tie/styles/string_format.dart';
@@ -48,16 +47,21 @@ class _ProfileAddMaterialFormState extends State<ProfileAddMaterialForm> {
       _showSuccessSnackBar();
       return true;
     }
+    _showExistsSnackBar();
     return false;
   }
 
   void _showSuccessSnackBar() {
+    Scaffold.of(context).removeCurrentSnackBar();
+
     final snackBar = SnackBar(content: Text('Material added!'));
 
     Scaffold.of(context).showSnackBar(snackBar);
   }
 
   void _showExistsSnackBar() {
+    Scaffold.of(context).removeCurrentSnackBar();
+
     final snackBar =
         SnackBar(content: Text('Material already exists in profile.'));
 
@@ -78,21 +82,10 @@ class _ProfileAddMaterialFormState extends State<ProfileAddMaterialForm> {
             onPressed: () {
               if (_saveAndValidate()) {
                 print('success');
-                // Navigator.of(context).pop();
               }
             },
             child: Text(
                 'Add ${widget.flyFormMaterial.name.toSingular().toTitleCase()}')),
-        //   if (_formPageNumber?.propertyIndex != null)
-        //     // This is indicative that user is editing existing material
-        //     RaisedButton(
-        //         color: Theme.of(context).colorScheme.error,
-        //         onPressed: () {
-        //           Navigator.of(context).pop();
-
-        //           _deleteMaterial(fly);
-        //         },
-        //         child: Text('Delete')),
       ],
     );
   }
@@ -106,13 +99,6 @@ class _ProfileAddMaterialFormState extends State<ProfileAddMaterialForm> {
         child: Padding(
           padding: EdgeInsets.all(AppPadding.p2),
           child: _buildForm(),
-        )
-        // Padding(
-        //   padding: EdgeInsets.all(AppPadding.p2),
-        //   child: FlyMaterialDropdown(
-        //     flyFormMaterial: widget.flyFormMaterial,
-        //   ),
-        // ),
-        );
+        ));
   }
 }

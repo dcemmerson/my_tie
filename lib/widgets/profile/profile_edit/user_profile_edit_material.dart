@@ -9,7 +9,7 @@ import 'package:my_tie/widgets/title/title_group.dart';
 
 import 'profile_material_edit_display_on_hand.dart';
 
-class UserProfileEdit extends StatelessWidget {
+class UserProfileEditMaterial extends StatelessWidget {
   Widget _buildProfileEdit(
       UserMaterialsTransfer userMaterialsTransfer,
       EditUserMaterialPageTransfer editUserMaterialPageTransfer,

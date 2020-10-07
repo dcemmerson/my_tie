@@ -11,7 +11,7 @@ import 'package:my_tie/pages/route_based_pages/new_fly_pages/new_fly_instruction
 import 'package:my_tie/pages/route_based_pages/new_fly_pages/new_fly_materials_page.dart';
 import 'package:my_tie/pages/route_based_pages/new_fly_pages/new_fly_preview_publish_page.dart';
 import 'package:my_tie/pages/route_based_pages/new_fly_pages/new_fly_publish_page.dart';
-import 'package:my_tie/pages/route_based_pages/user_profile_pages/user_profile_edit_page.dart';
+import 'package:my_tie/pages/route_based_pages/user_profile_pages/user_profile_edit_material_page.dart';
 import 'package:my_tie/pages/tab_based_pages/tab_page.dart';
 
 class PageContainer extends PageBase {
@@ -36,8 +36,8 @@ class PageContainer extends PageBase {
       case PageType.ProfilePage:
         page = ProfilePage();
         break;
-      case PageType.UserProfileEditPage:
-        page = UserProfileEditPage();
+      case PageType.UserProfileEditMaterialPage:
+        page = UserProfileEditMaterialPage();
         break;
       // New fly related.
       case PageType.NewFlyStartPage:
@@ -87,8 +87,8 @@ class PageContainer extends PageBase {
       // Profile related.
       case PageType.ProfilePage:
         return ProfilePage.route;
-      case PageType.UserProfileEditPage:
-        return UserProfileEditPage.title;
+      case PageType.UserProfileEditMaterialPage:
+        return UserProfileEditMaterialPage.title;
       // New fly related.
       case PageType.NewFlyStartPage:
         return NewFlyStartPage.route;

@@ -11,7 +11,7 @@ enum PageType {
   AccountPage,
   // user profile related
   ProfilePage,
-  UserProfileEditPage,
+  UserProfileEditMaterialPage,
   // new fly related
   NewFlyStartPage,
   NewFlyAttributesPage,

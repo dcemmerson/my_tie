@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:my_tie/bloc/state/my_tie_state.dart';
-import 'package:my_tie/bloc/user_bloc.dart';
 import 'package:my_tie/models/bloc_transfer_related/user_profile_fly_material_add_or_delete.dart';
 import 'package:my_tie/models/new_fly/fly_form_material.dart';
 import 'package:my_tie/models/new_fly/fly_materials.dart';
@@ -8,7 +7,6 @@ import 'package:my_tie/models/user_profile/user_materials_transfer.dart';
 import 'package:my_tie/styles/styles.dart';
 import 'package:my_tie/styles/string_format.dart';
 
-//ignore: must_be_immutable
 class ProfileMaterialEditDisplayOnHand extends StatelessWidget {
   static const _delete = Padding(
       padding: EdgeInsets.all(AppPadding.p2),
@@ -19,36 +17,40 @@ class ProfileMaterialEditDisplayOnHand extends StatelessWidget {
 
   final FlyFormMaterial flyFormMaterial;
   final UserMaterialsTransfer userMaterialsTransfer;
-  UserBloc _userBloc;
-  BuildContext context;
 
   ProfileMaterialEditDisplayOnHand({
     this.flyFormMaterial,
     this.userMaterialsTransfer,
   });
 
-  void _deleteMaterial(FlyMaterial flyMaterial) {
-    _userBloc.deleteUserFlyMaterialSink.add(UserProfileFlyMaterialAddOrDelete(
-        flyMaterial: flyMaterial,
-        userProfile: userMaterialsTransfer.userProfile));
+  void _deleteMaterial(FlyMaterial flyMaterial, BuildContext context) {
+    MyTieStateContainer.of(context)
+        .blocProvider
+        .userBloc
+        .deleteUserFlyMaterialSink
+        .add(UserProfileFlyMaterialAddOrDelete(
+            flyMaterial: flyMaterial,
+            userProfile: userMaterialsTransfer.userProfile));
   }
 
-  List<Widget> _buildMaterialsOnHandDisplay(List<FlyMaterial> materials) {
+  List<Widget> _buildMaterialsOnHandDisplay(
+      List<FlyMaterial> materials, BuildContext context) {
     return materials.map((flyMaterial) {
       return Card(
         color: Theme.of(context).secondaryHeaderColor,
         margin: EdgeInsets.fromLTRB(0, AppPadding.p2, 0, AppPadding.p1),
         child: Dismissible(
+          key: UniqueKey(),
           background: Container(
               color: AppColors.delete,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [_delete, _deleteIcon],
               )),
-          key: Key(flyMaterial.name),
+          // key: Key(flyMaterial.name),
           direction: DismissDirection.horizontal,
           onDismissed: (DismissDirection direction) =>
-              _deleteMaterial(flyMaterial),
+              _deleteMaterial(flyMaterial, context),
           child: ListTile(
             leading: Icon(flyMaterial.icon, color: flyMaterial.color),
             title: Text(flyMaterial.value),
@@ -60,43 +62,20 @@ class ProfileMaterialEditDisplayOnHand extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    this.context = context;
-    _userBloc = MyTieStateContainer.of(context).blocProvider.userBloc;
-
     if (flyFormMaterial == null)
       return Text('Error...shouldn\'t have landed here...');
+
+    List<FlyMaterial> userMaterials =
+        userMaterialsTransfer.userProfile.getMaterials(flyFormMaterial.name);
+
+    userMaterials.forEach((mat) => print(mat.properties));
     return Card(
       color: Theme.of(context).colorScheme.surface,
       margin: EdgeInsets.fromLTRB(0, AppPadding.p2, 0, AppPadding.p4),
       child: Column(children: [
-        // Padding(
-        //   padding: EdgeInsets.all(AppPadding.p4),
-        //   child:
-        //       Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-        //     Icon(flyFormMaterial.icon),
-        //     Text(flyFormMaterial.name.toTitleCase(),
-        //         style: AppTextStyles.header),
-        //     Container(
-        //         width: (2 * AppPadding.defaultIconButtonPadding +
-        //                 2 * AppPadding.defaultIconPadding +
-        //                 AppIcons.defaultIconSize)
-        //             .toDouble(),
-        //         height: (2 * AppPadding.defaultIconButtonPadding +
-        //                 2 * AppPadding.defaultIconPadding +
-        //                 AppIcons.defaultIconSize)
-        //             .toDouble())
-        //   ]),
-        // ),
-        if (userMaterialsTransfer.userProfile
-                .getMaterials(flyFormMaterial.name)
-                .length >
-            0)
-          ..._buildMaterialsOnHandDisplay(userMaterialsTransfer.userProfile
-              .getMaterials(flyFormMaterial.name)),
-        if (userMaterialsTransfer.userProfile
-                .getMaterials(flyFormMaterial.name)
-                .length ==
-            0)
+        if (userMaterials.length > 0)
+          ..._buildMaterialsOnHandDisplay(userMaterials, context),
+        if (userMaterials.length == 0)
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [

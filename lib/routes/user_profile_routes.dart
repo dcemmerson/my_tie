@@ -7,7 +7,7 @@ import 'package:my_tie/models/arguments/routes_based/edit_user_material_page_tra
 import 'package:my_tie/pages/base/page_base_stateless/page_base.dart';
 import 'package:my_tie/pages/base/page_base_stateless/page_container.dart';
 import 'package:my_tie/pages/bottom_navigation_based_pages/profile_page.dart';
-import 'package:my_tie/pages/route_based_pages/user_profile_pages/user_profile_edit_page.dart';
+import 'package:my_tie/pages/route_based_pages/user_profile_pages/user_profile_edit_material_page.dart';
 import 'package:my_tie/routes/route_guard.dart';
 
 class UserProfileRoutes {
@@ -15,12 +15,12 @@ class UserProfileRoutes {
     ProfilePage.route: (context) => RouteGuard(
           child: PageContainer(pageType: PageType.ProfilePage),
         ),
-    UserProfileEditPage.route: (context) => RouteGuard(
-        child: PageContainer(pageType: PageType.UserProfileEditPage)),
+    UserProfileEditMaterialPage.route: (context) => RouteGuard(
+        child: PageContainer(pageType: PageType.UserProfileEditMaterialPage)),
   };
 
-  static Future userProfileEditPage(BuildContext context,
+  static Future userProfileEditMaterialPage(BuildContext context,
           EditUserMaterialPageTransfer editUserMaterialPageTransfer) =>
-      Navigator.pushNamed(context, UserProfileEditPage.route,
+      Navigator.pushNamed(context, UserProfileEditMaterialPage.route,
           arguments: editUserMaterialPageTransfer);
 }

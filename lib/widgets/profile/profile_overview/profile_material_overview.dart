@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:my_tie/bloc/state/my_tie_state.dart';
-import 'package:my_tie/bloc/user_bloc.dart';
+
 import 'package:my_tie/models/arguments/routes_based/edit_user_material_page_transfer.dart';
-import 'package:my_tie/models/bloc_transfer_related/user_profile_fly_material_add_or_delete.dart';
 import 'package:my_tie/models/new_fly/fly_form_material.dart';
 import 'package:my_tie/models/new_fly/fly_materials.dart';
 import 'package:my_tie/models/user_profile/user_materials_transfer.dart';
@@ -11,28 +9,13 @@ import 'package:my_tie/styles/styles.dart';
 import 'package:my_tie/styles/string_format.dart';
 
 class ProfileMaterialOverview extends StatelessWidget {
-  static const _delete = Padding(
-      padding: EdgeInsets.all(AppPadding.p2),
-      child: Text('Delete', style: TextStyle(color: Colors.white)));
-  static const _deleteIcon = Padding(
-      padding: EdgeInsets.all(AppPadding.p2),
-      child: Icon(Icons.delete_forever, color: Colors.white));
-
   final FlyFormMaterial flyFormMaterial;
   final UserMaterialsTransfer userMaterialsTransfer;
-
-  UserBloc _userBloc;
 
   ProfileMaterialOverview({
     this.flyFormMaterial,
     this.userMaterialsTransfer,
   });
-
-  void _deleteMaterial(FlyMaterial flyMaterial) {
-    _userBloc.deleteUserFlyMaterialSink.add(UserProfileFlyMaterialAddOrDelete(
-        flyMaterial: flyMaterial,
-        userProfile: userMaterialsTransfer.userProfile));
-  }
 
   List<Widget> _buildMaterialsOnHandSection(List<FlyMaterial> materials) {
     return materials.map((flyMaterial) {
@@ -62,8 +45,6 @@ class ProfileMaterialOverview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    _userBloc = MyTieStateContainer.of(context).blocProvider.userBloc;
-
     if (flyFormMaterial == null)
       return Text('Error...shouldn\'t have landed here...');
     return Card(
@@ -80,7 +61,7 @@ class ProfileMaterialOverview extends StatelessWidget {
             IconButton(
               icon: Icon(Icons.edit),
               onPressed: () {
-                return UserProfileRoutes.userProfileEditPage(
+                return UserProfileRoutes.userProfileEditMaterialPage(
                     context,
                     EditUserMaterialPageTransfer(
                         material: flyFormMaterial.name));
