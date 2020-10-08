@@ -20,7 +20,7 @@ class FliesExhibitStreamBuilder extends StatelessWidget {
     return StreamBuilder(
         stream: MyTieStateContainer.of(context)
             .blocProvider
-            .completedFlyBloc
+            .flyExhibitBloc
             .newestFliesStream,
         builder: (context, AsyncSnapshot<List<Fly>> snapshot) {
           print(snapshot.connectionState);

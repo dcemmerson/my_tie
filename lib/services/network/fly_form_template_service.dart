@@ -9,17 +9,19 @@ class FlyFormTemplateService {
         .collection(_newFlyForm)
         .orderBy('last_modified', descending: true)
         .limit(1)
-        // .doc(_newFlyFormDocId)
         .snapshots();
+  }
+
+  Future<QuerySnapshot> get newFlyForm {
+    return FirebaseFirestore.instance
+        .collection(_newFlyForm)
+        .orderBy('last_modified', descending: true)
+        .limit(1)
+        .get();
   }
 
   Future addMaterialToFormTemplate(
       {String uid, String material, String property, String value}) {
-    print('add material');
-    print(uid);
-    print(material);
-    print(property);
-    print(value);
     return FirebaseFirestore.instance
         .collection(_newFlyFormIncoming)
         .doc(uid)

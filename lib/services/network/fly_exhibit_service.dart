@@ -12,12 +12,13 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:uuid/uuid.dart';
 import 'package:my_tie/models/db_names.dart';
 
-class CompletedFlyService {
-  Future<QuerySnapshot> getCompletedFliesByDate(String uid) {
+class FlyExhibitService {
+  static const fliesPerFetch = 5;
+  Future<QuerySnapshot> getCompletedFliesByDate() {
     return FirebaseFirestore.instance
         .collection(DbCollections.fly)
         .orderBy(DbNames.lastModified, descending: true)
-        .limit(20)
+        .limit(5)
         .get();
   }
 }

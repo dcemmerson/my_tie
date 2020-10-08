@@ -31,6 +31,10 @@ class ProfileMaterialEditDisplayOnHand extends StatelessWidget {
         .add(UserProfileFlyMaterialAddOrDelete(
             flyMaterial: flyMaterial,
             userProfile: userMaterialsTransfer.userProfile));
+    Scaffold.of(context).hideCurrentSnackBar();
+    Scaffold.of(context).showSnackBar(SnackBar(
+      content: Text('Material removed.'),
+    ));
   }
 
   List<Widget> _buildMaterialsOnHandDisplay(
@@ -40,6 +44,8 @@ class ProfileMaterialEditDisplayOnHand extends StatelessWidget {
         color: Theme.of(context).secondaryHeaderColor,
         margin: EdgeInsets.fromLTRB(0, AppPadding.p2, 0, AppPadding.p1),
         child: Dismissible(
+          // Use unique key here (or variation of something unique), otherwise
+          // we will get 'Dismissible left in widget tree error.'
           key: UniqueKey(),
           background: Container(
               color: AppColors.delete,

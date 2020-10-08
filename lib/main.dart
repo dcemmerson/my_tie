@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:my_tie/app.dart';
 import 'package:my_tie/bloc/auth_bloc.dart';
 import 'package:my_tie/bloc/bloc_provider.dart';
-import 'package:my_tie/bloc/completed_fly_bloc.dart';
+import 'package:my_tie/bloc/fly_exhibit_bloc.dart';
 import 'package:my_tie/bloc/edit_new_fly_template_bloc.dart';
 import 'package:my_tie/bloc/new_fly_bloc.dart';
 import 'package:my_tie/bloc/state/my_tie_state.dart';
@@ -15,7 +15,7 @@ import 'package:my_tie/services/network/new_fly_service.dart';
 import 'package:my_tie/services/network/user_service.dart';
 
 import 'bloc/user_bloc.dart';
-import 'services/network/completed_fly_service.dart';
+import 'services/network/fly_exhibit_service.dart';
 
 // import 'package:flutter/scheduler.dart' show timeDilation;
 
@@ -55,9 +55,10 @@ Future<Widget> initApp() async {
       authService: authService,
       flyFormTemplateService: flyFormTemplateService);
 
-  final completedFlyService = CompletedFlyService();
-  final completedFlyBloc =
-      CompletedFlyBloc(completedFlyService: completedFlyService);
+  final flyExhibitService = FlyExhibitService();
+  final flyExhibitBloc = FlyExhibitBloc(
+      flyExhibitService: flyExhibitService,
+      flyFormTemplateService: flyFormTemplateService);
 
   return MyTieStateContainer(
     blocProvider: BlocProvider(
@@ -65,7 +66,7 @@ Future<Widget> initApp() async {
       userBloc: userBloc,
       editNewFlyTemplateBloc: editNewFlyTemplateBloc,
       newFlyBloc: newFlyBloc,
-      completedFlyBloc: completedFlyBloc,
+      flyExhibitBloc: flyExhibitBloc,
     ),
     child: MyTieApp(),
   );

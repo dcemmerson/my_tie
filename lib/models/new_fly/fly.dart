@@ -40,6 +40,26 @@ class Fly {
         this.instructions = _toInstructionsList(instr),
         this.topLevelImageUris = _toListOfString(imageUris);
 
+  Fly.formattedForExhibit({
+    this.docId,
+    List imageUris,
+    String flyName,
+    String flyDescription,
+    Map attrs,
+    Map mats,
+    NewFlyFormTemplate flyFormTemplate,
+    Map instr,
+  })  : this.flyName =
+            flyName ?? nullNameReplacement, // Must set flyName here rather than
+        //  default arg (because if value doesnt exist in firebase, flyName will
+        //  be explicitly set to null, even if we provide default arg)
+        this.flyDescription = flyDescription ?? nullDescriptionReplacement,
+        this.attributes =
+            _toAttributeListForReview(attrs ?? {}, flyFormTemplate),
+        this.materials = _toMaterialListForReview(mats ?? {}, flyFormTemplate),
+        this.instructions = _toInstructionsListForReview(instr),
+        this.topLevelImageUris = _toListOfString(imageUris);
+
   /// To format for review, we need to pass in the NewFlyFormTemplate from db,
   ///   which we will then use as a guide to ensure we either set attributes/
   ///   materials values to the value passed in, or Fly.nullReplacement.
@@ -100,6 +120,13 @@ class Fly {
     return materials[materialIndex]
         .flyMaterials[propertyIndex]
         .properties[propertyName];
+  }
+
+  FlyAttribute get difficulty {
+    return attributes.firstWhere(
+      (attr) => attr.name == FlyForm.difficulty,
+      orElse: () => FlyAttribute(name: FlyForm.difficulty, value: ''),
+    );
   }
 
   List<FlyMaterial> get materialList {
