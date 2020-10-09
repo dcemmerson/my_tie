@@ -4,12 +4,7 @@
 ///   service related to user querying firestore to see flies they can tie.
 ///
 
-import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:cloud_functions/cloud_functions.dart';
-import 'package:firebase_storage/firebase_storage.dart';
-import 'package:uuid/uuid.dart';
 import 'package:my_tie/models/db_names.dart';
 
 class FlyExhibitService {

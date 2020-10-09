@@ -7,11 +7,18 @@
 
 import 'package:flutter/material.dart';
 
+typedef ItemCreated = void Function(int);
+
 class CreationAwareWidget extends StatefulWidget {
-  final Function itemCreated;
+  final int index;
+  final ItemCreated itemCreated;
   final Widget child;
 
-  const CreationAwareWidget({Key key, this.itemCreated, this.child})
+  const CreationAwareWidget(
+      {Key key,
+      @required this.index,
+      @required this.itemCreated,
+      @required this.child})
       : super(key: key);
 
   @override
@@ -23,7 +30,7 @@ class _CreationAwareWidgetState extends State<CreationAwareWidget> {
   void initState() {
     super.initState();
     if (widget.itemCreated != null) {
-      widget.itemCreated();
+      widget.itemCreated(widget.index);
     }
   }
 

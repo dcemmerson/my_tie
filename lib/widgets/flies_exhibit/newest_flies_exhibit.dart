@@ -4,8 +4,9 @@ import 'package:my_tie/bloc/fly_exhibit_bloc.dart';
 import 'package:my_tie/bloc/state/my_tie_state.dart';
 import 'package:my_tie/models/new_fly/fly.dart';
 import 'package:my_tie/widgets/flies_exhibit/flies_exhibit_stream_builder.dart';
-import 'package:my_tie/widgets/misc/creation_aware_list_item.dart';
+import 'package:my_tie/widgets/misc/creation_aware_widget.dart';
 
+import 'all_flies_loaded.dart';
 import 'fly_overview/fly_overview_exhibit.dart';
 
 class NewestFliesExhibit extends StatefulWidget {
@@ -19,6 +20,7 @@ class _NewestFliesExhibitState extends State<NewestFliesExhibit>
   bool _keepAlive = true;
   int _flyCount = 0;
   int _itemsCreated = 0;
+  int _highestIndexCreated = -1;
 
   @override
   bool get wantKeepAlive => _keepAlive;
@@ -30,15 +32,15 @@ class _NewestFliesExhibitState extends State<NewestFliesExhibit>
         MyTieStateContainer.of(context).blocProvider.flyExhibitBloc;
   }
 
-  void _handleItemCreated() async {
-    _itemsCreated++;
-    if (_itemsCreated == _flyCount) {
+  void _handleItemCreated(int index) {
+    if (index > _highestIndexCreated) {
+      _highestIndexCreated = index;
+    }
+    if (_highestIndexCreated >= _flyCount - 1) {
       _flyExhibitBloc.requestFetchFliesSink.add(FetchNewestFliesEvent());
-      print('SCHEDULE');
-      await Future.delayed(Duration(seconds: 3));
-      SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
-        print('CALLBACK');
 
+      // Ensure we don't call setState while frame in progress.
+      SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
         setState(() {});
       });
     }
@@ -47,12 +49,20 @@ class _NewestFliesExhibitState extends State<NewestFliesExhibit>
   Widget buildFlyExhibit(List<Fly> flies) {
     _flyCount = flies.length;
     return ListView.builder(
-      itemCount: flies.length,
-      itemBuilder: (context, index) => CreationAwareWidget(
-        child: FlyOverviewExhibit(flies[index]),
-        itemCreated: _handleItemCreated,
-      ),
-    );
+        addAutomaticKeepAlives: false,
+        itemCount: flies.length,
+        itemBuilder: (context, index) {
+          if (flies[index] is FlyLoadingIndicator)
+            return Container(child: CircularProgressIndicator());
+          else if (flies[index] is FlyEndCapIndicator)
+            return AllFliesLoaded();
+          else
+            return CreationAwareWidget(
+              index: index,
+              child: FlyOverviewExhibit(flies[index]),
+              itemCreated: _handleItemCreated,
+            );
+        });
   }
 
   @override

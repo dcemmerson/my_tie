@@ -12,8 +12,8 @@ class FlyExhibitBloc {
   final FlyExhibitService flyExhibitService;
   final FlyFormTemplateService flyFormTemplateService;
 
-  final List<Fly> newestFlies = [];
-  DocumentSnapshot prevNewestFlyDoc;
+  final List<Fly> _newestFlies = [];
+  DocumentSnapshot _prevNewestFlyDoc;
 
   final _requestFetchFlies = StreamController<FetchFliesEvent>();
   StreamSink<FetchFliesEvent> requestFetchFliesSink;
@@ -31,6 +31,8 @@ class FlyExhibitBloc {
 
     _requestFetchFlies.stream.listen((ffe) {
       if (ffe is FetchNewestFliesEvent) {
+        _newestFlies.add(FlyLoadingIndicator());
+        _newestFliesStreamController.add(_newestFlies);
         _newestFliesFetch();
       } else {
         print('event not found');
@@ -62,7 +64,7 @@ class FlyExhibitBloc {
     final Future<QuerySnapshot> flyTemplateDocF =
         flyFormTemplateService.newFlyForm;
     final Future<QuerySnapshot> queryF =
-        flyExhibitService.getCompletedFliesByDateAfterDoc(prevNewestFlyDoc);
+        flyExhibitService.getCompletedFliesByDateAfterDoc(_prevNewestFlyDoc);
 
     // No need to use Future.wait, as query depeneds on flyFormTemplate.
     final flyFormTemplateDoc =
@@ -89,12 +91,15 @@ class FlyExhibitBloc {
       );
     }).toList();
 
-    newestFlies.addAll(flies);
-    _newestFliesStreamController.add(newestFlies);
+    _newestFlies.addAll(flies);
+    _newestFlies.removeWhere((fly) => fly is FlyLoadingIndicator);
+    if (flies.isEmpty) _newestFlies.add(FlyEndCapIndicator());
+    _newestFliesStreamController.add(_newestFlies);
   }
 
   void _setPrevNewestDoc(QuerySnapshot flyQueries) {
-    prevNewestFlyDoc = flyQueries.docs[flyQueries.docs.length - 1];
+    if (flyQueries.docs.length > 0)
+      _prevNewestFlyDoc = flyQueries.docs[flyQueries.docs.length - 1];
   }
 
   void close() {
@@ -107,3 +112,7 @@ class FlyExhibitBloc {
 class FetchFliesEvent {}
 
 class FetchNewestFliesEvent extends FetchFliesEvent {}
+
+class FlyLoadingIndicator extends Fly {}
+
+class FlyEndCapIndicator extends Fly {}
