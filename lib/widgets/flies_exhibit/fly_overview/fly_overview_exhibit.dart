@@ -19,17 +19,27 @@ class FlyOverviewExhibit extends StatelessWidget {
     return FadeInImage.assetNetwork(
       placeholder: 'assets/fly_placeholder.png',
       image: uri,
+      imageErrorBuilder: (context, error, stackTrace) => Stack(children: [
+        Text('Error loading image',
+            style: TextStyle(color: Theme.of(context).errorColor)),
+        Image.asset('assets/fly_placeholder.png',
+            fit: BoxFit.fill, width: 1000),
+      ]),
       // height: height,
       fit: BoxFit.fill,
       width: 1000,
+      fadeOutDuration: const Duration(milliseconds: 400),
     );
   }
 
   Widget _buildSingleView(BuildContext context, double width, double height) {
-    return SizedBox(
-      height: height / 3,
-      child: _imageWithLoadingBar(fly.topLevelImageUris[0], context),
-    );
+    return Column(children: [
+      _buildExhibitInfo(),
+      SizedBox(
+        height: height / 3,
+        child: _imageWithLoadingBar(fly.topLevelImageUris[0], context),
+      ),
+    ]);
   }
 
   Widget _buildSideBySideView(

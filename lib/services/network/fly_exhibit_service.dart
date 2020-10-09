@@ -14,11 +14,22 @@ import 'package:my_tie/models/db_names.dart';
 
 class FlyExhibitService {
   static const fliesPerFetch = 5;
-  Future<QuerySnapshot> getCompletedFliesByDate() {
+
+  Future<QuerySnapshot> initGetCompletedFliesByDate() {
     return FirebaseFirestore.instance
         .collection(DbCollections.fly)
         .orderBy(DbNames.lastModified, descending: true)
         .limit(5)
+        .get();
+  }
+
+  Future<QuerySnapshot> getCompletedFliesByDateAfterDoc(
+      DocumentSnapshot prevDoc) {
+    return FirebaseFirestore.instance
+        .collection(DbCollections.fly)
+        .orderBy(DbNames.lastModified, descending: true)
+        .limit(5)
+        .startAfterDocument(prevDoc)
         .get();
   }
 }

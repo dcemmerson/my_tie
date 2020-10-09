@@ -13,7 +13,7 @@ class FlyExhibitBloc {
   final FlyFormTemplateService flyFormTemplateService;
 
   final List<Fly> newestFlies = [];
-  Map<String, dynamic> prevNewestFlyDoc;
+  DocumentSnapshot prevNewestFlyDoc;
 
   final _requestFetchFlies = StreamController<FetchFliesEvent>();
   StreamSink<FetchFliesEvent> requestFetchFliesSink;
@@ -31,7 +31,7 @@ class FlyExhibitBloc {
 
     _requestFetchFlies.stream.listen((ffe) {
       if (ffe is FetchNewestFliesEvent) {
-        print('fetch random flies');
+        _newestFliesFetch();
       } else {
         print('event not found');
       }
@@ -44,17 +44,37 @@ class FlyExhibitBloc {
   ///   can then be used for subsequent calls to Firestore for additional fly
   ///   docs for newest fly exhibit, in an infinite scroll/fetch manner.
   void _initNewestFliesFetch() async {
-    print('Call init newest flies fetch');
     final Future<QuerySnapshot> flyTemplateDocF =
         flyFormTemplateService.newFlyForm;
     final Future<QuerySnapshot> queryF =
-        flyExhibitService.getCompletedFliesByDate();
+        flyExhibitService.initGetCompletedFliesByDate();
 
     // No need to use Future.wait, as query depeneds on flyFormTemplate.
     final flyFormTemplateDoc =
         NewFlyFormTemplate.fromDoc((await flyTemplateDocF).docs[0].data());
     final flyQueries = await queryF;
 
+    _setPrevNewestDoc(flyQueries);
+    _sendNewestFliesToUI(flyQueries, flyFormTemplateDoc);
+  }
+
+  void _newestFliesFetch() async {
+    final Future<QuerySnapshot> flyTemplateDocF =
+        flyFormTemplateService.newFlyForm;
+    final Future<QuerySnapshot> queryF =
+        flyExhibitService.getCompletedFliesByDateAfterDoc(prevNewestFlyDoc);
+
+    // No need to use Future.wait, as query depeneds on flyFormTemplate.
+    final flyFormTemplateDoc =
+        NewFlyFormTemplate.fromDoc((await flyTemplateDocF).docs[0].data());
+    final flyQueries = await queryF;
+
+    _setPrevNewestDoc(flyQueries);
+    _sendNewestFliesToUI(flyQueries, flyFormTemplateDoc);
+  }
+
+  void _sendNewestFliesToUI(
+      QuerySnapshot flyQueries, NewFlyFormTemplate flyFormTemplateDoc) {
     final List<Fly> flies = flyQueries.docs.map((doc) {
       final flyDoc = doc.data();
       return Fly.formattedForExhibit(
@@ -69,8 +89,12 @@ class FlyExhibitBloc {
       );
     }).toList();
 
-    prevNewestFlyDoc = flyQueries.docs[flyQueries.docs.length - 1].data();
-    _newestFliesStreamController.add(flies);
+    newestFlies.addAll(flies);
+    _newestFliesStreamController.add(newestFlies);
+  }
+
+  void _setPrevNewestDoc(QuerySnapshot flyQueries) {
+    prevNewestFlyDoc = flyQueries.docs[flyQueries.docs.length - 1];
   }
 
   void close() {

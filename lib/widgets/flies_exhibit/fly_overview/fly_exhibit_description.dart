@@ -12,6 +12,7 @@ class FlyExhibitDescription extends StatelessWidget {
         // Flexible(
         //   child:
         Container(
+      padding: EdgeInsets.all(AppPadding.p3),
       // alignment: centered ? Alignment.topCenter : Alignment.topLeft,
       child: Text(
         description,
