@@ -7,6 +7,8 @@ import 'package:my_tie/widgets/drawer/settings_drawer_icon.dart';
 
 enum PageType {
   HomePage,
+  // Fly exhibit pages.
+  FlyExhibitDetailPage,
   AuthenticationPage,
   AccountPage,
   // user profile related

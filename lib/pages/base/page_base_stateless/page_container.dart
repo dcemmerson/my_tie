@@ -4,6 +4,7 @@ import 'package:my_tie/pages/base/page_base_stateless/page_base.dart';
 import 'package:my_tie/pages/bottom_navigation_based_pages/home_page.dart';
 import 'package:my_tie/pages/bottom_navigation_based_pages/new_fly_start_page.dart';
 import 'package:my_tie/pages/bottom_navigation_based_pages/profile_page.dart';
+import 'package:my_tie/pages/route_based_pages/fly_exhibit_pages/fly_exhibit_detail_page.dart';
 import 'package:my_tie/pages/route_based_pages/new_fly_pages/add_new_attribute_page.dart';
 import 'package:my_tie/pages/route_based_pages/new_fly_pages/add_new_property_page.dart';
 import 'package:my_tie/pages/route_based_pages/new_fly_pages/new_fly_attributes_page.dart';
@@ -32,6 +33,9 @@ class PageContainer extends PageBase {
       case PageType.HomePage:
         page = HomePage();
         break;
+      // Fly exhibit related.
+      case PageType.FlyExhibitDetailPage:
+        return FlyExhibitDetailPage();
       // User profile related.
       case PageType.ProfilePage:
         page = ProfilePage();
@@ -84,6 +88,9 @@ class PageContainer extends PageBase {
       // Start/Home page related.
       case PageType.HomePage:
         return HomePage.route;
+      // Fly exhibit related.
+      case PageType.FlyExhibitDetailPage:
+        return FlyExhibitDetailPage.route;
       // Profile related.
       case PageType.ProfilePage:
         return ProfilePage.route;

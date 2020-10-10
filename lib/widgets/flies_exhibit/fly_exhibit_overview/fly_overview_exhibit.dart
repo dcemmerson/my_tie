@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:my_tie/models/new_fly/fly.dart';
+import 'package:my_tie/routes/fly_exhibit_routes.dart';
 import 'package:my_tie/styles/styles.dart';
-import 'package:my_tie/widgets/flies_exhibit/fly_overview/fly_exhibit_attributes.dart';
 
+import 'fly_exhibit_attributes.dart';
 import 'fly_exhibit_description.dart';
 import 'fly_exhibit_title.dart';
 
@@ -84,26 +85,29 @@ class FlyOverviewExhibit extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(builder: (context, constraints) {
-      final screenHeight = MediaQuery.of(context).size.height;
-      return Card(
-        // elevation: 10,
-        color: Theme.of(context).colorScheme.surface,
-        margin: const EdgeInsets.fromLTRB(0, AppPadding.p4, 0, AppPadding.p4),
-        child: Padding(
-          padding:
-              const EdgeInsets.fromLTRB(0, AppPadding.p4, 0, AppPadding.p2),
-          child: Column(
-            children: [
-              constraints.maxWidth > sideBySideCutoffWidth
-                  ? _buildSideBySideView(
-                      context, constraints.maxWidth, screenHeight)
-                  : _buildSingleView(
-                      context, constraints.maxWidth, screenHeight)
-            ],
+    return InkWell(
+      onTap: () => FlyExhibitRoutes.flyExhibitDetail(context),
+      child: LayoutBuilder(builder: (context, constraints) {
+        final screenHeight = MediaQuery.of(context).size.height;
+        return Card(
+          // elevation: 10,
+          color: Theme.of(context).colorScheme.surface,
+          margin: const EdgeInsets.fromLTRB(0, AppPadding.p4, 0, AppPadding.p4),
+          child: Padding(
+            padding:
+                const EdgeInsets.fromLTRB(0, AppPadding.p4, 0, AppPadding.p2),
+            child: Column(
+              children: [
+                constraints.maxWidth > sideBySideCutoffWidth
+                    ? _buildSideBySideView(
+                        context, constraints.maxWidth, screenHeight)
+                    : _buildSingleView(
+                        context, constraints.maxWidth, screenHeight)
+              ],
+            ),
           ),
-        ),
-      );
-    });
+        );
+      }),
+    );
   }
 }

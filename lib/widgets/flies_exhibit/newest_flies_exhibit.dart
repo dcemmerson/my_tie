@@ -7,7 +7,7 @@ import 'package:my_tie/widgets/flies_exhibit/flies_exhibit_stream_builder.dart';
 import 'package:my_tie/widgets/misc/creation_aware_widget.dart';
 
 import 'all_flies_loaded.dart';
-import 'fly_overview/fly_overview_exhibit.dart';
+import 'fly_exhibit_overview/fly_overview_exhibit.dart';
 
 class NewestFliesExhibit extends StatefulWidget {
   @override
