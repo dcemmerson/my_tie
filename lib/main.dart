@@ -57,6 +57,7 @@ Future<Widget> initApp() async {
 
   final flyExhibitService = FlyExhibitService();
   final flyExhibitBloc = FlyExhibitBloc(
+      userBloc: userBloc,
       flyExhibitService: flyExhibitService,
       flyFormTemplateService: flyFormTemplateService);
 

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_tie/models/fly_exhibits/fly_exhibit.dart';
 import 'package:my_tie/models/new_fly/fly.dart';
 import 'package:my_tie/routes/fly_exhibit_routes.dart';
 import 'package:my_tie/styles/styles.dart';
@@ -11,9 +12,9 @@ class FlyOverviewExhibit extends StatelessWidget {
   static const double sideBySideCutoffWidth = 500;
   static const double defaultImageWidth = 750;
 
-  final Fly fly;
+  final FlyExhibit flyExhibit;
 
-  FlyOverviewExhibit(this.fly);
+  FlyOverviewExhibit(this.flyExhibit);
 
   Widget _imageWithLoadingBar(
       String uri, /*double width, double height,*/ BuildContext context) {
@@ -38,7 +39,8 @@ class FlyOverviewExhibit extends StatelessWidget {
       _buildExhibitInfo(),
       SizedBox(
         height: height / 3,
-        child: _imageWithLoadingBar(fly.topLevelImageUris[0], context),
+        child:
+            _imageWithLoadingBar(flyExhibit.fly.topLevelImageUris[0], context),
       ),
     ]);
   }
@@ -56,9 +58,9 @@ class FlyOverviewExhibit extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.all(edgePadding),
               child: _imageWithLoadingBar(
-                fly.topLevelImageUris[0],
+                flyExhibit.fly.topLevelImageUris[0],
                 context,
-              ), // subtract off padding
+              ),
             ),
           ),
           Flexible(
@@ -73,13 +75,13 @@ class FlyOverviewExhibit extends StatelessWidget {
   Widget _buildExhibitInfo() {
     return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
       FlyExhibitTitle(
-        title: fly.flyName,
-        difficultyAttribute: fly.difficulty,
+        title: flyExhibit.fly.flyName,
+        materialsFraction: flyExhibit.materialsFraction,
         centered: true,
       ),
       // SizedBox(height: 10),
-      FlyExhibitAttributes(fly.attributes),
-      FlyExhibitDescription(fly.flyDescription),
+      FlyExhibitAttributes(flyExhibit.fly.attributes),
+      FlyExhibitDescription(flyExhibit.fly.flyDescription),
     ]);
   }
 

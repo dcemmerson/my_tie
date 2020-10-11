@@ -51,9 +51,6 @@ class AuthBloc {
     }
   }
 
-  //Inputs - coming from app.
-
-  //Outputs - either going to wasteagram or uses services to Firebase.
   Stream<User> get user => _authStatusController.stream;
   StreamController<User> _authStatusController =
       BehaviorSubject<User>(seedValue: null);

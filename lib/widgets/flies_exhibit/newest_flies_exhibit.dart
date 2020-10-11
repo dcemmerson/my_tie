@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:my_tie/bloc/fly_exhibit_bloc.dart';
 import 'package:my_tie/bloc/state/my_tie_state.dart';
-import 'package:my_tie/models/new_fly/fly.dart';
+import 'package:my_tie/models/fly_exhibits/fly_exhibit.dart';
 import 'package:my_tie/widgets/flies_exhibit/flies_exhibit_stream_builder.dart';
 import 'package:my_tie/widgets/misc/creation_aware_widget.dart';
 
@@ -19,7 +19,6 @@ class _NewestFliesExhibitState extends State<NewestFliesExhibit>
   FlyExhibitBloc _flyExhibitBloc;
   bool _keepAlive = true;
   int _flyCount = 0;
-  int _itemsCreated = 0;
   int _highestIndexCreated = -1;
 
   @override
@@ -46,20 +45,20 @@ class _NewestFliesExhibitState extends State<NewestFliesExhibit>
     }
   }
 
-  Widget buildFlyExhibit(List<Fly> flies) {
-    _flyCount = flies.length;
+  Widget buildFlyExhibit(List<FlyExhibit> flyExhibits) {
+    _flyCount = flyExhibits.length;
     return ListView.builder(
         addAutomaticKeepAlives: false,
-        itemCount: flies.length,
+        itemCount: flyExhibits.length,
         itemBuilder: (context, index) {
-          if (flies[index] is FlyLoadingIndicator)
+          if (flyExhibits[index] is FlyExhibitLoadingIndicator)
             return Container(child: CircularProgressIndicator());
-          else if (flies[index] is FlyEndCapIndicator)
+          else if (flyExhibits[index] is FlyExhibitEndCapIndicator)
             return AllFliesLoaded();
           else
             return CreationAwareWidget(
               index: index,
-              child: FlyOverviewExhibit(flies[index]),
+              child: FlyOverviewExhibit(flyExhibits[index]),
               itemCreated: _handleItemCreated,
             );
         });

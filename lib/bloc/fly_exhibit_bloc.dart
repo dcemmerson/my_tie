@@ -2,26 +2,42 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:my_tie/models/db_names.dart';
+import 'package:my_tie/models/fly_exhibits/fly_exhibit.dart';
 import 'package:my_tie/models/new_fly/fly.dart';
 import 'package:my_tie/models/new_fly/new_fly_form_template.dart';
+import 'package:my_tie/models/user_profile/user_materials_transfer.dart';
+import 'package:my_tie/models/user_profile/user_profile.dart';
 import 'package:my_tie/services/network/fly_exhibit_service.dart';
 import 'package:my_tie/services/network/fly_form_template_service.dart';
-import 'package:rxdart/subjects.dart';
+
+import 'user_bloc.dart';
 
 class FlyExhibitBloc {
+  // final AuthBloc authBloc;
+  final UserBloc userBloc;
   final FlyExhibitService flyExhibitService;
   final FlyFormTemplateService flyFormTemplateService;
 
-  final List<Fly> _newestFlies = [];
+  // Don't mark _newestFlies as final. During most the majority of the bloc,
+  //  we will not reassign _newestFlies and instead just add FlyExhibits to it,
+  //  but in instance of user updating profile, we will map _newestFlies to the
+  //  updated version of _newest flies, thus needing to reassign.
+  List<FlyExhibit> _newestFlies = [];
   DocumentSnapshot _prevNewestFlyDoc;
+  UserProfile _userProfile;
 
   final _requestFetchFlies = StreamController<FetchFliesEvent>();
   StreamSink<FetchFliesEvent> requestFetchFliesSink;
 
-  final _newestFliesStreamController = StreamController<List<Fly>>();
-  Stream<List<Fly>> newestFliesStream;
+  final _newestFliesStreamController = StreamController<List<FlyExhibit>>();
+  Stream<List<FlyExhibit>> newestFliesStream;
 
-  FlyExhibitBloc({this.flyExhibitService, this.flyFormTemplateService}) {
+  FlyExhibitBloc({
+    // this.authBloc,
+    this.userBloc,
+    this.flyExhibitService,
+    this.flyFormTemplateService,
+  }) {
     // _newestFliesStreamController =
     // BehaviorSubject<List<Fly>>(seedValue: newestFlies);
     requestFetchFliesSink = _requestFetchFlies.sink;
@@ -31,12 +47,27 @@ class FlyExhibitBloc {
 
     _requestFetchFlies.stream.listen((ffe) {
       if (ffe is FetchNewestFliesEvent) {
-        _newestFlies.add(FlyLoadingIndicator());
+        _newestFlies.add(FlyExhibitLoadingIndicator());
         _newestFliesStreamController.add(_newestFlies);
         _newestFliesFetch();
       } else {
         print('event not found');
       }
+    });
+
+    // Get userProfile, and listen for changes to userProfile. Update all FlyExhibit
+    // if upon changes to userProfile.
+    userBloc.userMaterialsProfile.listen((UserMaterialsTransfer umt) {
+      _userProfile = umt.userProfile;
+
+      _newestFlies = _newestFlies.map((FlyExhibit flyExhibit) {
+        if (flyExhibit is FlyExhibitEndCapIndicator)
+          return FlyExhibitEndCapIndicator();
+        return FlyExhibit.fromUserProfileAndFly(
+            fly: flyExhibit.fly, userProfile: _userProfile);
+      }).toList();
+
+      _newestFliesStreamController.add(_newestFlies);
     });
   }
 
@@ -57,7 +88,7 @@ class FlyExhibitBloc {
     final flyQueries = await queryF;
 
     _setPrevNewestDoc(flyQueries);
-    _sendNewestFliesToUI(flyQueries, flyFormTemplateDoc);
+    _formatAndSendNewestFliesToUI(flyQueries, flyFormTemplateDoc);
   }
 
   void _newestFliesFetch() async {
@@ -72,28 +103,36 @@ class FlyExhibitBloc {
     final flyQueries = await queryF;
 
     _setPrevNewestDoc(flyQueries);
-    _sendNewestFliesToUI(flyQueries, flyFormTemplateDoc);
+    _formatAndSendNewestFliesToUI(flyQueries, flyFormTemplateDoc);
   }
 
-  void _sendNewestFliesToUI(
-      QuerySnapshot flyQueries, NewFlyFormTemplate flyFormTemplateDoc) {
-    final List<Fly> flies = flyQueries.docs.map((doc) {
+  void _formatAndSendNewestFliesToUI(
+      QuerySnapshot flyQueries, NewFlyFormTemplate flyFormTemplateDoc) async {
+    // final UserMaterialsTransfer userMaterials =
+    //     await userBloc.userMaterialsProfile.first;
+
+    // userService.getUserProfile(authService.currentUser.uid);
+
+    final List<FlyExhibit> flies = flyQueries.docs.map((doc) {
       final flyDoc = doc.data();
-      return Fly.formattedForExhibit(
-        docId: doc.id,
-        flyName: flyDoc[DbNames.flyName],
-        flyDescription: flyDoc[DbNames.flyDescription],
-        attrs: flyDoc[DbNames.attributes],
-        mats: flyDoc[DbNames.materials],
-        instr: flyDoc[DbNames.instructions],
-        imageUris: flyDoc[DbNames.topLevelImageUris],
-        flyFormTemplate: flyFormTemplateDoc,
+      return FlyExhibit.fromUserProfileAndFly(
+        userProfile: _userProfile,
+        fly: Fly.formattedForExhibit(
+          docId: doc.id,
+          flyName: flyDoc[DbNames.flyName],
+          flyDescription: flyDoc[DbNames.flyDescription],
+          attrs: flyDoc[DbNames.attributes],
+          mats: flyDoc[DbNames.materials],
+          instr: flyDoc[DbNames.instructions],
+          imageUris: flyDoc[DbNames.topLevelImageUris],
+          flyFormTemplate: flyFormTemplateDoc,
+        ),
       );
     }).toList();
 
     _newestFlies.addAll(flies);
-    _newestFlies.removeWhere((fly) => fly is FlyLoadingIndicator);
-    if (flies.isEmpty) _newestFlies.add(FlyEndCapIndicator());
+    _newestFlies.removeWhere((fly) => fly is FlyExhibitLoadingIndicator);
+    if (flies.isEmpty) _newestFlies.add(FlyExhibitEndCapIndicator());
     _newestFliesStreamController.add(_newestFlies);
   }
 
@@ -113,6 +152,6 @@ class FetchFliesEvent {}
 
 class FetchNewestFliesEvent extends FetchFliesEvent {}
 
-class FlyLoadingIndicator extends Fly {}
+class FlyExhibitLoadingIndicator extends FlyExhibit {}
 
-class FlyEndCapIndicator extends Fly {}
+class FlyExhibitEndCapIndicator extends FlyExhibit {}

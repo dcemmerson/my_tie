@@ -16,7 +16,7 @@ class FlyExhibitAttributes extends StatelessWidget {
       child: Wrap(
         alignment: WrapAlignment.spaceEvenly,
         children: attributes
-            .where((attr) => attr.name != 'difficulty')
+            // .where((attr) => attr.name != 'difficulty')
             .map(
               (attr) =>
                   // ClipRRect(

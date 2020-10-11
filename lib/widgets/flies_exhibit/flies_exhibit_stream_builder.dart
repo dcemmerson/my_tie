@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:my_tie/bloc/state/my_tie_state.dart';
-import 'package:my_tie/models/new_fly/fly.dart';
+import 'package:my_tie/models/fly_exhibits/fly_exhibit.dart';
 
-typedef BuildPage = Widget Function(List<Fly>);
+typedef BuildPage = Widget Function(List<FlyExhibit>);
 
 class FliesExhibitStreamBuilder extends StatelessWidget {
   final BuildPage builder;
@@ -22,7 +22,7 @@ class FliesExhibitStreamBuilder extends StatelessWidget {
             .blocProvider
             .flyExhibitBloc
             .newestFliesStream,
-        builder: (context, AsyncSnapshot<List<Fly>> snapshot) {
+        builder: (context, AsyncSnapshot<List<FlyExhibit>> snapshot) {
           print(snapshot.connectionState);
           if (snapshot.hasError) {
             print(snapshot.error);
