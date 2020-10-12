@@ -3,10 +3,10 @@ import 'package:flutter/scheduler.dart';
 import 'package:my_tie/bloc/fly_exhibit_bloc.dart';
 import 'package:my_tie/bloc/state/my_tie_state.dart';
 import 'package:my_tie/models/fly_exhibits/fly_exhibit.dart';
-import 'package:my_tie/widgets/flies_exhibit/flies_exhibit_stream_builder.dart';
 import 'package:my_tie/widgets/misc/creation_aware_widget.dart';
 
 import 'all_flies_loaded.dart';
+import 'flies_exhibit_overview_stream_builder.dart';
 import 'fly_exhibit_overview/fly_overview_exhibit.dart';
 
 class NewestFliesExhibit extends StatefulWidget {
@@ -66,7 +66,7 @@ class _NewestFliesExhibitState extends State<NewestFliesExhibit>
 
   @override
   Widget build(BuildContext context) {
-    return FliesExhibitStreamBuilder(
+    return FliesExhibitOverviewStreamBuilder(
       builder: buildFlyExhibit,
     );
   }

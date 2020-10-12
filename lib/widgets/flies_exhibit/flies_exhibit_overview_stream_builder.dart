@@ -4,10 +4,10 @@ import 'package:my_tie/models/fly_exhibits/fly_exhibit.dart';
 
 typedef BuildPage = Widget Function(List<FlyExhibit>);
 
-class FliesExhibitStreamBuilder extends StatelessWidget {
+class FliesExhibitOverviewStreamBuilder extends StatelessWidget {
   final BuildPage builder;
 
-  FliesExhibitStreamBuilder({this.builder});
+  FliesExhibitOverviewStreamBuilder({this.builder});
 
   Widget _buildLoading() {
     return Center(

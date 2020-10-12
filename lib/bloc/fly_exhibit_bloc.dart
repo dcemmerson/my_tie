@@ -29,22 +29,28 @@ class FlyExhibitBloc {
   final _requestFetchFlies = StreamController<FetchFliesEvent>();
   StreamSink<FetchFliesEvent> requestFetchFliesSink;
 
-  final _newestFliesStreamController = StreamController<List<FlyExhibit>>();
+  final _newestFliesStreamController =
+      StreamController<List<FlyExhibit>>.broadcast();
   Stream<List<FlyExhibit>> newestFliesStream;
 
+  StreamController<FlyExhibit> _newestFlyDetailStreamController;
+  //  =    StreamController<FlyExhibit>();
+
   FlyExhibitBloc({
-    // this.authBloc,
     this.userBloc,
     this.flyExhibitService,
     this.flyFormTemplateService,
   }) {
-    // _newestFliesStreamController =
-    // BehaviorSubject<List<Fly>>(seedValue: newestFlies);
     requestFetchFliesSink = _requestFetchFlies.sink;
     newestFliesStream = _newestFliesStreamController.stream;
 
     _newestFliesStreamController.onListen = _initNewestFliesFetch;
 
+    // Listen for fetch flies events being addd tos ink from UI (eg, when user
+    //  scrolls to bottom of screen and infinite scroll needs to load more
+    //  flies). First added the FlyExhibitLoadingIndicator, to tell UI to show
+    //  spinner, then call _newestFliesFetch which will make request to db,
+    //  update _newestFlies, then add _newest flies to newestFliesStreamController.
     _requestFetchFlies.stream.listen((ffe) {
       if (ffe is FetchNewestFliesEvent) {
         _newestFlies.add(FlyExhibitLoadingIndicator());
@@ -56,7 +62,8 @@ class FlyExhibitBloc {
     });
 
     // Get userProfile, and listen for changes to userProfile. Update all FlyExhibit
-    // if upon changes to userProfile.
+    // if upon changes to userProfile (materials on hand for each fly may change
+    //  when user profile is updated).
     userBloc.userMaterialsProfile.listen((UserMaterialsTransfer umt) {
       _userProfile = umt.userProfile;
 
@@ -69,6 +76,30 @@ class FlyExhibitBloc {
 
       _newestFliesStreamController.add(_newestFlies);
     });
+  }
+
+  Stream<FlyExhibit> getFlyExhibit(String docId) {
+    FlyExhibit extractFlyExhibit(List<FlyExhibit> flyExhibits) {
+      return flyExhibits.firstWhere(
+          (flyExhibit) => flyExhibit.fly.docId == docId,
+          orElse: () => null);
+    }
+
+    if (_newestFlyDetailStreamController != null)
+      _newestFlyDetailStreamController.close();
+
+    _newestFlyDetailStreamController = StreamController<FlyExhibit>();
+
+    // Setup _newestFlyDetailStream controller to emit whenever _newestFliesStreamController
+    // emits. For example, if user clicks 'Material on hand', user profile updates,
+    //  which causes _newestFliesStreamConroller to update, which then causes
+    //  _newestFlyDetailStreamController to update, as defined here.
+    _newestFliesStreamController.stream.listen((flyExhibits) {
+      _newestFlyDetailStreamController.add(extractFlyExhibit(flyExhibits));
+    });
+
+    _newestFlyDetailStreamController.add(extractFlyExhibit(_newestFlies));
+    return _newestFlyDetailStreamController.stream;
   }
 
   /// name: _initNewestFliesFetch
@@ -145,6 +176,11 @@ class FlyExhibitBloc {
     _requestFetchFlies.close();
     requestFetchFliesSink.close();
     _newestFliesStreamController.close();
+
+    // _newestFlyDetailStreamController could be null if user never clicked
+    // on a fly exhibit to see details/instructions.
+    if (_newestFlyDetailStreamController != null)
+      _newestFlyDetailStreamController.close();
   }
 }
 
