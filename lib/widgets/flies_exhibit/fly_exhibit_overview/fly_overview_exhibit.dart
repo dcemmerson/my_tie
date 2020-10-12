@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:my_tie/misc/placeholders.dart';
 import 'package:my_tie/models/fly_exhibits/fly_exhibit.dart';
-import 'package:my_tie/models/new_fly/fly.dart';
 import 'package:my_tie/routes/fly_exhibit_routes.dart';
+import 'package:my_tie/styles/dimensions.dart';
 import 'package:my_tie/styles/styles.dart';
 
 import 'fly_exhibit_attributes.dart';
@@ -9,7 +10,6 @@ import 'fly_exhibit_description.dart';
 import 'fly_exhibit_title.dart';
 
 class FlyOverviewExhibit extends StatelessWidget {
-  static const double sideBySideCutoffWidth = 500;
   static const double defaultImageWidth = 750;
 
   final FlyExhibit flyExhibit;
@@ -19,13 +19,12 @@ class FlyOverviewExhibit extends StatelessWidget {
   Widget _imageWithLoadingBar(
       String uri, /*double width, double height,*/ BuildContext context) {
     return FadeInImage.assetNetwork(
-      placeholder: 'assets/fly_placeholder.png',
+      placeholder: PlaceHolders.loadingImage,
       image: uri,
       imageErrorBuilder: (context, error, stackTrace) => Stack(children: [
         Text('Error loading image',
             style: TextStyle(color: Theme.of(context).errorColor)),
-        Image.asset('assets/fly_placeholder.png',
-            fit: BoxFit.fill, width: 1000),
+        Image.asset(PlaceHolders.loadingImage, fit: BoxFit.fill, width: 1000),
       ]),
       // height: height,
       fit: BoxFit.fill,
@@ -88,7 +87,7 @@ class FlyOverviewExhibit extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () => FlyExhibitRoutes.flyExhibitDetail(context),
+      onTap: () => FlyExhibitRoutes.flyExhibitDetail(context, flyExhibit),
       child: LayoutBuilder(builder: (context, constraints) {
         final screenHeight = MediaQuery.of(context).size.height;
         return Card(
@@ -100,7 +99,7 @@ class FlyOverviewExhibit extends StatelessWidget {
                 const EdgeInsets.fromLTRB(0, AppPadding.p4, 0, AppPadding.p2),
             child: Column(
               children: [
-                constraints.maxWidth > sideBySideCutoffWidth
+                constraints.maxWidth > Dimensions.sideBySideCutoffWidth
                     ? _buildSideBySideView(
                         context, constraints.maxWidth, screenHeight)
                     : _buildSingleView(

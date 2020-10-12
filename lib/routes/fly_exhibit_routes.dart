@@ -6,6 +6,7 @@
 ///   to be logged in to access, which is implemented using RouteGuard class.
 
 import 'package:flutter/material.dart';
+import 'package:my_tie/models/fly_exhibits/fly_exhibit.dart';
 
 import 'package:my_tie/pages/base/page_base_stateless/page_base.dart';
 import 'package:my_tie/pages/base/page_base_stateless/page_container.dart';
@@ -19,6 +20,7 @@ class FlyExhibitRoutes {
         ),
   };
 
-  static Future flyExhibitDetail(context) =>
-      Navigator.pushNamed(context, FlyExhibitDetailPage.route);
+  static Future flyExhibitDetail(BuildContext context, FlyExhibit flyExhibit) =>
+      Navigator.pushNamed(context, FlyExhibitDetailPage.route,
+          arguments: flyExhibit);
 }

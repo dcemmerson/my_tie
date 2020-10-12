@@ -23,7 +23,6 @@ class ProfileMaterialOverview extends StatelessWidget {
         padding:
             EdgeInsets.fromLTRB(AppPadding.p4, AppPadding.p2, 0, AppPadding.p2),
         child: Row(
-          // mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
               padding: EdgeInsets.fromLTRB(AppPadding.p4, 0, AppPadding.p6, 0),

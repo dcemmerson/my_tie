@@ -51,7 +51,7 @@ class FlyExhibitBloc {
         _newestFliesStreamController.add(_newestFlies);
         _newestFliesFetch();
       } else {
-        print('event not found');
+        print('event not found - unimplemented $ffe');
       }
     });
 
