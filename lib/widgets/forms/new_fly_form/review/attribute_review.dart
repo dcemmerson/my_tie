@@ -44,22 +44,22 @@ class AttributeReview extends StatelessWidget {
           padding: EdgeInsets.fromLTRB(0, AppPadding.p2, 0, AppPadding.p4),
           child: Column(children: [
             Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-              SizedBox(
-                width: 2 * Theme.of(context).iconTheme.size ??
-                    24 + 2 * _iconButtonPadding,
-                height: 2 * Theme.of(context).iconTheme.size ??
-                    24 + 2 * _iconButtonPadding,
-              ),
               Column(children: [
-                Row(children: [
+                SizedBox(
+                  width: 2 * Theme.of(context).iconTheme.size ??
+                      24 + 2 * _iconButtonPadding,
+                  height: 2 * Theme.of(context).iconTheme.size ??
+                      24 + 2 * _iconButtonPadding,
+                ),
+              ]),
+              Expanded(
+                child: Column(children: [
                   Text(nfft.flyInProgress.flyName,
                       key: ValueKey(_attributeNameReview),
                       style: AppTextStyles.header),
                   if (field.hasError &&
                       nfft.flyInProgress.flyName == Fly.nullNameReplacement)
-                    AppIcons.errorExtraSmall(context)
-                ]),
-                Row(children: [
+                    AppIcons.errorExtraSmall(context),
                   Text(nfft.flyInProgress.flyDescription,
                       key: ValueKey(_attributeDescriptionReview),
                       style: AppTextStyles.subHeader),
@@ -67,16 +67,18 @@ class AttributeReview extends StatelessWidget {
                       nfft.flyInProgress.flyDescription ==
                           Fly.nullDescriptionReplacement)
                     AppIcons.errorExtraSmall(context)
-                ])
-              ]),
-              IconButton(
-                key: ValueKey(_editAttributes),
-                onPressed: () => FlyFormRoutes.newFlyAttributesPage(context),
-                icon: Icon(
-                  Icons.edit,
-                  semanticLabel: _semanticLabel,
-                ),
+                ]),
               ),
+              Column(children: [
+                IconButton(
+                  key: ValueKey(_editAttributes),
+                  onPressed: () => FlyFormRoutes.newFlyAttributesPage(context),
+                  icon: Icon(
+                    Icons.edit,
+                    semanticLabel: _semanticLabel,
+                  ),
+                ),
+              ]),
             ]),
             ...nfft.newFlyFormTemplate.flyFormAttributes
                 .map(
