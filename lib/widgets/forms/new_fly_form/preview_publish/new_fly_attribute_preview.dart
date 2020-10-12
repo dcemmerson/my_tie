@@ -13,8 +13,7 @@ class NewFlyAttributePreview extends StatelessWidget {
     return Container(
       padding: EdgeInsets.fromLTRB(0, AppPadding.p4, 0, AppPadding.p2),
       child: Column(children: [
-        Expanded(
-            child: Text(flyInProgress.flyName, style: AppTextStyles.header)),
+        Text(flyInProgress.flyName, style: AppTextStyles.header),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
