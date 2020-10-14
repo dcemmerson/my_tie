@@ -18,11 +18,7 @@ class FlyExhibitAttributes extends StatelessWidget {
         children: attributes
             // .where((attr) => attr.name != 'difficulty')
             .map(
-              (attr) =>
-                  // ClipRRect(
-                  // borderRadius: BorderRadius.all(Radius.circular(5)),
-                  // child:
-                  Container(
+              (attr) => Container(
                 padding:
                     EdgeInsets.fromLTRB(AppPadding.p2, 0, AppPadding.p2, 0),
                 decoration: BoxDecoration(

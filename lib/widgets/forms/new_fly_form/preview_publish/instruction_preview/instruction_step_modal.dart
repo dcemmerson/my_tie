@@ -13,13 +13,6 @@ class InstructionStepModal extends StatelessWidget {
 
   InstructionStepModal({this.fimt});
 
-  double _min(double a, double b) {
-    if (a < b)
-      return a;
-    else
-      return b;
-  }
-
   @override
   Widget build(BuildContext context) {
     return Center(

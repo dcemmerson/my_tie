@@ -15,25 +15,14 @@ import 'package:my_tie/widgets/flies_exhibit/fly_exhibit_overview/fly_exhibit_de
 import 'package:my_tie/widgets/flies_exhibit/fly_exhibit_overview/fly_exhibit_title.dart';
 
 import 'fly_carousel.dart';
+import 'fly_exhibit_detail_instructions.dart';
+import 'fly_exhibit_detail_materials.dart';
 
 class FlyExhibitDetail extends StatelessWidget {
   BuildContext context;
   Widget _materialsHeader;
 
-  void _updateMaterialsOnHand(UserProfile userProfile, FlyMaterial flyMaterial,
-      bool hasMaterialOnHand) {
-    final UserBloc userBloc =
-        MyTieStateContainer.of(context).blocProvider.userBloc;
-    final addOrDeleteMaterial = UserProfileFlyMaterialAddOrDelete(
-        flyMaterial: flyMaterial, userProfile: userProfile);
-    if (hasMaterialOnHand) {
-      userBloc.addUserFlyMaterialSink.add(addOrDeleteMaterial);
-    } else {
-      userBloc.deleteUserFlyMaterialSink.add(addOrDeleteMaterial);
-    }
-  }
-
-  Widget _buildSingleView(FlyExhibit flyExhibit, BuildContext context,
+  Widget _buildSingleAttributesView(FlyExhibit flyExhibit, BuildContext context,
       double width, double height) {
     return Column(children: [
       _buildExhibitAttributeInfo(flyExhibit),
@@ -44,7 +33,7 @@ class FlyExhibitDetail extends StatelessWidget {
     ]);
   }
 
-  Widget _buildSideBySideView(
+  Widget _buildSideBySideAttributesView(
       FlyExhibit flyExhibit, double width, double height) {
     const edgePadding = AppPadding.p3;
     return Column(children: [
@@ -83,63 +72,14 @@ class FlyExhibitDetail extends StatelessWidget {
     ]);
   }
 
-  Widget _buildExhibitMaterialInfo(FlyExhibit flyExhibit) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        _materialsHeader,
-        ...flyExhibit.fly.materialList.map((flyMaterial) {
-          bool hasMaterialOnHand = flyExhibit.userProfile.contains(
-              name: flyMaterial.name, properties: flyMaterial.properties);
-          return Container(
-            padding: EdgeInsets.fromLTRB(
-                AppPadding.p4, AppPadding.p4, 0, AppPadding.p4),
-            child: Row(
-              children: [
-                Container(
-                  padding:
-                      EdgeInsets.fromLTRB(AppPadding.p4, 0, AppPadding.p6, 0),
-                  child: Icon(flyMaterial.icon, color: flyMaterial.color),
-                ),
-                Expanded(
-                  child: Wrap(alignment: WrapAlignment.spaceBetween, children: [
-                    Text(flyMaterial.value + flyMaterial.name.toSingular()),
-                  ]),
-                ),
-                Container(
-                  padding: EdgeInsets.fromLTRB(0, 0, AppPadding.p2, 0),
-                  child: InkWell(
-                    onTap: () => _updateMaterialsOnHand(flyExhibit.userProfile,
-                        flyMaterial, !hasMaterialOnHand),
-                    child: hasMaterialOnHand
-                        ? Stack(
-                            children: [
-                              Icon(
-                                Icons.check_box_outlined,
-                                color: Colors.orange,
-                              ),
-                              Icon(Icons.check_box_outline_blank)
-                            ],
-                          )
-                        : Icon(Icons.check_box_outline_blank_outlined),
-                  ),
-                ),
-              ],
-            ),
-          );
-        }).toList(),
-      ],
-    );
-  }
-
-  void _setHeaderLabels(BuildContext context) {
-    _materialsHeader = Container(
+  Widget _createHeaderLabel(BuildContext context, String text) {
+    return Container(
       // alignment: Alignment.centerLeft,
       padding: EdgeInsets.all(AppPadding.p2),
       child: Opacity(
         opacity: 0.9,
         child: Text(
-          'Materials',
+          text,
           style: TextStyle(
             fontSize: AppFonts.h3,
             color: Theme.of(context).colorScheme.secondaryVariant,
@@ -153,7 +93,8 @@ class FlyExhibitDetail extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     this.context = context;
-    _setHeaderLabels(context);
+    _materialsHeader = _createHeaderLabel(context, 'Materials');
+    // _instructionsHeader = _createHeaderLabel(context, 'Instructions');
 
     // Only use this FlyExhibit passed in to reference docId. Use
     // FlyExhibitDetailStreamBuilder to actually obtain FlyExhibit -
@@ -177,25 +118,16 @@ class FlyExhibitDetail extends StatelessWidget {
                 child: Column(
                   children: [
                     constraints.maxWidth > Dimensions.sideBySideCutoffWidth
-                        ? _buildSideBySideView(
+                        ? _buildSideBySideAttributesView(
                             flyExhibit, constraints.maxWidth, screenHeight)
-                        : _buildSingleView(flyExhibit, context,
+                        : _buildSingleAttributesView(flyExhibit, context,
                             constraints.maxWidth, screenHeight)
                   ],
                 ),
               ),
             ),
-            Card(
-              elevation: 10,
-              color: Theme.of(context).colorScheme.surface,
-              margin:
-                  const EdgeInsets.fromLTRB(0, AppPadding.p4, 0, AppPadding.p4),
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(
-                    0, AppPadding.p4, 0, AppPadding.p2),
-                child: _buildExhibitMaterialInfo(flyExhibit),
-              ),
-            ),
+            FlyExhibitDetailMaterials(flyExhibit: flyExhibit),
+            FlyExhibitDetailInstructions(flyExhibit: flyExhibit),
           ]);
         }),
       ),

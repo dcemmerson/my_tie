@@ -1,31 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:my_tie/models/arguments/routes_based/fly_instruction_modal_transfer.dart';
+import 'package:my_tie/models/bloc_transfer_related/user_profile_fly_material_add_or_delete.dart';
+import 'package:my_tie/models/fly_exhibits/fly_exhibit.dart';
 import 'package:my_tie/models/new_fly/fly_instruction.dart';
 import 'package:my_tie/routes/modal_routes.dart';
+import 'package:my_tie/styles/string_format.dart';
 import 'package:my_tie/styles/styles.dart';
+import 'package:my_tie/widgets/title/title_group.dart';
 
-class NewFlyInstructionsPreview extends StatelessWidget {
-  final List<FlyInstruction> instructions;
+class FlyExhibitDetailInstructions extends StatelessWidget {
+  final FlyExhibit flyExhibit;
 
-  NewFlyInstructionsPreview({this.instructions});
-
-  Widget _buildInstructionsHeader(BuildContext context) {
-    return Container(
-        padding: EdgeInsets.fromLTRB(
-            AppPadding.p2, AppPadding.p6, AppPadding.p2, AppPadding.p2),
-        child: Opacity(
-            opacity: 0.9,
-            child: Text('Instructions',
-                style: TextStyle(
-                  fontSize: AppFonts.h3,
-                  color: Theme.of(context).colorScheme.secondaryVariant,
-                  decoration: TextDecoration.underline,
-                ))));
-  }
-
+  const FlyExhibitDetailInstructions({Key key, this.flyExhibit})
+      : super(key: key);
   List<Widget> _buildInstructions(BuildContext context) {
-    return instructions.map((instr) {
+    return flyExhibit.fly.instructions.map((instr) {
       return Container(
         child: Column(children: [
           Card(
@@ -57,12 +46,12 @@ class NewFlyInstructionsPreview extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) => GestureDetector(
         onTap: () => instructionDetailDialog(instruction, uri, context),
-        child: Hero(
-          tag: uri,
+        child: Padding(
+          padding: EdgeInsets.all(AppPadding.p2),
           child: Image.network(
             uri,
-            width: constraints.maxWidth / 2,
-            height: constraints.maxWidth / 2,
+            width: constraints.maxWidth / 2 - 2 * AppPadding.p2,
+            height: constraints.maxWidth / 2 - 2 * AppPadding.p2,
             fit: BoxFit.fill,
             loadingBuilder: (context, child, loadingProgress) {
               if (loadingProgress != null) {
@@ -83,9 +72,6 @@ class NewFlyInstructionsPreview extends StatelessWidget {
 
   Future instructionDetailDialog(
       FlyInstruction instruction, String uri, BuildContext context) async {
-    print('from');
-    print(uri);
-
     await ModalRoutes.instructionStepModalPage(
         context,
         FlyInstructionModalTransfer(
@@ -94,11 +80,9 @@ class NewFlyInstructionsPreview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        _buildInstructionsHeader(context),
-        ..._buildInstructions(context)
-      ],
-    );
+    return Column(children: [
+      TitleGroup(title: 'Instructions'),
+      ..._buildInstructions(context),
+    ]);
   }
 }
