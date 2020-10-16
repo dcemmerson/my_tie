@@ -81,6 +81,14 @@ class UserBloc {
     );
   }
 
+  void addToFavorites(String uDocId, String docId) {
+    userService.addFavorite(uDocId, docId);
+  }
+
+  void removeFromFavorites(String uDocId, String docId) {
+    userService.removeFavorite(uDocId, docId);
+  }
+
   close() {
     addUserFlyMaterialSink.close();
     deleteUserFlyMaterialSink.close();

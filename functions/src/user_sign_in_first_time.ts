@@ -14,5 +14,6 @@ const userSignInFirstTime = functions.auth.user().onCreate(async (user) => {
         phone_number: user.phoneNumber,
         uid: user.uid,
         materials_on_hand: [],
+        favorited_flies: [],
     });
 });

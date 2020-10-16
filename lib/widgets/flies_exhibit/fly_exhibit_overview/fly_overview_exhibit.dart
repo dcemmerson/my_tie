@@ -74,11 +74,11 @@ class FlyOverviewExhibit extends StatelessWidget {
   Widget _buildExhibitInfo() {
     return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
       FlyExhibitTitle(
-        title: flyExhibit.fly.flyName,
-        materialsFraction: flyExhibit.materialsFraction,
+        flyExhibit: flyExhibit,
+        // title: flyExhibit.fly.flyName,
+        // materialsFraction: flyExhibit.materialsFraction,
         centered: true,
       ),
-      // SizedBox(height: 10),
       FlyExhibitAttributes(flyExhibit.fly.attributes),
       FlyExhibitDescription(flyExhibit.fly.flyDescription),
     ]);
@@ -91,7 +91,7 @@ class FlyOverviewExhibit extends StatelessWidget {
       child: LayoutBuilder(builder: (context, constraints) {
         final screenHeight = MediaQuery.of(context).size.height;
         return Card(
-          // elevation: 10,
+          elevation: 7,
           color: Theme.of(context).colorScheme.surface,
           margin: const EdgeInsets.fromLTRB(0, AppPadding.p4, 0, AppPadding.p4),
           child: Padding(

@@ -9,14 +9,10 @@ class FlyExhibitAttributes extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return
-        // Flexible(
-        //   child:
-        Container(
+    return Container(
       child: Wrap(
         alignment: WrapAlignment.spaceEvenly,
         children: attributes
-            // .where((attr) => attr.name != 'difficulty')
             .map(
               (attr) => Container(
                 padding:
@@ -29,12 +25,9 @@ class FlyExhibitAttributes extends StatelessWidget {
                       offset: Offset(0, 3),
                     )
                   ],
-
                   color: attr.color,
                   borderRadius: BorderRadius.all(Radius.circular(3)),
-                  // border: Border.all(color: Color('0xffffff'))
                 ),
-                // color: attr.color,
                 child: Text(
                   attr.value,
                   style: TextStyle(
@@ -42,12 +35,9 @@ class FlyExhibitAttributes extends StatelessWidget {
                       color: Theme.of(context).colorScheme.onPrimary),
                 ),
               ),
-              // ),
             )
             .toList(),
       ),
-
-      // ),
     );
   }
 }

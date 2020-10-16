@@ -1,10 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:my_tie/bloc/state/my_tie_state.dart';
-import 'package:my_tie/bloc/user_bloc.dart';
-import 'package:my_tie/models/bloc_transfer_related/user_profile_fly_material_add_or_delete.dart';
 import 'package:my_tie/models/fly_exhibits/fly_exhibit.dart';
-import 'package:my_tie/models/new_fly/fly_materials.dart';
-import 'package:my_tie/models/user_profile/user_profile.dart';
 import 'package:my_tie/styles/dimensions.dart';
 import 'package:my_tie/styles/styles.dart';
 import 'package:my_tie/styles/string_format.dart';
@@ -62,8 +57,7 @@ class FlyExhibitDetail extends StatelessWidget {
   Widget _buildExhibitAttributeInfo(FlyExhibit flyExhibit) {
     return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
       FlyExhibitTitle(
-        title: flyExhibit.fly.flyName,
-        materialsFraction: flyExhibit.materialsFraction,
+        flyExhibit: flyExhibit,
         centered: true,
       ),
       // SizedBox(height: 10),

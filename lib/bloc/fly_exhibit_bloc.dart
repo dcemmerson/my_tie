@@ -12,6 +12,15 @@ import 'package:my_tie/services/network/fly_form_template_service.dart';
 
 import 'user_bloc.dart';
 
+/// Classes solely used to pass signals in stream controllers.
+class FetchFliesEvent {}
+
+class FetchNewestFliesEvent extends FetchFliesEvent {}
+
+class FlyExhibitLoadingIndicator extends FlyExhibit {}
+
+class FlyExhibitEndCapIndicator extends FlyExhibit {}
+
 class FlyExhibitBloc {
   // final AuthBloc authBloc;
   final UserBloc userBloc;
@@ -25,6 +34,9 @@ class FlyExhibitBloc {
   List<FlyExhibit> _newestFlies = [];
   DocumentSnapshot _prevNewestFlyDoc;
   UserProfile _userProfile;
+
+  final _favoritedFliesStreamController = StreamController<FlyExhibit>();
+  StreamSink<FlyExhibit> favoritedFlySink;
 
   final _requestFetchFlies = StreamController<FetchFliesEvent>();
   StreamSink<FetchFliesEvent> requestFetchFliesSink;
@@ -43,27 +55,44 @@ class FlyExhibitBloc {
   }) {
     requestFetchFliesSink = _requestFetchFlies.sink;
     newestFliesStream = _newestFliesStreamController.stream;
+    favoritedFlySink = _favoritedFliesStreamController.sink;
 
     _newestFliesStreamController.onListen = _initNewestFliesFetch;
 
-    // Listen for fetch flies events being addd tos ink from UI (eg, when user
-    //  scrolls to bottom of screen and infinite scroll needs to load more
-    //  flies). First added the FlyExhibitLoadingIndicator, to tell UI to show
-    //  spinner, then call _newestFliesFetch which will make request to db,
-    //  update _newestFlies, then add _newest flies to newestFliesStreamController.
-    _requestFetchFlies.stream.listen((ffe) {
-      if (ffe is FetchNewestFliesEvent) {
-        _newestFlies.add(FlyExhibitLoadingIndicator());
-        _newestFliesStreamController.add(_newestFlies);
-        _newestFliesFetch();
+    _listenForRequestFliesFetch();
+    _listenForUserMaterialProfileEvents();
+    _listenForFavoritedFlyEvents();
+  }
+
+  /// Listen for events being dispatched from UI, added to favoritedFlySink,
+  /// representing user selecting/deselecting the favorite fly button. FlyExhibit
+  /// is added to sink and we either add or remove docId from user's favorited
+  /// fly list in db. Additionally, we must update the update the favorited flies
+  /// collection (which denormalizes fly docs to enable querying on the user's
+  /// favorited flies).
+  void _listenForFavoritedFlyEvents() {
+    _favoritedFliesStreamController.stream.listen((flyExhibit) {
+      if (flyExhibit.isFavorited) {
+        userBloc.removeFromFavorites(
+            flyExhibit.userProfile.docId, flyExhibit.fly.docId);
+        flyExhibitService.removeFavoriteFly(
+            _userProfile.uid, flyExhibit.fly.docId);
       } else {
-        print('event not found - unimplemented $ffe');
+        userBloc.addToFavorites(
+            flyExhibit.userProfile.docId, flyExhibit.fly.docId);
+        flyExhibitService.addFavoriteFly({
+          DbNames.uid: _userProfile.uid,
+          DbNames.originalFlyDocId: flyExhibit.fly.docId,
+          ...flyExhibit.fly.toMap()
+        });
       }
     });
+  }
 
-    // Get userProfile, and listen for changes to userProfile. Update all FlyExhibit
-    // if upon changes to userProfile (materials on hand for each fly may change
-    //  when user profile is updated).
+  /// Get userProfile, and listen for changes to userProfile. Update all FlyExhibit
+  /// if upon changes to userProfile (materials on hand for each fly may change
+  ///  when user profile is updated).
+  void _listenForUserMaterialProfileEvents() {
     userBloc.userMaterialsProfile.listen((UserMaterialsTransfer umt) {
       _userProfile = umt.userProfile;
 
@@ -78,7 +107,29 @@ class FlyExhibitBloc {
     });
   }
 
+  /// Listen for fetch flies events being addd tos ink from UI (eg, when user
+  ///  scrolls to bottom of screen and infinite scroll needs to load more
+  ///  flies). First added the FlyExhibitLoadingIndicator, to tell UI to show
+  ///  spinner, then call _newestFliesFetch which will make request to db,
+  ///  update _newestFlies, then add _newest flies to newestFliesStreamController.
+  void _listenForRequestFliesFetch() {
+    _requestFetchFlies.stream.listen((ffe) {
+      if (ffe is FetchNewestFliesEvent) {
+        _newestFlies.add(FlyExhibitLoadingIndicator());
+        _newestFliesStreamController.add(_newestFlies);
+        _newestFliesFetch();
+      } else {
+        // Unreachable, but you never know...
+        print('event not found - unimplemented $ffe');
+        throw Error();
+      }
+    });
+  }
+
   Stream<FlyExhibit> getFlyExhibit(String docId) {
+    // Function defined within this scope to extract docId form list of flyExhibits
+    // stored in FlyExhibitBloc class. Used when user clicks to see details on a
+    //  fly exhibit.
     FlyExhibit extractFlyExhibit(List<FlyExhibit> flyExhibits) {
       return flyExhibits.firstWhere(
           (flyExhibit) => flyExhibit.fly.docId == docId,
@@ -183,11 +234,3 @@ class FlyExhibitBloc {
       _newestFlyDetailStreamController.close();
   }
 }
-
-class FetchFliesEvent {}
-
-class FetchNewestFliesEvent extends FetchFliesEvent {}
-
-class FlyExhibitLoadingIndicator extends FlyExhibit {}
-
-class FlyExhibitEndCapIndicator extends FlyExhibit {}

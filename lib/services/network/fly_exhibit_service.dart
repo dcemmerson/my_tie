@@ -27,4 +27,20 @@ class FlyExhibitService {
         .startAfterDocument(prevDoc)
         .get();
   }
+
+  Future removeFavoriteFly(String uid, String originalFlyDocId) async {
+    final query = await FirebaseFirestore.instance
+        .collection(DbCollections.favoritedFlies)
+        .where(DbNames.uid, isEqualTo: uid)
+        .where(DbNames.originalFlyDocId, isEqualTo: originalFlyDocId)
+        .get();
+
+    return Future.wait(query.docs.map((doc) => doc.reference.delete()));
+  }
+
+  Future addFavoriteFly(Map<String, dynamic> fly) {
+    return FirebaseFirestore.instance
+        .collection(DbCollections.favoritedFlies)
+        .add(fly);
+  }
 }

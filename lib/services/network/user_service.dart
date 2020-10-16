@@ -4,14 +4,32 @@ import 'package:my_tie/models/db_names.dart';
 class UserService {
   UserService();
 
-  Stream<QuerySnapshot> getUserProfileStream(uid) {
+  Future addFavorite(String uid, String favoriteDocId) {
+    return FirebaseFirestore.instance
+        .collection(DbCollections.user)
+        .doc(uid)
+        .set({
+      DbNames.favoritedFlies: FieldValue.arrayUnion([favoriteDocId]),
+    }, SetOptions(merge: true));
+  }
+
+  Future removeFavorite(String uid, String favoriteDocId) {
+    return FirebaseFirestore.instance
+        .collection(DbCollections.user)
+        .doc(uid)
+        .set({
+      DbNames.favoritedFlies: FieldValue.arrayRemove([favoriteDocId]),
+    }, SetOptions(merge: true));
+  }
+
+  Stream<QuerySnapshot> getUserProfileStream(String uid) {
     return FirebaseFirestore.instance
         .collection(DbCollections.user)
         .where(DbNames.uid, isEqualTo: uid)
         .snapshots();
   }
 
-  Future<QuerySnapshot> getUserProfile(uid) {
+  Future<QuerySnapshot> getUserProfile(String uid) {
     return FirebaseFirestore.instance
         .collection(DbCollections.user)
         .where(DbNames.uid, isEqualTo: uid)

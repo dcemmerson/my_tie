@@ -33,7 +33,7 @@ class ThemeManager {
     textTheme: TextTheme(
       headline1: TextStyle(fontSize: 72.0, fontWeight: FontWeight.bold),
       headline6: TextStyle(
-          fontSize: 36.0, color: const Color.fromRGBO(24, 119, 173, 1)),
+          fontSize: 30.0, color: const Color.fromRGBO(24, 119, 173, 1)),
       bodyText2: TextStyle(fontSize: 14.0, fontFamily: 'Hind'),
     ),
 
@@ -65,7 +65,7 @@ class ThemeManager {
     textTheme: TextTheme(
       headline1: TextStyle(fontSize: 72.0, fontWeight: FontWeight.bold),
       headline6: TextStyle(
-          fontSize: 36.0, color: const Color.fromRGBO(224, 133, 14, 1)),
+          fontSize: 30.0, color: const Color.fromRGBO(224, 133, 14, 1)),
       bodyText2: TextStyle(fontSize: 14.0, fontFamily: 'Hind'),
     ),
     colorScheme: ColorScheme.dark().copyWith(

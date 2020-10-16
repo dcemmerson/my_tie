@@ -1,3 +1,4 @@
+import 'package:my_tie/misc/misc.dart';
 import 'package:my_tie/models/new_fly/fly_materials.dart';
 
 import '../db_names.dart';
@@ -9,24 +10,27 @@ class UserProfile {
   final String name;
   final String phoneNumber;
   final List<FlyMaterials> materialsOnHand;
+  final List<String> favoriteFlyDocs;
 
   // final List<FlyMaterial> materialsOnHand;
 
-  UserProfile(
-      {this.name,
-      this.phoneNumber,
-      this.uid,
-      this.docId,
-      this.user,
-      this.materialsOnHand});
+  UserProfile({
+    this.name,
+    this.phoneNumber,
+    this.uid,
+    this.docId,
+    this.user,
+    this.materialsOnHand,
+    this.favoriteFlyDocs,
+  });
 
   UserProfile.fromDoc(Map doc, {this.docId})
       : name = doc[DbNames.name].toString(),
         uid = doc[DbNames.uid].toString(),
         phoneNumber = doc[DbNames.phoneNumber].toString(),
         user = doc[DbNames.user].toString(),
-        materialsOnHand = _toMaterialsList(doc[DbNames.materialsOnHand]);
-  // materialsOnHand = _toListFlyMaterial(doc[DbNames.materialsOnHand]);
+        materialsOnHand = _toMaterialsList(doc[DbNames.materialsOnHand]),
+        favoriteFlyDocs = Misc.toListOfString(doc[DbNames.favoritedFlies]);
 
   List<FlyMaterial> getMaterials(String name) {
     FlyMaterials mats = materialsOnHand.firstWhere((mat) => mat.name == name,

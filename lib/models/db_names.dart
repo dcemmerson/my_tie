@@ -9,6 +9,7 @@ class DbCollections {
   static const fly = 'fly';
   static const flyIncoming = 'fly_incoming';
   static const user = 'user';
+  static const favoritedFlies = 'favorited_flies';
 }
 
 class DbNames {
@@ -18,6 +19,8 @@ class DbNames {
   static const phoneNumber = 'phone_number';
   static const user = 'user';
   static const materialsOnHand = 'materials_on_hand';
+  static const favoritedFlies = 'favorited_flies';
+  static const originalFlyDocId = 'original_fly_doc_id';
 
   // static const fly_is_moved = 'fly_is_moved';
   // static const editable = 'editable';
