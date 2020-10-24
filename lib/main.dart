@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:my_tie/app.dart';
 import 'package:my_tie/bloc/auth_bloc.dart';
 import 'package:my_tie/bloc/bloc_provider.dart';
-import 'package:my_tie/bloc/fly_exhibit_bloc.dart';
+import 'package:my_tie/bloc/fly_exhibit_bloc/newest_fly_exhibit_bloc.dart';
 import 'package:my_tie/bloc/edit_new_fly_template_bloc.dart';
 import 'package:my_tie/bloc/new_fly_bloc.dart';
 import 'package:my_tie/bloc/state/my_tie_state.dart';
@@ -56,7 +56,7 @@ Future<Widget> initApp() async {
       flyFormTemplateService: flyFormTemplateService);
 
   final flyExhibitService = FlyExhibitService();
-  final flyExhibitBloc = FlyExhibitBloc(
+  final flyExhibitBloc = NewestFlyExhibitBloc(
       userBloc: userBloc,
       flyExhibitService: flyExhibitService,
       flyFormTemplateService: flyFormTemplateService);

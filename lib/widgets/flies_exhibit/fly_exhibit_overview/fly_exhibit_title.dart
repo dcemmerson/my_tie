@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:my_tie/bloc/fly_exhibit_bloc.dart';
+import 'package:my_tie/bloc/fly_exhibit_bloc/newest_fly_exhibit_bloc.dart';
 import 'package:my_tie/bloc/state/my_tie_state.dart';
 import 'package:my_tie/models/fly_exhibits/fly_exhibit.dart';
 import 'package:my_tie/styles/styles.dart';

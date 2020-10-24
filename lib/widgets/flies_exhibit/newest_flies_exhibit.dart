@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:my_tie/bloc/fly_exhibit_bloc.dart';
+import 'package:my_tie/bloc/fly_exhibit_bloc/newest_fly_exhibit_bloc.dart';
 import 'package:my_tie/bloc/state/my_tie_state.dart';
 import 'package:my_tie/models/fly_exhibits/fly_exhibit.dart';
 import 'package:my_tie/widgets/misc/creation_aware_widget.dart';
@@ -16,7 +16,7 @@ class NewestFliesExhibit extends StatefulWidget {
 
 class _NewestFliesExhibitState extends State<NewestFliesExhibit>
     with AutomaticKeepAliveClientMixin {
-  FlyExhibitBloc _flyExhibitBloc;
+  NewestFlyExhibitBloc _flyExhibitBloc;
   bool _keepAlive = true;
   int _flyCount = 0;
   int _highestIndexCreated = -1;

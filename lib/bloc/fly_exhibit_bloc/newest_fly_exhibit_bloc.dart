@@ -10,7 +10,7 @@ import 'package:my_tie/models/user_profile/user_profile.dart';
 import 'package:my_tie/services/network/fly_exhibit_service.dart';
 import 'package:my_tie/services/network/fly_form_template_service.dart';
 
-import 'user_bloc.dart';
+import '../user_bloc.dart';
 
 /// Classes solely used to pass signals in stream controllers.
 class FetchFliesEvent {}
@@ -21,7 +21,7 @@ class FlyExhibitLoadingIndicator extends FlyExhibit {}
 
 class FlyExhibitEndCapIndicator extends FlyExhibit {}
 
-class FlyExhibitBloc {
+class NewestFlyExhibitBloc {
   // final AuthBloc authBloc;
   final UserBloc userBloc;
   final FlyExhibitService flyExhibitService;
@@ -48,7 +48,7 @@ class FlyExhibitBloc {
   StreamController<FlyExhibit> _newestFlyDetailStreamController;
   //  =    StreamController<FlyExhibit>();
 
-  FlyExhibitBloc({
+  NewestFlyExhibitBloc({
     this.userBloc,
     this.flyExhibitService,
     this.flyFormTemplateService,
@@ -227,6 +227,8 @@ class FlyExhibitBloc {
     _requestFetchFlies.close();
     requestFetchFliesSink.close();
     _newestFliesStreamController.close();
+    _favoritedFliesStreamController.close();
+    favoritedFlySink.close();
 
     // _newestFlyDetailStreamController could be null if user never clicked
     // on a fly exhibit to see details/instructions.
