@@ -154,7 +154,7 @@ class NewestFlyExhibitBloc {
   }
 
   /// name: _initNewestFliesFetch
-  /// description: Used only for first call to Firestore to retrieve first 20
+  /// description: Used only for first call to Firestore to retrieve first 10
   ///   newest fly docs. This call initializes the prevNewestFlyDoc var, which
   ///   can then be used for subsequent calls to Firestore for additional fly
   ///   docs for newest fly exhibit, in an infinite scroll/fetch manner.

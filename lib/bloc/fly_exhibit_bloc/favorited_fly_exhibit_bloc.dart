@@ -46,7 +46,6 @@ class FavoritedFlyExhibitBloc {
   Stream<List<FlyExhibit>> favoritedFliesStream;
 
   StreamController<FlyExhibit> _favoritedFlyDetailStreamController;
-  //  =    StreamController<FlyExhibit>();
 
   FavoritedFlyExhibitBloc({
     this.userBloc,
@@ -115,10 +114,11 @@ class FavoritedFlyExhibitBloc {
 
     _favoritedFlyDetailStreamController = StreamController<FlyExhibit>();
 
-    // Setup _newestFlyDetailStream controller to emit whenever _newestFliesStreamController
+    // Setup _favoritedFlyDetailStream controller to emit whenever _favoritedFliesStreamController
     // emits. For example, if user clicks 'Material on hand', user profile updates,
-    //  which causes _newestFliesStreamConroller to update, which then causes
-    //  _newestFlyDetailStreamController to update, as defined here.
+    //  which causes _favoritedFliesStreamConroller to update, which then causes
+    //  _newestFlyDetailStreamController to update, as defined here. This keeps
+    // fly materials in sync specifically on fly exhibit detail page.
     _favoritedFliesStreamController.stream.listen((flyExhibits) {
       _favoritedFlyDetailStreamController.add(extractFlyExhibit(flyExhibits));
     });
