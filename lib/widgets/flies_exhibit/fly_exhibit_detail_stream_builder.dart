@@ -21,7 +21,7 @@ class FlyExhibitDetailStreamBuilder extends StatelessWidget {
     return StreamBuilder(
         stream: MyTieStateContainer.of(context)
             .blocProvider
-            .flyExhibitBloc
+            .newestFlyExhibitBloc
             .getFlyExhibit(docId),
         builder: (context, AsyncSnapshot<FlyExhibit> snapshot) {
           print(snapshot.connectionState);

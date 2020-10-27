@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:my_tie/bloc/fly_exhibit_bloc/newest_fly_exhibit_bloc.dart';
+import 'package:my_tie/bloc/fly_exhibit_bloc/fly_exhibit_bloc.dart';
 import 'package:my_tie/bloc/state/my_tie_state.dart';
 import 'package:my_tie/models/fly_exhibits/fly_exhibit.dart';
+import 'package:my_tie/pages/tab_based_pages/tab_page.dart';
 import 'package:my_tie/widgets/misc/creation_aware_widget.dart';
 
 import 'all_flies_loaded.dart';
@@ -10,13 +11,17 @@ import 'flies_exhibit_overview_stream_builder.dart';
 import 'fly_exhibit_overview/fly_overview_exhibit.dart';
 
 class FliesExhibitEntry extends StatefulWidget {
+  final FlyExhibitType flyExhibitType;
+
+  FliesExhibitEntry({this.flyExhibitType});
+
   @override
   _FliesExhibitEntryState createState() => _FliesExhibitEntryState();
 }
 
 class _FliesExhibitEntryState extends State<FliesExhibitEntry>
     with AutomaticKeepAliveClientMixin {
-  NewestFlyExhibitBloc _flyExhibitBloc;
+  FlyExhibitBloc _flyExhibitBloc;
   bool _keepAlive = true;
   int _flyCount = 0;
   int _highestIndexCreated = -1;
@@ -27,8 +32,27 @@ class _FliesExhibitEntryState extends State<FliesExhibitEntry>
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _flyExhibitBloc =
-        MyTieStateContainer.of(context).blocProvider.flyExhibitBloc;
+
+    // We switch on the flyExhibitPage type passed in when forming the route,
+    // which correspond to the three tabs on the UI: By Materials, Newest, or
+    // Favorites. Different cases just pass in a different stream to the
+    // StreamBuilder component and resuse the rest of the components and logic/
+    // routing.
+    switch (widget.flyExhibitType) {
+      case FlyExhibitType.Newest:
+        _flyExhibitBloc =
+            MyTieStateContainer.of(context).blocProvider.newestFlyExhibitBloc;
+        break;
+      case FlyExhibitType.Favorites:
+        _flyExhibitBloc = MyTieStateContainer.of(context)
+            .blocProvider
+            .favoritedFlyExhibitBloc;
+        break;
+      case FlyExhibitType.MaterialMatch:
+      default:
+        _flyExhibitBloc =
+            MyTieStateContainer.of(context).blocProvider.newestFlyExhibitBloc;
+    }
   }
 
   void _handleItemCreated(int index) {
@@ -67,7 +91,6 @@ class _FliesExhibitEntryState extends State<FliesExhibitEntry>
   @override
   Widget build(BuildContext context) {
     return FliesExhibitOverviewStreamBuilder(
-      builder: buildFlyExhibit,
-    );
+        builder: buildFlyExhibit, stream: _flyExhibitBloc.fliesStream);
   }
 }
