@@ -7,6 +7,7 @@ import 'package:my_tie/models/new_fly/fly.dart';
 import 'package:my_tie/models/new_fly/new_fly_form_template.dart';
 import 'package:my_tie/models/user_profile/user_materials_transfer.dart';
 import 'package:my_tie/models/user_profile/user_profile.dart';
+import 'package:my_tie/pages/tab_based_pages/tab_page.dart';
 import 'package:my_tie/services/network/fly_exhibit_services/fly_exhibit_service.dart';
 import 'package:my_tie/services/network/fly_form_template_service.dart';
 
@@ -44,6 +45,8 @@ abstract class FlyExhibitBloc {
   final fliesStreamController = StreamController<List<FlyExhibit>>.broadcast();
   Stream<List<FlyExhibit>> fliesStream;
 
+  FlyExhibitType get flyExhibitType;
+
   FlyExhibitBloc({
     this.userBloc,
     this.flyExhibitService,
@@ -70,7 +73,10 @@ abstract class FlyExhibitBloc {
         if (flyExhibit is FlyExhibitEndCapIndicator)
           return FlyExhibitEndCapIndicator();
         return FlyExhibit.fromUserProfileAndFly(
-            fly: flyExhibit.fly, userProfile: userProfile);
+          flyExhibitType: flyExhibitType,
+          fly: flyExhibit.fly,
+          userProfile: userProfile,
+        );
       }).toList();
 
       fliesStreamController.add(_flies);
@@ -94,7 +100,7 @@ abstract class FlyExhibitBloc {
     final flyQueries = await queryF;
 
     _setPrevDoc(flyQueries);
-    _formatAndSendNewestFliesToUI(flyQueries, flyFormTemplateDoc);
+    _formatAndSendFliesToUI(flyQueries, flyFormTemplateDoc);
   }
 
   /// Listen for fetch flies events being addd tos ink from UI (eg, when user
@@ -128,7 +134,7 @@ abstract class FlyExhibitBloc {
     final flyQueries = await queryF;
 
     _setPrevDoc(flyQueries);
-    _formatAndSendNewestFliesToUI(flyQueries, flyFormTemplateDoc);
+    _formatAndSendFliesToUI(flyQueries, flyFormTemplateDoc);
   }
 
   /// Listen for events being dispatched from UI, added to favoritedFlySink,
@@ -161,7 +167,7 @@ abstract class FlyExhibitBloc {
       prevFlyDoc = flyQueries.docs[flyQueries.docs.length - 1];
   }
 
-  void _formatAndSendNewestFliesToUI(
+  void _formatAndSendFliesToUI(
       QuerySnapshot flyQueries, NewFlyFormTemplate flyFormTemplateDoc) async {
     // final UserMaterialsTransfer userMaterials =
     //     await userBloc.userMaterialsProfile.first;
@@ -171,6 +177,7 @@ abstract class FlyExhibitBloc {
     final List<FlyExhibit> flies = flyQueries.docs.map((doc) {
       final flyDoc = doc.data();
       return FlyExhibit.fromUserProfileAndFly(
+        flyExhibitType: flyExhibitType,
         userProfile: userProfile,
         fly: Fly.formattedForExhibit(
           docId: doc.id,

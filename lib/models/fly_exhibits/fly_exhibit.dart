@@ -1,9 +1,16 @@
 import 'package:my_tie/models/new_fly/fly.dart';
 import 'package:my_tie/models/new_fly/fly_materials.dart';
 import 'package:my_tie/models/user_profile/user_profile.dart';
+import 'package:my_tie/pages/tab_based_pages/tab_page.dart';
 
 class FlyExhibit {
   final Fly fly;
+  // flyExhibitType is only used when user clicks on a fly in the
+  // fly exhibit. The fly details exhibit needs to know which page the user
+  // clicked on this fly so that the fly detail stream builder can correclty
+  // subscribe to the correct fly exhibit bloc stream that downloaded this
+  // fly from CloudFirestore.
+  final FlyExhibitType flyExhibitType;
   final UserProfile userProfile;
   final int requiredMaterialCountUser;
   final int requiredMaterialCountFly;
@@ -15,9 +22,11 @@ class FlyExhibit {
     this.requiredMaterialCountUser,
     this.requiredMaterialCountFly,
     this.isFavorited,
+    this.flyExhibitType,
   });
 
-  FlyExhibit.fromUserProfileAndFly({this.fly, this.userProfile})
+  FlyExhibit.fromUserProfileAndFly(
+      {this.flyExhibitType, this.fly, this.userProfile})
       : requiredMaterialCountFly = fly.materialList.length,
         requiredMaterialCountUser = _countFlyMaterialsOnHand(userProfile, fly),
         isFavorited = _isFavorited(fly, userProfile);

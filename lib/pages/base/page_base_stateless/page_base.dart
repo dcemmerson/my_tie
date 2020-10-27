@@ -25,19 +25,56 @@ enum PageType {
   AddNewPropertyPage,
 }
 
-abstract class PageBase extends StatelessWidget {
-  ThemeManager themeManager;
+abstract class PageBase extends StatefulWidget {
   final List<TabPage> tabPages;
+
+  PageBase({Key key, this.tabPages}) : super(key: key);
 
   PageType get pageType;
 
   String get pageTitle;
+
   Widget get body;
 
-  PageBase({Key key, this.tabPages}) : super(key: key);
+  @override
+  _PageBaseState createState() => _PageBaseState();
+}
+
+class _PageBaseState extends State<PageBase>
+    with SingleTickerProviderStateMixin {
+  ThemeManager _themeManager;
+  ScrollController _scrollController;
+  TabController _tabController;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController();
+    if (widget.tabPages != null) {
+      _tabController = TabController(
+          length: widget.tabPages.length, initialIndex: 0, vsync: this);
+    }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _themeManager =
+        ThemeManager(darkMode: MyTieStateContainer.of(context).isDarkMode);
+  }
+
+  @override
+  void dispose() {
+    if (_tabController != null) {
+      _tabController.dispose();
+    }
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   Widget _appBar(BuildContext context) {
     return NestedScrollView(
+      // controller: ScrollController(),
       headerSliverBuilder: (context, innerBoxIsScrolled) => [
         SliverAppBar(
           snap: true,
@@ -45,59 +82,63 @@ abstract class PageBase extends StatelessWidget {
           centerTitle: true,
           elevation: 0.0,
           // floating: true,
-          title: Text(pageTitle),
+          title: Text(widget.pageTitle),
           textTheme: Theme.of(context).primaryTextTheme,
           actions: [
             SettingsDrawerIcon(),
           ],
         ),
       ],
-      body: body,
+      body: widget.body,
     );
   }
 
   Widget _tabbedAppBar(BuildContext context) {
-    return DefaultTabController(
-      length: tabPages.length,
-      initialIndex: 0,
-      child: NestedScrollView(
-        headerSliverBuilder: (context, innerBoxIsScrolled) => [
-          SliverAppBar(
-            snap: true,
-            floating: true,
-            centerTitle: true,
-            elevation: 0.0,
-            // floating: true,
-            title: Text(pageTitle),
-            textTheme: Theme.of(context).primaryTextTheme,
-            actions: [
-              SettingsDrawerIcon(),
-            ],
-            pinned: true,
-            bottom: TabBar(
-                tabs: tabPages
-                    .map((tabPage) => Tab(text: tabPage.name))
-                    .toList()),
-          ),
-        ],
-        body: TabBarView(
-            children: tabPages.map((tabPage) => tabPage.widget).toList()),
-      ),
+    return
+        // DefaultTabController(
+        //   length: widget.tabPages.length,
+        //   initialIndex: 0,
+        //   child:
+        NestedScrollView(
+      headerSliverBuilder: (context, innerBoxIsScrolled) => [
+        SliverAppBar(
+          snap: true,
+          floating: true,
+          centerTitle: true,
+          elevation: 0.0,
+          // floating: true,
+          title: Text(widget.pageTitle),
+          textTheme: Theme.of(context).primaryTextTheme,
+          actions: [
+            SettingsDrawerIcon(),
+          ],
+          pinned: true,
+          bottom: TabBar(
+              controller: _tabController,
+              tabs: widget.tabPages
+                  .map((tabPage) => Tab(text: tabPage.name))
+                  .toList()),
+        ),
+      ],
+      body: TabBarView(
+          controller: _tabController,
+          children: widget.tabPages
+              .map((tabPage) => SafeArea(child: tabPage.widget))
+              .toList()),
+      // ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    themeManager =
-        ThemeManager(darkMode: MyTieStateContainer.of(context).isDarkMode);
     var body;
-    if (tabPages != null) {
+    if (widget.tabPages != null) {
       body = _tabbedAppBar(context);
     } else {
       body = _appBar(context);
     }
     return Theme(
-      data: themeManager.themeData,
+      data: _themeManager.themeData,
       child: Scaffold(
         appBar: AppBar(toolbarHeight: 0),
         endDrawer: SettingsDrawer(),

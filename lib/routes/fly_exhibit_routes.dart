@@ -1,8 +1,7 @@
 /// filename: fly_form_routes.dart
-/// description: FlyFormRoutes is a static class which contains routes specific
-///   to the user filling out the new fly form, as well as editting the fly form
-///   template in the db. FlyFormRoutes must be imported in Routes.dart to
-///   register routes when app launches. All routes in this file require user
+/// description: FlyExhibitRoutes is a static class which contains routes specific
+///   to the user swiping between the fly exhibit types (newest, vs materials,
+///   vs favorites). All routes in this file require user
 ///   to be logged in to access, which is implemented using RouteGuard class.
 
 import 'package:flutter/material.dart';

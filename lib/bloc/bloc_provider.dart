@@ -5,6 +5,7 @@ import 'package:my_tie/bloc/fly_exhibit_bloc/favorited_fly_exhibit_bloc.dart';
 import 'package:my_tie/bloc/new_fly_bloc.dart';
 import 'package:my_tie/bloc/user_bloc.dart';
 
+import 'fly_exhibit_bloc/by_materials_fly_exhibit_bloc.dart';
 import 'fly_exhibit_bloc/newest_fly_exhibit_bloc.dart';
 
 class BlocProvider {
@@ -14,6 +15,7 @@ class BlocProvider {
   final NewFlyBloc newFlyBloc;
   final NewestFlyExhibitBloc newestFlyExhibitBloc;
   final FavoritedFlyExhibitBloc favoritedFlyExhibitBloc;
+  final ByMaterialsFlyExhibitBloc byMaterialsFlyExhibitBloc;
 
   BlocProvider({
     @required this.authBloc,
@@ -22,5 +24,6 @@ class BlocProvider {
     @required this.newFlyBloc,
     @required this.newestFlyExhibitBloc,
     @required this.favoritedFlyExhibitBloc,
+    @required this.byMaterialsFlyExhibitBloc,
   });
 }

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:my_tie/bloc/fly_exhibit_bloc/fly_exhibit_bloc.dart';
+import 'package:my_tie/bloc/state/my_tie_state.dart';
 import 'package:my_tie/models/fly_exhibits/fly_exhibit.dart';
+import 'package:my_tie/pages/tab_based_pages/tab_page.dart';
 import 'package:my_tie/styles/dimensions.dart';
 import 'package:my_tie/styles/styles.dart';
 import 'package:my_tie/styles/string_format.dart';
@@ -84,22 +87,50 @@ class FlyExhibitDetail extends StatelessWidget {
     );
   }
 
+  FlyExhibitBloc switchBlocByPage(FlyExhibit flyExhibit, BuildContext context) {
+    switch (flyExhibit.flyExhibitType) {
+      case FlyExhibitType.MaterialMatch:
+        return MyTieStateContainer.of(context)
+            .blocProvider
+            .byMaterialsFlyExhibitBloc;
+      case FlyExhibitType.Newest:
+        return MyTieStateContainer.of(context)
+            .blocProvider
+            .newestFlyExhibitBloc;
+      case FlyExhibitType.Favorites:
+      default:
+        return MyTieStateContainer.of(context)
+            .blocProvider
+            .favoritedFlyExhibitBloc;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     this.context = context;
     _materialsHeader = _createHeaderLabel(context, 'Materials');
     // _instructionsHeader = _createHeaderLabel(context, 'Instructions');
 
-    // Only use this FlyExhibit passed in to reference docId. Use
+    // Only use this FlyExhibit passed in to reference (1) docId and
+    // (2) the referring page type. Use
     // FlyExhibitDetailStreamBuilder to actually obtain FlyExhibit -
     // this ensures if user marks "I have this material", the UI will
-    // update itself.
-    FlyExhibit flyEx = ModalRoute.of(context).settings.arguments;
+    // update itself. Use referring page type so that FlyExhibitDetailStreamBuilder
+    // can switch to subscribe to the correct stream (which ensures the
+    // corresponding Bloc already has downloaded the correct fly from
+    // Cloud Firestore).
+    final FlyExhibit flyEx = ModalRoute.of(context).settings.arguments;
+    final FlyExhibitBloc flyExhibitBloc = switchBlocByPage(flyEx, context);
+
     return FlyExhibitDetailStreamBuilder(
       docId: flyEx.fly.docId,
+      flyExhibitBloc: flyExhibitBloc,
       builder: (flyExhibit) => SingleChildScrollView(
         child: LayoutBuilder(builder: (context, constraints) {
           final screenHeight = MediaQuery.of(context).size.height;
+          print('\n\nFly exhibit = ');
+          print(flyExhibit);
+
           return Column(children: [
             Card(
               elevation: 10,

@@ -1,14 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:my_tie/bloc/state/my_tie_state.dart';
+import 'package:my_tie/bloc/fly_exhibit_bloc/fly_exhibit_bloc.dart';
 import 'package:my_tie/models/fly_exhibits/fly_exhibit.dart';
 
 typedef BuildPage = Widget Function(FlyExhibit);
 
 class FlyExhibitDetailStreamBuilder extends StatelessWidget {
-  final BuildPage builder;
   final String docId;
 
-  FlyExhibitDetailStreamBuilder({this.docId, this.builder});
+  // Must pass in flyExhibitBloc so we can call the getFlyExhibit(docId) on the
+  // correct FlyExhibitBloc subclass.
+  final FlyExhibitBloc flyExhibitBloc;
+
+  final BuildPage builder;
+
+  FlyExhibitDetailStreamBuilder({
+    @required this.docId,
+    @required this.flyExhibitBloc,
+    @required this.builder,
+  });
 
   Widget _buildLoading() {
     return Center(
@@ -19,10 +28,8 @@ class FlyExhibitDetailStreamBuilder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-        stream: MyTieStateContainer.of(context)
-            .blocProvider
-            .newestFlyExhibitBloc
-            .getFlyExhibit(docId),
+        stream: flyExhibitBloc.getFlyExhibit(docId),
+        // ignore: missing_return
         builder: (context, AsyncSnapshot<FlyExhibit> snapshot) {
           print(snapshot.connectionState);
           if (snapshot.hasError) {
@@ -32,9 +39,13 @@ class FlyExhibitDetailStreamBuilder extends StatelessWidget {
           switch (snapshot.connectionState) {
             case (ConnectionState.done):
             case (ConnectionState.active):
-              return builder(snapshot.data);
+              if (snapshot.hasData) {
+                return builder(snapshot.data);
+              }
+              continue defaultCase;
             case (ConnectionState.none):
             case (ConnectionState.waiting):
+            defaultCase:
             default:
               return _buildLoading();
           }

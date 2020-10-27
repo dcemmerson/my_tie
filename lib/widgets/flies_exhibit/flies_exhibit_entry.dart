@@ -50,8 +50,9 @@ class _FliesExhibitEntryState extends State<FliesExhibitEntry>
         break;
       case FlyExhibitType.MaterialMatch:
       default:
-        _flyExhibitBloc =
-            MyTieStateContainer.of(context).blocProvider.newestFlyExhibitBloc;
+        _flyExhibitBloc = MyTieStateContainer.of(context)
+            .blocProvider
+            .byMaterialsFlyExhibitBloc;
     }
   }
 
@@ -71,21 +72,40 @@ class _FliesExhibitEntryState extends State<FliesExhibitEntry>
 
   Widget buildFlyExhibit(List<FlyExhibit> flyExhibits) {
     _flyCount = flyExhibits.length;
-    return ListView.builder(
-        addAutomaticKeepAlives: false,
-        itemCount: flyExhibits.length,
-        itemBuilder: (context, index) {
-          if (flyExhibits[index] is FlyExhibitLoadingIndicator)
-            return Container(child: CircularProgressIndicator());
-          else if (flyExhibits[index] is FlyExhibitEndCapIndicator)
-            return AllFliesLoaded();
-          else
-            return CreationAwareWidget(
-              index: index,
-              child: FlyOverviewExhibit(flyExhibits[index]),
-              itemCreated: _handleItemCreated,
-            );
-        });
+    return
+        // CustomScrollView(
+        //     key: PageStorageKey(widget.flyExhibitType.toString()),
+        //     slivers: [
+        //       SliverList(
+        //         delegate: SliverChildBuilderDelegate((context, index) {
+        //           if (flyExhibits[index] is FlyExhibitLoadingIndicator)
+        //             return Container(child: CircularProgressIndicator());
+        //           else if (flyExhibits[index] is FlyExhibitEndCapIndicator)
+        //             return AllFliesLoaded();
+        //           else
+        //             return CreationAwareWidget(
+        //               index: index,
+        //               child: FlyOverviewExhibit(flyExhibits[index]),
+        //               itemCreated: _handleItemCreated,
+        //             );
+        //         }),
+        //       ),
+        //     ]);
+        ListView.builder(
+            addAutomaticKeepAlives: false,
+            itemCount: flyExhibits.length,
+            itemBuilder: (context, index) {
+              if (flyExhibits[index] is FlyExhibitLoadingIndicator)
+                return Container(child: CircularProgressIndicator());
+              else if (flyExhibits[index] is FlyExhibitEndCapIndicator)
+                return AllFliesLoaded();
+              else
+                return CreationAwareWidget(
+                  index: index,
+                  child: FlyOverviewExhibit(flyExhibits[index]),
+                  itemCreated: _handleItemCreated,
+                );
+            });
   }
 
   @override

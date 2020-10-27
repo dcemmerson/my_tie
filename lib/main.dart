@@ -14,8 +14,10 @@ import 'package:my_tie/services/network/fly_form_template_service.dart';
 import 'package:my_tie/services/network/new_fly_service.dart';
 import 'package:my_tie/services/network/user_service.dart';
 
+import 'bloc/fly_exhibit_bloc/by_materials_fly_exhibit_bloc.dart';
 import 'bloc/fly_exhibit_bloc/favorited_fly_exhibit_bloc.dart';
 import 'bloc/user_bloc.dart';
+import 'services/network/fly_exhibit_services/by_materials_fly_exhibit_service copy.dart';
 import 'services/network/fly_exhibit_services/favorited_fly_exhibit_service.dart';
 import 'services/network/fly_exhibit_services/newest_fly_exhibit_service.dart';
 
@@ -69,6 +71,12 @@ Future<Widget> initApp() async {
       favoritedFlyExhibitService: favoritedFlyExhibitService,
       flyFormTemplateService: flyFormTemplateService);
 
+  final byMaterialsFlyExhibitService = ByMaterialsFlyExhibitService();
+  final byMaterialsFlyExhibitBloc = ByMaterialsFlyExhibitBloc(
+      userBloc: userBloc,
+      byMaterialsFlyExhibitService: byMaterialsFlyExhibitService,
+      flyFormTemplateService: flyFormTemplateService);
+
   return MyTieStateContainer(
     blocProvider: BlocProvider(
       authBloc: authBloc,
@@ -77,6 +85,7 @@ Future<Widget> initApp() async {
       newFlyBloc: newFlyBloc,
       newestFlyExhibitBloc: newestFlyExhibitBloc,
       favoritedFlyExhibitBloc: favoritedFlyExhibitBloc,
+      byMaterialsFlyExhibitBloc: byMaterialsFlyExhibitBloc,
     ),
     child: MyTieApp(),
   );
