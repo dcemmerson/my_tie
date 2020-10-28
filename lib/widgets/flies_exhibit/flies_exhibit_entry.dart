@@ -21,6 +21,7 @@ class FliesExhibitEntry extends StatefulWidget {
 
 class _FliesExhibitEntryState extends State<FliesExhibitEntry>
     with AutomaticKeepAliveClientMixin {
+  // final _scrollController = ScrollController();
   FlyExhibitBloc _flyExhibitBloc;
   bool _keepAlive = true;
   int _flyCount = 0;
@@ -71,30 +72,15 @@ class _FliesExhibitEntryState extends State<FliesExhibitEntry>
   }
 
   Widget buildFlyExhibit(List<FlyExhibit> flyExhibits) {
+    // _flyCount is used closure (_handleItemCreated) passed to CreationAwareWidget
+    // to know when to add request to fly request sink.
     _flyCount = flyExhibits.length;
-    return
-        // CustomScrollView(
-        //     key: PageStorageKey(widget.flyExhibitType.toString()),
-        //     slivers: [
-        //       SliverList(
-        //         delegate: SliverChildBuilderDelegate((context, index) {
-        //           if (flyExhibits[index] is FlyExhibitLoadingIndicator)
-        //             return Container(child: CircularProgressIndicator());
-        //           else if (flyExhibits[index] is FlyExhibitEndCapIndicator)
-        //             return AllFliesLoaded();
-        //           else
-        //             return CreationAwareWidget(
-        //               index: index,
-        //               child: FlyOverviewExhibit(flyExhibits[index]),
-        //               itemCreated: _handleItemCreated,
-        //             );
-        //         }),
-        //       ),
-        //     ]);
-        ListView.builder(
-            addAutomaticKeepAlives: false,
-            itemCount: flyExhibits.length,
-            itemBuilder: (context, index) {
+    return CustomScrollView(
+        // controller: _scrollController,
+        // key: PageStorageKey(widget.flyExhibitType.toString()),
+        slivers: <Widget>[
+          SliverList(
+            delegate: SliverChildBuilderDelegate((context, index) {
               if (flyExhibits[index] is FlyExhibitLoadingIndicator)
                 return Container(child: CircularProgressIndicator());
               else if (flyExhibits[index] is FlyExhibitEndCapIndicator)
@@ -105,7 +91,24 @@ class _FliesExhibitEntryState extends State<FliesExhibitEntry>
                   child: FlyOverviewExhibit(flyExhibits[index]),
                   itemCreated: _handleItemCreated,
                 );
-            });
+            }, addAutomaticKeepAlives: false, childCount: flyExhibits.length),
+          ),
+        ]);
+    // ListView.builder(
+    //     addAutomaticKeepAlives: false,
+    //     itemCount: flyExhibits.length,
+    //     itemBuilder: (context, index) {
+    //       if (flyExhibits[index] is FlyExhibitLoadingIndicator)
+    //         return Container(child: CircularProgressIndicator());
+    //       else if (flyExhibits[index] is FlyExhibitEndCapIndicator)
+    //         return AllFliesLoaded();
+    //       else
+    //         return CreationAwareWidget(
+    //           index: index,
+    //           child: FlyOverviewExhibit(flyExhibits[index]),
+    //           itemCreated: _handleItemCreated,
+    //         );
+    //     });
   }
 
   @override

@@ -6,7 +6,10 @@ import '../user_bloc.dart';
 import 'fly_exhibit_bloc.dart';
 
 class ByMaterialsFlyExhibitBloc extends FlyExhibitBloc {
-  FlyExhibitType get flyExhibitType => FlyExhibitType.Favorites;
+//debug
+  final String exhibitBlocType = "ByMaterialsFlyExhibitBloc";
+
+  FlyExhibitType get flyExhibitType => FlyExhibitType.MaterialMatch;
 
   ByMaterialsFlyExhibitBloc({
     UserBloc userBloc,

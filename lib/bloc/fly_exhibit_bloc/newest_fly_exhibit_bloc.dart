@@ -6,6 +6,8 @@ import '../user_bloc.dart';
 import 'fly_exhibit_bloc.dart';
 
 class NewestFlyExhibitBloc extends FlyExhibitBloc {
+  final String exhibitBlocType = "NewestFlyExhibitBloc";
+
   FlyExhibitType get flyExhibitType => FlyExhibitType.Newest;
 
   NewestFlyExhibitBloc({

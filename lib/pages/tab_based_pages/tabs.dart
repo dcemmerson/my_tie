@@ -6,7 +6,6 @@ class Tabs {
   static final pages = [
     MaterialMatchTabPage(),
     NewestTabPage(),
-    // RandomTabPage(),
     FavoritesTabPage(),
   ];
 }

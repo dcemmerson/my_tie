@@ -6,6 +6,8 @@ import '../user_bloc.dart';
 import 'fly_exhibit_bloc.dart';
 
 class FavoritedFlyExhibitBloc extends FlyExhibitBloc {
+  final String exhibitBlocType = "FavoritedFlyExhibitBloc";
+
   FlyExhibitType get flyExhibitType => FlyExhibitType.Favorites;
 
   FavoritedFlyExhibitBloc({

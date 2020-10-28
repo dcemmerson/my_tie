@@ -41,19 +41,22 @@ abstract class PageBase extends StatefulWidget {
 }
 
 class _PageBaseState extends State<PageBase>
-    with SingleTickerProviderStateMixin {
+// with SingleTickerProviderStateMixin
+{
+  final PageStorageBucket _bucket = PageStorageBucket();
+
   ThemeManager _themeManager;
   ScrollController _scrollController;
-  TabController _tabController;
+  // TabController _tabController;
 
   @override
   void initState() {
     super.initState();
     _scrollController = ScrollController();
-    if (widget.tabPages != null) {
-      _tabController = TabController(
-          length: widget.tabPages.length, initialIndex: 0, vsync: this);
-    }
+    // if (widget.tabPages != null) {
+    //   _tabController = TabController(
+    //       length: widget.tabPages.length, initialIndex: 0, vsync: this);
+    // }
   }
 
   @override
@@ -65,9 +68,9 @@ class _PageBaseState extends State<PageBase>
 
   @override
   void dispose() {
-    if (_tabController != null) {
-      _tabController.dispose();
-    }
+    // if (_tabController != null) {
+    //   _tabController.dispose();
+    // }
     _scrollController.dispose();
     super.dispose();
   }
@@ -94,38 +97,40 @@ class _PageBaseState extends State<PageBase>
   }
 
   Widget _tabbedAppBar(BuildContext context) {
-    return
-        // DefaultTabController(
-        //   length: widget.tabPages.length,
-        //   initialIndex: 0,
-        //   child:
-        NestedScrollView(
-      headerSliverBuilder: (context, innerBoxIsScrolled) => [
-        SliverAppBar(
-          snap: true,
-          floating: true,
-          centerTitle: true,
-          elevation: 0.0,
-          // floating: true,
-          title: Text(widget.pageTitle),
-          textTheme: Theme.of(context).primaryTextTheme,
-          actions: [
-            SettingsDrawerIcon(),
-          ],
-          pinned: true,
-          bottom: TabBar(
-              controller: _tabController,
-              tabs: widget.tabPages
-                  .map((tabPage) => Tab(text: tabPage.name))
-                  .toList()),
-        ),
-      ],
-      body: TabBarView(
-          controller: _tabController,
-          children: widget.tabPages
-              .map((tabPage) => SafeArea(child: tabPage.widget))
-              .toList()),
-      // ),
+    return DefaultTabController(
+      length: widget.tabPages.length,
+      // initialIndex: 0,
+      child: NestedScrollView(
+        headerSliverBuilder: (context, innerBoxIsScrolled) => [
+          SliverAppBar(
+            snap: true,
+            floating: true,
+            centerTitle: true,
+            elevation: 0.0,
+            // floating: true,
+            title: Text(widget.pageTitle),
+            textTheme: Theme.of(context).primaryTextTheme,
+            actions: [
+              SettingsDrawerIcon(),
+            ],
+            pinned: true,
+            bottom: TabBar(
+                tabs: widget.tabPages
+                    .map((tabPage) => Tab(text: tabPage.name))
+                    .toList()),
+          ),
+        ],
+        body:
+            // PageStorage(
+            //   bucket: _bucket,
+            //   child:
+            TabBarView(
+                children: widget.tabPages
+                    .map((tabPage) => SafeArea(
+                        top: false, bottom: false, child: tabPage.widget))
+                    .toList()),
+        // ),
+      ),
     );
   }
 
