@@ -4,9 +4,12 @@ import 'package:my_tie/widgets/flies_exhibit/flies_exhibit_entry.dart';
 
 class FavoritesTabPage extends TabPage {
   static const _name = 'Favorites';
-  static final _widget =
-      FliesExhibitEntry(flyExhibitType: FlyExhibitType.Favorites);
+  // static final _widget =
+  //     FliesExhibitEntry(flyExhibitType: FlyExhibitType.Favorites);
 
   String get name => _name;
-  Widget get widget => _widget;
+  Widget widget(ScrollController parentScrollController) => FliesExhibitEntry(
+      scrollController: scrollController,
+      // parentScrollController: parentScrollController,
+      flyExhibitType: FlyExhibitType.Favorites);
 }

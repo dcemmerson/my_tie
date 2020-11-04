@@ -6,12 +6,14 @@ enum FlyExhibitType {
   Favorites,
 }
 
-abstract class TabPage extends StatelessWidget {
+abstract class TabPage {
   String get name;
-  Widget get widget;
+  Widget widget(ScrollController parentScrollController);
 
-  @override
-  Widget build(BuildContext context) {
-    return widget;
-  }
+  final ScrollController scrollController = ScrollController();
+
+  // @override
+  // Widget build(BuildContext context) {
+  //   return widget;
+  // }
 }

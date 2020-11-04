@@ -12,8 +12,14 @@ import 'fly_exhibit_overview/fly_overview_exhibit.dart';
 
 class FliesExhibitEntry extends StatefulWidget {
   final FlyExhibitType flyExhibitType;
+  final ScrollController scrollController;
+  // final ScrollController parentScrollController;
 
-  FliesExhibitEntry({this.flyExhibitType});
+  FliesExhibitEntry({
+    this.flyExhibitType,
+    this.scrollController,
+    // this.parentScrollController,
+  });
 
   @override
   _FliesExhibitEntryState createState() => _FliesExhibitEntryState();
@@ -29,6 +35,18 @@ class _FliesExhibitEntryState extends State<FliesExhibitEntry>
 
   @override
   bool get wantKeepAlive => _keepAlive;
+
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   widget.scrollController.addListener(notifyParentScrollController);
+  // }
+
+  // void notifyParentScrollController() {
+  //   widget.parentScrollController.notifyListeners();
+  //   // widget.parentScrollController.
+  //   print('scrolled');
+  // }
 
   @override
   void didChangeDependencies() {
@@ -75,8 +93,7 @@ class _FliesExhibitEntryState extends State<FliesExhibitEntry>
     // _flyCount is used closure (_handleItemCreated) passed to CreationAwareWidget
     // to know when to add request to fly request sink.
     _flyCount = flyExhibits.length;
-    return CustomScrollView(
-        // controller: _scrollController,
+    return CustomScrollView(controller: widget.scrollController,
         // key: PageStorageKey(widget.flyExhibitType.toString()),
         slivers: <Widget>[
           SliverList(
