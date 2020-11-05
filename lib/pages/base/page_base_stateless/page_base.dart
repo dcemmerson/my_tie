@@ -27,6 +27,7 @@ enum PageType {
 }
 
 abstract class PageBase extends StatefulWidget {
+  final double _appBarHeight = 60.0;
   final List<TabPage> tabPages;
 
   PageBase({Key key, this.tabPages}) : super(key: key);
@@ -61,22 +62,12 @@ class _PageBaseState extends State<PageBase>
     super.initState();
     if (widget.tabPages != null) {
       _appBarScrollController = ScrollController();
-      // _appBarScrollController.addListener(_handleChildScroll);
-      // linkedScrollControllerGroup = LinkedScrollControllerGroup();
+
       _tabController =
           TabController(vsync: this, length: widget.tabPages.length);
-      // linkedScrollControllerGroup
-      //     .addAndGet(tabScrollControllers[_tabController.index]);
-      _tabController.addListener(_handleTabControllerSwap);
-      // _handleTabControllerSwap();
-      // tabScrollControllers[0].addListener(_handleChildScroll);
 
+      _tabController.addListener(_handleTabControllerSwap);
     }
-    // _byMaterialsScrollController = ScrollController();
-    // if (widget.tabPages != null) {
-    //   _tabController = TabController(
-    //       length: widget.tabPages.length, initialIndex: 0, vsync: this);
-    // }
   }
 
   //  name: _handleChildScroll
@@ -84,21 +75,21 @@ class _PageBaseState extends State<PageBase>
   //    propagated up to call this method to handle the scroll and decide how
   //    the NestedScrollController should scroll to show or hide the appbar.
   void _handleChildScroll() {
-    print("child scrolled");
-    print('from $childScrollPositionPrev');
     var prevOffset = childScrollPositionPrev;
+    print(prevOffset);
     childScrollPositionPrev = tabScrollControllers[currTabIndex].offset;
-    print('to $childScrollPositionPrev');
-    _appBarScrollController.animateTo(childScrollPositionPrev,
-        duration: Duration(milliseconds: 200), curve: Curves.easeOut);
+
+    if (childScrollPositionPrev - prevOffset > 0) {
+      _appBarScrollController.animateTo(widget._appBarHeight,
+          duration: Duration(milliseconds: 200), curve: Curves.easeOut);
+    } else {
+      _appBarScrollController.animateTo(0,
+          duration: Duration(milliseconds: 200), curve: Curves.easeOut);
+    }
   }
 
   void _handleTabControllerSwap() {
-    print("\n\nSwap\n\n");
-    print(_tabController.index);
-    // if (currTabIndex != -1) {
     tabScrollControllers[currTabIndex].removeListener(_handleChildScroll);
-    // }
 
     currTabIndex = _tabController.index;
     tabScrollControllers[currTabIndex].addListener(_handleChildScroll);
@@ -115,10 +106,6 @@ class _PageBaseState extends State<PageBase>
 
   @override
   void dispose() {
-    // if (_tabController != null) {
-    //   _tabController.dispose();
-    // }
-    print('dispose');
     if (_appBarScrollController != null) _appBarScrollController.dispose();
     super.dispose();
   }
