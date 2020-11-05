@@ -39,6 +39,9 @@ abstract class FlyExhibitBloc {
   //  but in instance of user updating profile, we will map flies to the
   //  updated version of flies, thus needing to reassign.
   List<FlyExhibit> _flies = [];
+  // prevFlyDoc will be reassigned every time user scrolls to bottom of page,
+  // and we need to load additional flies. prevFlyDoc allows queries to pick up
+  // where we left off in the last query when querying Firestore.
   DocumentSnapshot prevFlyDoc;
   UserProfile userProfile;
 
@@ -92,7 +95,7 @@ abstract class FlyExhibitBloc {
     final Future<QuerySnapshot> flyTemplateDocF =
         flyFormTemplateService.newFlyForm;
     final Future<QuerySnapshot> queryF =
-        flyExhibitService.initGetCompletedFlies();
+        flyExhibitService.initGetCompletedFlies(uid: userProfile.uid);
 
     // No need to use Future.wait, as query depeneds on flyFormTemplate.
     final flyFormTemplateDoc =
@@ -103,7 +106,7 @@ abstract class FlyExhibitBloc {
     _formatAndSendFliesToUI(flyQueries, flyFormTemplateDoc);
   }
 
-  /// Listen for fetch flies events being addd tos ink from UI (eg, when user
+  /// Listen for fetch flies events being adddd to sink from UI (eg, when user
   ///  scrolls to bottom of screen and infinite scroll needs to load more
   ///  flies). First added the FlyExhibitLoadingIndicator, to tell UI to show
   ///  spinner, then call _newestFliesFetch which will make request to db,
@@ -126,7 +129,8 @@ abstract class FlyExhibitBloc {
     final Future<QuerySnapshot> flyTemplateDocF =
         flyFormTemplateService.newFlyForm;
     final Future<QuerySnapshot> queryF =
-        flyExhibitService.getCompletedFliesByDateAfterDoc(prevFlyDoc);
+        flyExhibitService.getCompletedFliesByDateAfterDoc(
+            uid: userProfile.uid, prevDoc: prevFlyDoc);
 
     // No need to use Future.wait, as query depeneds on flyFormTemplate.
     final flyFormTemplateDoc =
@@ -140,7 +144,7 @@ abstract class FlyExhibitBloc {
   /// Listen for events being dispatched from UI, added to favoritedFlySink,
   /// representing user selecting/deselecting the favorite fly button. FlyExhibit
   /// is added to sink and we either add or remove docId from user's favorited
-  /// fly list in db. Additionally, we must update the update the favorited flies
+  /// fly list in db. Additionally, we must update the favorited flies
   /// collection (which denormalizes fly docs to enable querying on the user's
   /// favorited flies).
   void _listenForFavoritedFlyEvents() {

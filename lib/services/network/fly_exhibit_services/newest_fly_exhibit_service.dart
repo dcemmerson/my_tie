@@ -13,7 +13,7 @@ class NewestFlyExhibitService extends FlyExhibitService {
   static const fliesPerFetch = 5;
 
   @override
-  Future<QuerySnapshot> initGetCompletedFlies() {
+  Future<QuerySnapshot> initGetCompletedFlies({String uid}) {
     return FirebaseFirestore.instance
         .collection(DbCollections.fly)
         .orderBy(DbNames.lastModified, descending: true)
@@ -21,9 +21,12 @@ class NewestFlyExhibitService extends FlyExhibitService {
         .get();
   }
 
+  /// name: getCompletedFliesByDateAfterDoc
+  /// description: function use by stream controller triggered by UI, when user
+  ///   scrolls to bottom of page. Aux to initGetCompletedFlies().
   @override
   Future<QuerySnapshot> getCompletedFliesByDateAfterDoc(
-      DocumentSnapshot prevDoc) {
+      {String uid, DocumentSnapshot prevDoc}) {
     return FirebaseFirestore.instance
         .collection(DbCollections.fly)
         .orderBy(DbNames.lastModified, descending: true)

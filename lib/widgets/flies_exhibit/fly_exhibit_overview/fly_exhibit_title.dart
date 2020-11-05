@@ -20,10 +20,6 @@ class FlyExhibitTitle extends StatelessWidget {
         .newestFlyExhibitBloc
         .favoritedFlySink
         .add(flyExhibit);
-    // if (flyExhibit.isFavorited)
-    //   favoritedFlySink.add(FavoritedFlyRemoveEvent());
-    // else
-    //   favoritedFlySink.add(FavoritedFlyAddEvent());
   }
 
   @override

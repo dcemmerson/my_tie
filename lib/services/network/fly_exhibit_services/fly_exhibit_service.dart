@@ -10,6 +10,11 @@ import 'package:my_tie/models/db_names.dart';
 abstract class FlyExhibitService {
   static const fliesPerFetch = 5;
 
+  /// name: removeFavoriteFly
+  /// description: Method that gets called upon user untapping the like/heart button
+  ///   on a fly exhibit. All fly exhibit sort types (eg by materials, newest,
+  ///   favorites), as need access to this functionallity, so we define this in
+  ///   the FlyExhibitService base class.
   Future removeFavoriteFly(String uid, String originalFlyDocId) async {
     final query = await FirebaseFirestore.instance
         .collection(DbCollections.favoritedFlies)
@@ -20,13 +25,18 @@ abstract class FlyExhibitService {
     return Future.wait(query.docs.map((doc) => doc.reference.delete()));
   }
 
+  /// name: addFavoriteFly
+  /// description: Method that gets called upon user tapping the like/heart button
+  ///   on a fly exhibit. All fly exhibit sort types (eg by materials, newest,
+  ///   favorites), as need access to this functionallity, so we define this in
+  ///   the FlyExhibitService base class.
   Future addFavoriteFly(Map<String, dynamic> fly) {
     return FirebaseFirestore.instance
         .collection(DbCollections.favoritedFlies)
-        .add(fly);
+        .add({...fly, DbNames.dateFavorited: DateTime.now()});
   }
 
-  Future<QuerySnapshot> initGetCompletedFlies();
+  Future<QuerySnapshot> initGetCompletedFlies({String uid});
   Future<QuerySnapshot> getCompletedFliesByDateAfterDoc(
-      DocumentSnapshot prevDoc);
+      {String uid, DocumentSnapshot prevDoc});
 }

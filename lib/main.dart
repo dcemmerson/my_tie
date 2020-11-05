@@ -17,7 +17,7 @@ import 'package:my_tie/services/network/user_service.dart';
 import 'bloc/fly_exhibit_bloc/by_materials_fly_exhibit_bloc.dart';
 import 'bloc/fly_exhibit_bloc/favorited_fly_exhibit_bloc.dart';
 import 'bloc/user_bloc.dart';
-import 'services/network/fly_exhibit_services/by_materials_fly_exhibit_service copy.dart';
+import 'services/network/fly_exhibit_services/by_materials_fly_exhibit_service.dart';
 import 'services/network/fly_exhibit_services/favorited_fly_exhibit_service.dart';
 import 'services/network/fly_exhibit_services/newest_fly_exhibit_service.dart';
 

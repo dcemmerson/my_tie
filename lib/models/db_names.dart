@@ -28,6 +28,7 @@ class DbNames {
 
   // Field names
   static const lastModified = 'last_modified';
+  static const dateFavorited = 'date_favorited';
   static const uploadedBy = 'uploaded_by';
   static const created = 'created';
 

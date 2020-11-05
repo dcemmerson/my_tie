@@ -12,21 +12,29 @@ import 'fly_exhibit_service.dart';
 class FavoritedFlyExhibitService extends FlyExhibitService {
   static const fliesPerFetch = 5;
 
+  /// name: initCompletedFliesByDate
+  /// description: function use by stream controller triggered by UI, when user
+  ///   scrolls to bottom of page. Aux to initGetCompletedFlies().
   @override
-  Future<QuerySnapshot> initGetCompletedFlies() {
+  Future<QuerySnapshot> initGetCompletedFlies({String uid}) {
     return FirebaseFirestore.instance
-        .collection(DbCollections.fly)
-        .orderBy(DbNames.lastModified, descending: true)
+        .collection(DbCollections.favoritedFlies)
+        .where(DbNames.uid, isEqualTo: uid)
+        .orderBy(DbNames.dateFavorited, descending: true)
         .limit(5)
         .get();
   }
 
+  /// name: getCompletedFliesByDateAfterDoc
+  /// description: function use by stream controller triggered by UI, when user
+  ///   scrolls to bottom of page. Aux to initGetCompletedFlies().
   @override
   Future<QuerySnapshot> getCompletedFliesByDateAfterDoc(
-      DocumentSnapshot prevDoc) {
+      {String uid, DocumentSnapshot prevDoc}) {
     return FirebaseFirestore.instance
-        .collection(DbCollections.fly)
-        .orderBy(DbNames.lastModified, descending: true)
+        .collection(DbCollections.favoritedFlies)
+        .orderBy(DbNames.dateFavorited, descending: true)
+        .where(DbNames.uid, isEqualTo: uid)
         .limit(5)
         .startAfterDocument(prevDoc)
         .get();
