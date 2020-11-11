@@ -93,7 +93,14 @@ class _PageBaseState extends State<PageBase>
     currTabIndex = _tabController.index;
     tabScrollControllers[currTabIndex].addListener(_handleChildScroll);
 
-    childScrollPositionPrev = tabScrollControllers[currTabIndex].offset;
+    // Check if ScrollController hasClients, else class will throw error
+    // error because it hasn't been attached to tab page yet. This condition
+    // only occurs the first time the user selects a new tab.
+    if (tabScrollControllers[currTabIndex].hasClients) {
+      childScrollPositionPrev = tabScrollControllers[currTabIndex].offset;
+    } else {
+      childScrollPositionPrev = 0;
+    }
   }
 
   @override
