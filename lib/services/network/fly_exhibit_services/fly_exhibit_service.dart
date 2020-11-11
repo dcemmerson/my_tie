@@ -10,6 +10,13 @@ import 'package:my_tie/models/db_names.dart';
 abstract class FlyExhibitService {
   static const fliesPerFetch = 5;
 
+  Future<DocumentSnapshot> getFlyDoc(docId) {
+    return FirebaseFirestore.instance
+        .collection(DbCollections.fly)
+        .doc(docId)
+        .get();
+  }
+
   /// name: removeFavoriteFly
   /// description: Method that gets called upon user untapping the like/heart button
   ///   on a fly exhibit. All fly exhibit sort types (eg by materials, newest,

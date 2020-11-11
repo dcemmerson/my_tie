@@ -38,7 +38,7 @@ abstract class FlyExhibitBloc {
   //  we will not reassign flies and instead just add FlyExhibits to it,
   //  but in instance of user updating profile, we will map flies to the
   //  updated version of flies, thus needing to reassign.
-  List<FlyExhibit> _flies = [];
+  List<FlyExhibit> flies = [];
   // prevFlyDoc will be reassigned every time user scrolls to bottom of page,
   // and we need to load additional flies. prevFlyDoc allows queries to pick up
   // where we left off in the last query when querying Firestore.
@@ -72,7 +72,7 @@ abstract class FlyExhibitBloc {
     userBloc.userMaterialsProfile.listen((UserMaterialsTransfer umt) {
       userProfile = umt.userProfile;
 
-      _flies = _flies.map((FlyExhibit flyExhibit) {
+      flies = flies.map((FlyExhibit flyExhibit) {
         if (flyExhibit is FlyExhibitEndCapIndicator)
           return FlyExhibitEndCapIndicator();
         return FlyExhibit.fromUserProfileAndFly(
@@ -82,7 +82,7 @@ abstract class FlyExhibitBloc {
         );
       }).toList();
 
-      fliesStreamController.add(_flies);
+      fliesStreamController.add(flies);
     });
   }
 
@@ -102,8 +102,8 @@ abstract class FlyExhibitBloc {
         NewFlyFormTemplate.fromDoc((await flyTemplateDocF).docs[0].data());
     final flyQueries = await queryF;
 
-    _setPrevDoc(flyQueries);
-    _formatAndSendFliesToUI(flyQueries, flyFormTemplateDoc);
+    setPrevDoc(flyQueries);
+    formatAndSendFliesToUI(flyQueries, flyFormTemplateDoc);
   }
 
   /// Listen for fetch flies events being adddd to sink from UI (eg, when user
@@ -114,8 +114,8 @@ abstract class FlyExhibitBloc {
   void _listenForRequestFliesFetch() {
     _requestFetchFlies.stream.listen((ffe) {
       if (ffe is FetchNewestFliesEvent) {
-        _flies.add(FlyExhibitLoadingIndicator());
-        fliesStreamController.add(_flies);
+        flies.add(FlyExhibitLoadingIndicator());
+        fliesStreamController.add(flies);
         fliesFetch();
       } else {
         // Unreachable, but you never know...
@@ -137,8 +137,8 @@ abstract class FlyExhibitBloc {
         NewFlyFormTemplate.fromDoc((await flyTemplateDocF).docs[0].data());
     final flyQueries = await queryF;
 
-    _setPrevDoc(flyQueries);
-    _formatAndSendFliesToUI(flyQueries, flyFormTemplateDoc);
+    setPrevDoc(flyQueries);
+    formatAndSendFliesToUI(flyQueries, flyFormTemplateDoc);
   }
 
   /// Listen for events being dispatched from UI, added to favoritedFlySink,
@@ -166,19 +166,19 @@ abstract class FlyExhibitBloc {
     });
   }
 
-  void _setPrevDoc(QuerySnapshot flyQueries) {
+  void setPrevDoc(QuerySnapshot flyQueries) {
     if (flyQueries.docs.length > 0)
       prevFlyDoc = flyQueries.docs[flyQueries.docs.length - 1];
   }
 
-  void _formatAndSendFliesToUI(
+  void formatAndSendFliesToUI(
       QuerySnapshot flyQueries, NewFlyFormTemplate flyFormTemplateDoc) async {
     // final UserMaterialsTransfer userMaterials =
     //     await userBloc.userMaterialsProfile.first;
 
     // userService.getUserProfile(authService.currentUser.uid);
 
-    final List<FlyExhibit> flies = flyQueries.docs.map((doc) {
+    final List<FlyExhibit> flyExhibits = flyQueries.docs.map((doc) {
       final flyDoc = doc.data();
       return FlyExhibit.fromUserProfileAndFly(
         flyExhibitType: flyExhibitType,
@@ -196,10 +196,10 @@ abstract class FlyExhibitBloc {
       );
     }).toList();
 
-    _flies.addAll(flies);
-    _flies.removeWhere((fly) => fly is FlyExhibitLoadingIndicator);
-    if (flies.isEmpty) _flies.add(FlyExhibitEndCapIndicator());
-    fliesStreamController.add(_flies);
+    flies.addAll(flyExhibits);
+    flies.removeWhere((fly) => fly is FlyExhibitLoadingIndicator);
+    if (flyExhibits.isEmpty) flies.add(FlyExhibitEndCapIndicator());
+    fliesStreamController.add(flies);
   }
 
   Stream<FlyExhibit> getFlyExhibit(String docId) {
@@ -224,7 +224,7 @@ abstract class FlyExhibitBloc {
       flyDetailStreamController.add(extractFlyExhibit(flyExhibits));
     });
 
-    flyDetailStreamController.add(extractFlyExhibit(_flies));
+    flyDetailStreamController.add(extractFlyExhibit(flies));
     return flyDetailStreamController.stream;
   }
 
