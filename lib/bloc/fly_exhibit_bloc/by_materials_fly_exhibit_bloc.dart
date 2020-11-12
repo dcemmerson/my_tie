@@ -7,7 +7,7 @@ import 'fly_exhibit_bloc.dart';
 
 class ByMaterialsFlyExhibitBloc extends FlyExhibitBloc {
 //debug
-  final String exhibitBlocType = "ByMaterialsFlyExhibitBloc";
+  final String exhibitBlocType = 'ByMaterialsFlyExhibitBloc';
 
   FlyExhibitType get flyExhibitType => FlyExhibitType.MaterialMatch;
 

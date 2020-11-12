@@ -11,7 +11,7 @@ import '../user_bloc.dart';
 import 'fly_exhibit_bloc.dart';
 
 class FavoritedFlyExhibitBloc extends FlyExhibitBloc {
-  final String exhibitBlocType = "FavoritedFlyExhibitBloc";
+  final String exhibitBlocType = 'FavoritedFlyExhibitBloc';
 
   FlyExhibitType get flyExhibitType => FlyExhibitType.Favorites;
 
@@ -27,7 +27,7 @@ class FavoritedFlyExhibitBloc extends FlyExhibitBloc {
   /// name: initFliesFetch
   /// description: We must override this method from FlyExhibitBloc because
   ///   favorited flies are stored in a top level collection (for simple
-  ///   querying functionallity). Thus, when we query Firestore for a user's
+  ///   querying functionallity). When we query Firestore for a user's
   ///   favorites (from the favorites collection), we only obtain fly stubs
   ///   and not the entire fly doc - thus we must query the fly collection with
   ///   the doc id obtained from each fly stub.

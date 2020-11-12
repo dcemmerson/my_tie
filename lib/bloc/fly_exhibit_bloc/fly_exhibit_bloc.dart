@@ -34,7 +34,7 @@ abstract class FlyExhibitBloc {
   StreamSink<FetchFliesEvent> requestFetchFliesSink;
   StreamController<FlyExhibit> flyDetailStreamController;
 
-  // Don't mark flies as final. During most the majority of the bloc,
+  // Don't mark flies as final. During the majority of the bloc,
   //  we will not reassign flies and instead just add FlyExhibits to it,
   //  but in instance of user updating profile, we will map flies to the
   //  updated version of flies, thus needing to reassign.
