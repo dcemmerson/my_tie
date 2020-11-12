@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:my_tie/app.dart';
 import 'package:my_tie/bloc/auth_bloc.dart';
 import 'package:my_tie/bloc/bloc_provider.dart';
+import 'package:my_tie/bloc/fly_exhibit_bloc/favoriting_bloc.dart';
 import 'package:my_tie/bloc/fly_exhibit_bloc/newest_fly_exhibit_bloc.dart';
 import 'package:my_tie/bloc/edit_new_fly_template_bloc.dart';
 import 'package:my_tie/bloc/new_fly_bloc.dart';
@@ -76,6 +77,9 @@ Future<Widget> initApp() async {
       userBloc: userBloc,
       byMaterialsFlyExhibitService: byMaterialsFlyExhibitService,
       flyFormTemplateService: flyFormTemplateService);
+
+  FavoritingBloc.sharedInstance
+      .init(flyExhibitService: favoritedFlyExhibitService, userBloc: userBloc);
 
   return MyTieStateContainer(
     blocProvider: BlocProvider(

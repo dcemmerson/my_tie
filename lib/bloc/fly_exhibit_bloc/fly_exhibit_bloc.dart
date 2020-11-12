@@ -12,6 +12,7 @@ import 'package:my_tie/services/network/fly_exhibit_services/fly_exhibit_service
 import 'package:my_tie/services/network/fly_form_template_service.dart';
 
 import '../user_bloc.dart';
+import 'favoriting_bloc.dart';
 
 /// Classes solely used to pass signals in stream controllers.
 class FetchFliesEvent {}
@@ -25,6 +26,7 @@ class FlyExhibitEndCapIndicator extends FlyExhibit {}
 abstract class FlyExhibitBloc {
   // final AuthBloc authBloc;
   final UserBloc userBloc;
+  final FavoritingBloc favoritingBloc;
   final FlyExhibitService flyExhibitService;
   final FlyFormTemplateService flyFormTemplateService;
 
@@ -54,15 +56,16 @@ abstract class FlyExhibitBloc {
     this.userBloc,
     this.flyExhibitService,
     this.flyFormTemplateService,
-  }) {
+  }) : favoritingBloc = FavoritingBloc.sharedInstance {
     fliesStream = fliesStreamController.stream;
     fliesStreamController.onListen = initFliesFetch;
-    favoritedFlySink = _favoritedFliesStreamController.sink;
+    favoritedFlySink = favoritingBloc.favoritedFlySink;
+    // favoritedFlySink = _favoritedFliesStreamController.sink;
     requestFetchFliesSink = _requestFetchFlies.sink;
 
     _listenForUserMaterialProfileEvents();
     _listenForRequestFliesFetch();
-    _listenForFavoritedFlyEvents();
+    // _listenForFavoritedFlyEvents();
   }
 
   /// Get userProfile, and listen for changes to userProfile. Update all FlyExhibit
@@ -147,24 +150,24 @@ abstract class FlyExhibitBloc {
   /// fly list in db. Additionally, we must update the favorited flies
   /// collection (which denormalizes fly docs to enable querying on the user's
   /// favorited flies).
-  void _listenForFavoritedFlyEvents() {
-    _favoritedFliesStreamController.stream.listen((flyExhibit) {
-      if (flyExhibit.isFavorited) {
-        userBloc.removeFromFavorites(
-            flyExhibit.userProfile.docId, flyExhibit.fly.docId);
-        flyExhibitService.removeFavoriteFly(
-            userProfile.uid, flyExhibit.fly.docId);
-      } else {
-        userBloc.addToFavorites(
-            flyExhibit.userProfile.docId, flyExhibit.fly.docId);
-        flyExhibitService.addFavoriteFly({
-          DbNames.uid: userProfile.uid,
-          DbNames.originalFlyDocId: flyExhibit.fly.docId,
-          ...flyExhibit.fly.toMap()
-        });
-      }
-    });
-  }
+  // void _listenForFavoritedFlyEvents() {
+  //   _favoritedFliesStreamController.stream.listen((flyExhibit) {
+  //     if (flyExhibit.isFavorited) {
+  //       userBloc.removeFromFavorites(
+  //           flyExhibit.userProfile.docId, flyExhibit.fly.docId);
+  //       flyExhibitService.removeFavoriteFly(
+  //           userProfile.uid, flyExhibit.fly.docId);
+  //     } else {
+  //       userBloc.addToFavorites(
+  //           flyExhibit.userProfile.docId, flyExhibit.fly.docId);
+  //       flyExhibitService.addFavoriteFly({
+  //         DbNames.uid: userProfile.uid,
+  //         DbNames.originalFlyDocId: flyExhibit.fly.docId,
+  //         ...flyExhibit.fly.toMap()
+  //       });
+  //     }
+  //   });
+  // }
 
   void setPrevDoc(QuerySnapshot flyQueries) {
     if (flyQueries.docs.length > 0)

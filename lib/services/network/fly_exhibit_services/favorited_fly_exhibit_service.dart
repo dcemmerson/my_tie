@@ -20,7 +20,7 @@ class FavoritedFlyExhibitService extends FlyExhibitService {
     return FirebaseFirestore.instance
         .collection(DbCollections.favoritedFlies)
         .where(DbNames.uid, isEqualTo: uid)
-        .orderBy(DbNames.dateFavorited, descending: true)
+        // .orderBy(DbNames.dateFavorited, descending: true)
         .limit(5)
         .get();
   }
@@ -33,7 +33,7 @@ class FavoritedFlyExhibitService extends FlyExhibitService {
       {String uid, DocumentSnapshot prevDoc}) {
     return FirebaseFirestore.instance
         .collection(DbCollections.favoritedFlies)
-        .orderBy(DbNames.dateFavorited, descending: true)
+        // .orderBy(DbNames.dateFavorited, descending: true)
         .where(DbNames.uid, isEqualTo: uid)
         .limit(5)
         .startAfterDocument(prevDoc)
