@@ -205,10 +205,13 @@ abstract class FlyExhibitBloc {
     fliesStreamController.add(flies);
   }
 
+  // name: getFlyExhibit
+  // description: Used when user taps on fly exhibit, to show the user the entire
+  //  fly details with instructions included.
   Stream<FlyExhibit> getFlyExhibit(String docId) {
-    // Function defined within this scope to extract docId form list of flyExhibits
-    // stored in FlyExhibitBloc class. Used when user clicks to see details on a
-    //  fly exhibit.
+    // extractFlyExhibit function defined within this scope to extract docId form
+    // list of flyExhibits stored in FlyExhibitBloc class. Used when user
+    // clicks to see details on a fly exhibit.
     FlyExhibit extractFlyExhibit(List<FlyExhibit> flyExhibits) {
       return flyExhibits.firstWhere(
           (flyExhibit) => flyExhibit.fly.docId == docId,

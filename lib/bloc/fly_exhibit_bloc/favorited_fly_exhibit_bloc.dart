@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:my_tie/models/db_names.dart';
 import 'package:my_tie/models/fly_exhibits/fly_exhibit.dart';
@@ -33,26 +35,46 @@ class FavoritedFlyExhibitBloc extends FlyExhibitBloc {
   ///   the doc id obtained from each fly stub.
   @override
   void initFliesFetch() async {
-    final Future<QuerySnapshot> flyTemplateDocF =
-        flyFormTemplateService.newFlyForm;
-    final Future<QuerySnapshot> queryF =
-        flyExhibitService.initGetCompletedFlies(uid: userProfile.uid);
+    // print('setting up favoriting listen');
+    // FavoritingBloc.sharedInstance.favoritedFliesStreamController.stream
+    //     .listen((event) {
+    //   print('favoriting event');
+    //   print(event);
+    // });
 
-    // No need to use Future.wait, as query depeneds on flyFormTemplate.
-    final flyFormTemplateDoc =
-        NewFlyFormTemplate.fromDoc((await flyTemplateDocF).docs[0].data());
-    final flyQueries = await queryF;
+    flyExhibitService
+        .initGetCompletedFliesStream(uid: userProfile.uid)
+        .listen((flyQueries) async {
+      print(flyQueries);
+      final Future<QuerySnapshot> flyTemplateDocF =
+          flyFormTemplateService.newFlyForm;
 
-    // Query Firestore with the docId obtained from each fly stub.
-    final flyDocs = await Future.wait(flyQueries.docs.map((query) {
-      return flyExhibitService
-          .getFlyDoc(query.data()[DbNames.originalFlyDocId]);
-    }).toList());
+      // Query Firestore with the docId obtained from each fly stub.
+      final flyDocs = await Future.wait(flyQueries.docs.map((query) {
+        return flyExhibitService
+            .getFlyDoc(query.data()[DbNames.originalFlyDocId]);
+      }).toList());
+      final flyFormTemplateDoc =
+          NewFlyFormTemplate.fromDoc((await flyTemplateDocF).docs[0].data());
+      setPrevDoc(flyQueries);
+      formatDocSnapshotsAndSendFliesToUI(flyDocs, flyFormTemplateDoc);
+    });
 
-    setPrevDoc(flyQueries);
-    // Call formatDocSnapshotsAndSendFliesToUI instead of formatAndSendFliesToUI
-    //  because we are dealing with doc snapshots here and not query snapshots.
-    formatDocSnapshotsAndSendFliesToUI(flyDocs, flyFormTemplateDoc);
+    // // No need to use Future.wait, as query depeneds on flyFormTemplate.
+    // final flyFormTemplateDoc =
+    //     NewFlyFormTemplate.fromDoc((await flyTemplateDocF).docs[0].data());
+    // final flyQueries = await queryF;
+
+    // // Query Firestore with the docId obtained from each fly stub.
+    // final flyDocs = await Future.wait(flyQueries.docs.map((query) {
+    //   return flyExhibitService
+    //       .getFlyDoc(query.data()[DbNames.originalFlyDocId]);
+    // }).toList());
+
+    // setPrevDoc(flyQueries);
+    // // Call formatDocSnapshotsAndSendFliesToUI instead of formatAndSendFliesToUI
+    // //  because we are dealing with doc snapshots here and not query snapshots.
+    // formatDocSnapshotsAndSendFliesToUI(flyDocs, flyFormTemplateDoc);
   }
 
   /// name: fliesFetch
@@ -60,27 +82,44 @@ class FavoritedFlyExhibitBloc extends FlyExhibitBloc {
   ///   reason described in initFliesFetch.
   @override
   void fliesFetch() async {
-    final Future<QuerySnapshot> flyTemplateDocF =
-        flyFormTemplateService.newFlyForm;
-    final Future<QuerySnapshot> queryF =
-        flyExhibitService.getCompletedFliesByDateAfterDoc(
-            uid: userProfile.uid, prevDoc: prevFlyDoc);
+    flyExhibitService
+        .getCompletedXFliesStream(uid: userProfile.uid)
+        .listen((flyQueries) async {
+      print(flyQueries);
+      final Future<QuerySnapshot> flyTemplateDocF =
+          flyFormTemplateService.newFlyForm;
 
-    // No need to use Future.wait, as query depeneds on flyFormTemplate.
-    final flyFormTemplateDoc =
-        NewFlyFormTemplate.fromDoc((await flyTemplateDocF).docs[0].data());
-    final flyQueries = await queryF;
+      // Query Firestore with the docId obtained from each fly stub.
+      final flyDocs = await Future.wait(flyQueries.docs.map((query) {
+        return flyExhibitService
+            .getFlyDoc(query.data()[DbNames.originalFlyDocId]);
+      }).toList());
+      final flyFormTemplateDoc =
+          NewFlyFormTemplate.fromDoc((await flyTemplateDocF).docs[0].data());
+      setPrevDoc(flyQueries);
+      formatDocSnapshotsAndSendFliesToUI(flyDocs, flyFormTemplateDoc);
+    });
+    // final Future<QuerySnapshot> flyTemplateDocF =
+    //     flyFormTemplateService.newFlyForm;
+    // final Future<QuerySnapshot> queryF =
+    //     flyExhibitService.getCompletedFliesByDateAfterDoc(
+    //         uid: userProfile.uid, prevDoc: prevFlyDoc);
 
-    // Query Firestore with the docId obtained from each fly stub.
-    final flyDocs = await Future.wait(flyQueries.docs.map((query) {
-      return flyExhibitService
-          .getFlyDoc(query.data()[DbNames.originalFlyDocId]);
-    }).toList());
+    // // No need to use Future.wait, as query depeneds on flyFormTemplate.
+    // final flyFormTemplateDoc =
+    //     NewFlyFormTemplate.fromDoc((await flyTemplateDocF).docs[0].data());
+    // final flyQueries = await queryF;
 
-    setPrevDoc(flyQueries);
-    // Call formatDocSnapshotsAndSendFliesToUI instead of formatAndSendFliesToUI
-    //  because we are dealing with doc snapshots here and not query snapshots.
-    formatDocSnapshotsAndSendFliesToUI(flyDocs, flyFormTemplateDoc);
+    // // Query Firestore with the docId obtained from each fly stub.
+    // final flyDocs = await Future.wait(flyQueries.docs.map((query) {
+    //   return flyExhibitService
+    //       .getFlyDoc(query.data()[DbNames.originalFlyDocId]);
+    // }).toList());
+
+    // setPrevDoc(flyQueries);
+    // // Call formatDocSnapshotsAndSendFliesToUI instead of formatAndSendFliesToUI
+    // //  because we are dealing with doc snapshots here and not query snapshots.
+    // formatDocSnapshotsAndSendFliesToUI(flyDocs, flyFormTemplateDoc);
   }
 
   void formatDocSnapshotsAndSendFliesToUI(List<DocumentSnapshot> flyDocs,

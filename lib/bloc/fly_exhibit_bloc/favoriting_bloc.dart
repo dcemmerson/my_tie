@@ -17,13 +17,13 @@ class FavoritingBloc {
   UserProfile userProfile;
   FlyExhibitService flyExhibitService;
 
-  final _favoritedFliesStreamController = StreamController<FlyExhibit>();
+  final favoritedFliesStreamController = StreamController<FlyExhibit>();
   StreamSink<FlyExhibit> favoritedFlySink;
 
   static final sharedInstance = FavoritingBloc._();
 
   FavoritingBloc._() {
-    favoritedFlySink = _favoritedFliesStreamController.sink;
+    favoritedFlySink = favoritedFliesStreamController.sink;
   }
 
   void init({
@@ -60,7 +60,7 @@ class FavoritingBloc {
   void _listenForFavoritedFlyEvents() {
     _assertThisIsInited();
 
-    _favoritedFliesStreamController.stream.listen((flyExhibit) {
+    favoritedFliesStreamController.stream.listen((flyExhibit) {
       if (flyExhibit.isFavorited) {
         userBloc.removeFromFavorites(
             flyExhibit.userProfile.docId, flyExhibit.fly.docId);
@@ -79,7 +79,7 @@ class FavoritingBloc {
   }
 
   void close() {
-    _favoritedFliesStreamController.close();
+    favoritedFliesStreamController.close();
     favoritedFlySink.close();
   }
 }

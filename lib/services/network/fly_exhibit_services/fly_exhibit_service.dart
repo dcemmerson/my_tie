@@ -43,7 +43,27 @@ abstract class FlyExhibitService {
         .add({...fly, DbNames.dateFavorited: DateTime.now()});
   }
 
-  Future<QuerySnapshot> initGetCompletedFlies({String uid});
+  // We define function bodies in all of the following functions as all sub
+  // classes do not necessarily need to define implementations of each method.
+  Future<QuerySnapshot> initGetCompletedFlies({String uid}) {
+    throw Exception('unimplmented: initGetCompletedFlies');
+  }
+
+  Stream<QuerySnapshot> initGetCompletedFliesStream({String uid}) {
+    throw Exception('unimplmented: initGetCompletedFliesStream');
+  }
+
   Future<QuerySnapshot> getCompletedFliesByDateAfterDoc(
-      {String uid, DocumentSnapshot prevDoc});
+      {String uid, DocumentSnapshot prevDoc}) {
+    throw Exception('unimplmented: getCompletedFliesByDateAfterDoc');
+  }
+
+  Stream<QuerySnapshot> getCompletedFliesStreamByDateAfterDoc(
+      {String uid, DocumentSnapshot prevDoc}) {
+    throw Exception('unimplmented: getCompletedFliesStreamByDateAfterDoc');
+  }
+
+  Stream<QuerySnapshot> getCompletedXFliesStream({String uid, int count = 5}) {
+    throw Exception('unimplmented: getCompletedFliesStreamByDateAfterDoc');
+  }
 }
