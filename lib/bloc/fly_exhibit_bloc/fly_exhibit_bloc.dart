@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:my_tie/bloc/fly_exhibit_bloc/newest_fly_exhibit_bloc.dart';
 import 'package:my_tie/models/db_names.dart';
 import 'package:my_tie/models/fly_exhibits/fly_exhibit.dart';
 import 'package:my_tie/models/new_fly/fly.dart';
@@ -129,6 +130,9 @@ abstract class FlyExhibitBloc {
   }
 
   void fliesFetch() async {
+    print('this is instance of newestflyexhibitbloc = ');
+    print(this is NewestFlyExhibitBloc);
+
     final Future<QuerySnapshot> flyTemplateDocF =
         flyFormTemplateService.newFlyForm;
     final Future<QuerySnapshot> queryF =
@@ -176,11 +180,6 @@ abstract class FlyExhibitBloc {
 
   void formatAndSendFliesToUI(
       QuerySnapshot flyQueries, NewFlyFormTemplate flyFormTemplateDoc) async {
-    // final UserMaterialsTransfer userMaterials =
-    //     await userBloc.userMaterialsProfile.first;
-
-    // userService.getUserProfile(authService.currentUser.uid);
-
     final List<FlyExhibit> flyExhibits = flyQueries.docs.map((doc) {
       final flyDoc = doc.data();
       return FlyExhibit.fromUserProfileAndFly(

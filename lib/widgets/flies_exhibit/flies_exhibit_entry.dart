@@ -13,7 +13,6 @@ import 'fly_exhibit_overview/fly_overview_exhibit.dart';
 class FliesExhibitEntry extends StatefulWidget {
   final FlyExhibitType flyExhibitType;
   final ScrollController scrollController;
-  // final ScrollController parentScrollController;
 
   FliesExhibitEntry({
     this.flyExhibitType,
@@ -27,7 +26,6 @@ class FliesExhibitEntry extends StatefulWidget {
 
 class _FliesExhibitEntryState extends State<FliesExhibitEntry>
     with AutomaticKeepAliveClientMixin {
-  // final _scrollController = ScrollController();
   FlyExhibitBloc _flyExhibitBloc;
   bool _keepAlive = true;
   int _flyCount = 0;
@@ -35,18 +33,6 @@ class _FliesExhibitEntryState extends State<FliesExhibitEntry>
 
   @override
   bool get wantKeepAlive => _keepAlive;
-
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   widget.scrollController.addListener(notifyParentScrollController);
-  // }
-
-  // void notifyParentScrollController() {
-  //   widget.parentScrollController.notifyListeners();
-  //   // widget.parentScrollController.
-  //   print('scrolled');
-  // }
 
   @override
   void didChangeDependencies() {

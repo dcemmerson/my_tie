@@ -4,8 +4,8 @@ import 'newest_tab_page.dart';
 
 class Tabs {
   static final pages = [
-    MaterialMatchTabPage(),
     NewestTabPage(),
+    MaterialMatchTabPage(),
     FavoritesTabPage(),
   ];
 }

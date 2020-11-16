@@ -13,6 +13,8 @@ import '../user_bloc.dart';
 import 'fly_exhibit_bloc.dart';
 
 class FavoritedFlyExhibitBloc extends FlyExhibitBloc {
+  int flyCount = 0;
+
   final String exhibitBlocType = 'FavoritedFlyExhibitBloc';
 
   FlyExhibitType get flyExhibitType => FlyExhibitType.Favorites;
@@ -35,46 +37,7 @@ class FavoritedFlyExhibitBloc extends FlyExhibitBloc {
   ///   the doc id obtained from each fly stub.
   @override
   void initFliesFetch() async {
-    // print('setting up favoriting listen');
-    // FavoritingBloc.sharedInstance.favoritedFliesStreamController.stream
-    //     .listen((event) {
-    //   print('favoriting event');
-    //   print(event);
-    // });
-
-    flyExhibitService
-        .initGetCompletedFliesStream(uid: userProfile.uid)
-        .listen((flyQueries) async {
-      print(flyQueries);
-      final Future<QuerySnapshot> flyTemplateDocF =
-          flyFormTemplateService.newFlyForm;
-
-      // Query Firestore with the docId obtained from each fly stub.
-      final flyDocs = await Future.wait(flyQueries.docs.map((query) {
-        return flyExhibitService
-            .getFlyDoc(query.data()[DbNames.originalFlyDocId]);
-      }).toList());
-      final flyFormTemplateDoc =
-          NewFlyFormTemplate.fromDoc((await flyTemplateDocF).docs[0].data());
-      setPrevDoc(flyQueries);
-      formatDocSnapshotsAndSendFliesToUI(flyDocs, flyFormTemplateDoc);
-    });
-
-    // // No need to use Future.wait, as query depeneds on flyFormTemplate.
-    // final flyFormTemplateDoc =
-    //     NewFlyFormTemplate.fromDoc((await flyTemplateDocF).docs[0].data());
-    // final flyQueries = await queryF;
-
-    // // Query Firestore with the docId obtained from each fly stub.
-    // final flyDocs = await Future.wait(flyQueries.docs.map((query) {
-    //   return flyExhibitService
-    //       .getFlyDoc(query.data()[DbNames.originalFlyDocId]);
-    // }).toList());
-
-    // setPrevDoc(flyQueries);
-    // // Call formatDocSnapshotsAndSendFliesToUI instead of formatAndSendFliesToUI
-    // //  because we are dealing with doc snapshots here and not query snapshots.
-    // formatDocSnapshotsAndSendFliesToUI(flyDocs, flyFormTemplateDoc);
+    fliesFetch();
   }
 
   /// name: fliesFetch
@@ -82,44 +45,22 @@ class FavoritedFlyExhibitBloc extends FlyExhibitBloc {
   ///   reason described in initFliesFetch.
   @override
   void fliesFetch() async {
-    flyExhibitService
-        .getCompletedXFliesStream(uid: userProfile.uid)
-        .listen((flyQueries) async {
-      print(flyQueries);
-      final Future<QuerySnapshot> flyTemplateDocF =
-          flyFormTemplateService.newFlyForm;
+    flyCount += 5;
+    final Stream<QuerySnapshot> completedFlies = flyExhibitService
+        .getCompletedXFliesStream(uid: userProfile.uid, count: flyCount);
+    final Future<QuerySnapshot> templateDocF =
+        flyFormTemplateService.newFlyForm;
+    final flyFormTemplateDoc =
+        NewFlyFormTemplate.fromDoc((await templateDocF).docs[0].data());
 
-      // Query Firestore with the docId obtained from each fly stub.
+    completedFlies.listen((flyQueries) async {
+      print('init flies fetch emitting');
       final flyDocs = await Future.wait(flyQueries.docs.map((query) {
         return flyExhibitService
             .getFlyDoc(query.data()[DbNames.originalFlyDocId]);
       }).toList());
-      final flyFormTemplateDoc =
-          NewFlyFormTemplate.fromDoc((await flyTemplateDocF).docs[0].data());
-      setPrevDoc(flyQueries);
       formatDocSnapshotsAndSendFliesToUI(flyDocs, flyFormTemplateDoc);
     });
-    // final Future<QuerySnapshot> flyTemplateDocF =
-    //     flyFormTemplateService.newFlyForm;
-    // final Future<QuerySnapshot> queryF =
-    //     flyExhibitService.getCompletedFliesByDateAfterDoc(
-    //         uid: userProfile.uid, prevDoc: prevFlyDoc);
-
-    // // No need to use Future.wait, as query depeneds on flyFormTemplate.
-    // final flyFormTemplateDoc =
-    //     NewFlyFormTemplate.fromDoc((await flyTemplateDocF).docs[0].data());
-    // final flyQueries = await queryF;
-
-    // // Query Firestore with the docId obtained from each fly stub.
-    // final flyDocs = await Future.wait(flyQueries.docs.map((query) {
-    //   return flyExhibitService
-    //       .getFlyDoc(query.data()[DbNames.originalFlyDocId]);
-    // }).toList());
-
-    // setPrevDoc(flyQueries);
-    // // Call formatDocSnapshotsAndSendFliesToUI instead of formatAndSendFliesToUI
-    // //  because we are dealing with doc snapshots here and not query snapshots.
-    // formatDocSnapshotsAndSendFliesToUI(flyDocs, flyFormTemplateDoc);
   }
 
   void formatDocSnapshotsAndSendFliesToUI(List<DocumentSnapshot> flyDocs,
@@ -147,9 +88,9 @@ class FavoritedFlyExhibitBloc extends FlyExhibitBloc {
       );
     }).toList();
 
-    flies.addAll(flyExhibits);
-    flies.removeWhere((fly) => fly is FlyExhibitLoadingIndicator);
-    if (flyExhibits.isEmpty) flies.add(FlyExhibitEndCapIndicator());
+    flies = flyExhibits;
+    // flies.removeWhere((fly) => fly is FlyExhibitLoadingIndicator);
+    // if (flyExhibits.isEmpty) flies.add(FlyExhibitEndCapIndicator());
     fliesStreamController.add(flies);
   }
 }

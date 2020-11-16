@@ -62,8 +62,8 @@ class _PageBaseState extends State<PageBase>
     if (widget.tabPages != null) {
       _appBarScrollController = ScrollController();
 
-      _tabController =
-          TabController(vsync: this, length: widget.tabPages.length);
+      _tabController = TabController(
+          vsync: this, initialIndex: 1, length: widget.tabPages.length);
 
       _tabController.addListener(_handleTabControllerSwap);
     }
@@ -75,7 +75,6 @@ class _PageBaseState extends State<PageBase>
   //    the NestedScrollController should scroll to show or hide the appbar.
   void _handleChildScroll() {
     var prevOffset = childScrollPositionPrev;
-    print(prevOffset);
     childScrollPositionPrev = tabScrollControllers[currTabIndex].offset;
 
     if (childScrollPositionPrev - prevOffset > 0) {
@@ -174,9 +173,9 @@ class _PageBaseState extends State<PageBase>
               controller: _tabController,
               children: widget.tabPages.map((tabPage) {
                 tabScrollControllers.add(tabPage.scrollController);
-                if (currTabIndex == -1) {
-                  tabScrollControllers[0].addListener(_handleChildScroll);
-                  currTabIndex = 0;
+                if (currTabIndex == -1 && tabScrollControllers.length > 1) {
+                  tabScrollControllers[1].addListener(_handleChildScroll);
+                  currTabIndex = 1;
                 }
                 return SafeArea(
                     top: false,
