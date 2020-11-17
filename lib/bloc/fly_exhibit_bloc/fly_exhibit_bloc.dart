@@ -33,7 +33,7 @@ abstract class FlyExhibitBloc {
 
   final _favoritedFliesStreamController = StreamController<FlyExhibit>();
   StreamSink<FlyExhibit> favoritedFlySink;
-  final _requestFetchFlies = StreamController<FetchFliesEvent>();
+  final requestFetchFlies = StreamController<FetchFliesEvent>();
   StreamSink<FetchFliesEvent> requestFetchFliesSink;
   StreamController<FlyExhibit> flyDetailStreamController;
 
@@ -57,22 +57,22 @@ abstract class FlyExhibitBloc {
     this.userBloc,
     this.flyExhibitService,
     this.flyFormTemplateService,
-  }) : favoritingBloc = FavoritingBloc.sharedInstance {
+  }) : this.favoritingBloc = FavoritingBloc.sharedInstance {
     fliesStream = fliesStreamController.stream;
     fliesStreamController.onListen = initFliesFetch;
     favoritedFlySink = favoritingBloc.favoritedFlySink;
     // favoritedFlySink = _favoritedFliesStreamController.sink;
-    requestFetchFliesSink = _requestFetchFlies.sink;
+    requestFetchFliesSink = requestFetchFlies.sink;
 
-    _listenForUserMaterialProfileEvents();
-    _listenForRequestFliesFetch();
+    listenForUserMaterialProfileEvents();
+    listenForRequestFliesFetch();
     // _listenForFavoritedFlyEvents();
   }
 
   /// Get userProfile, and listen for changes to userProfile. Update all FlyExhibit
   /// if upon changes to userProfile (materials on hand for each fly may change
   ///  when user profile is updated).
-  void _listenForUserMaterialProfileEvents() {
+  void listenForUserMaterialProfileEvents() {
     userBloc.userMaterialsProfile.listen((UserMaterialsTransfer umt) {
       userProfile = umt.userProfile;
 
@@ -110,13 +110,13 @@ abstract class FlyExhibitBloc {
     formatAndSendFliesToUI(flyQueries, flyFormTemplateDoc);
   }
 
-  /// Listen for fetch flies events being adddd to sink from UI (eg, when user
+  /// Listen for fetch flies events being added to sink from UI (eg, when user
   ///  scrolls to bottom of screen and infinite scroll needs to load more
-  ///  flies). First added the FlyExhibitLoadingIndicator, to tell UI to show
+  ///  flies). First add the FlyExhibitLoadingIndicator, to tell UI to show
   ///  spinner, then call _newestFliesFetch which will make request to db,
-  ///  update _newestFlies, then add _newest flies to newestFliesStreamController.
-  void _listenForRequestFliesFetch() {
-    _requestFetchFlies.stream.listen((ffe) {
+  ///  update _newestFlies, then add flies to fliesStreamController.
+  void listenForRequestFliesFetch() {
+    requestFetchFlies.stream.listen((ffe) {
       if (ffe is FetchNewestFliesEvent) {
         flies.add(FlyExhibitLoadingIndicator());
         fliesStreamController.add(flies);
@@ -234,7 +234,7 @@ abstract class FlyExhibitBloc {
   }
 
   void close() {
-    _requestFetchFlies.close();
+    requestFetchFlies.close();
     requestFetchFliesSink.close();
     fliesStreamController.close();
     _favoritedFliesStreamController.close();

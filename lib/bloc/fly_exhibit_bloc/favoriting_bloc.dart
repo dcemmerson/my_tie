@@ -17,7 +17,12 @@ class FavoritingBloc {
   UserProfile userProfile;
   FlyExhibitService flyExhibitService;
 
-  final favoritedFliesStreamController = StreamController<FlyExhibit>();
+  // Let favoritedFliesStreamController be a broadcast stream so we can listen
+  // in this class and respond to favorite/unfavorite events, as well as our
+  // "By Favorites" tab on UI's Bloc can listen and update favorites exhibits
+  // correctly.
+  final favoritedFliesStreamController =
+      StreamController<FlyExhibit>.broadcast();
   StreamSink<FlyExhibit> favoritedFlySink;
 
   static final sharedInstance = FavoritingBloc._();
