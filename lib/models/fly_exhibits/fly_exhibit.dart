@@ -4,6 +4,11 @@ import 'package:my_tie/models/user_profile/user_profile.dart';
 import 'package:my_tie/pages/tab_based_pages/tab_page.dart';
 
 class FlyExhibit {
+  // Flags used for animating flyExhibits in/out when user favorites/unfavorites
+  // a fly exhibit.
+  bool willBeRemoved = false;
+  bool isRemoved = false;
+
   final Fly fly;
   // flyExhibitType is only used when user clicks on a fly in the
   // fly exhibit. The fly details exhibit needs to know which page the user

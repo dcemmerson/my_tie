@@ -38,11 +38,24 @@ class FavoritedFlyExhibitBloc extends FlyExhibitBloc {
       // probably tapped the heart to unfavorite this flyExhibit, so we need
       // to search through out flyExhibits in parent class and mark for removal,
       // if this flyExhibit exists in our flyExhibits in parent class.
-      final List<FlyExhibit> updatedFlyExhibits = List.from(flies);
-      updatedFlyExhibits.remove(flyExhibit);
+      final List<FlyExhibit> updatedFlyExhibitsWillRemove = flies.map((flyEx) {
+        if (flyEx.fly?.docId == flyExhibit.fly.docId) {
+          flyEx.willBeRemoved = true;
+        }
+        return flyEx;
+      }).toList();
+      flies = updatedFlyExhibitsWillRemove;
+      fliesStreamController.add(flies);
 
       Timer(Duration(seconds: 3), () {
-        flies = updatedFlyExhibits;
+        final List<FlyExhibit> updatedFlyExhibitsRemoved = flies.map((flyEx) {
+          if (flyEx.fly?.docId == flyExhibit.fly.docId) {
+            flyEx.isRemoved = true;
+          }
+          return flyEx;
+        }).toList();
+
+        flies = updatedFlyExhibitsRemoved;
         fliesStreamController.add(flies);
       });
     } else {

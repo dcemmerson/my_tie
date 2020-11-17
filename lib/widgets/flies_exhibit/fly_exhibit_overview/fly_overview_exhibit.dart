@@ -18,18 +18,27 @@ class FlyOverviewExhibit extends StatelessWidget {
 
   Widget _imageWithLoadingBar(
       String uri, /*double width, double height,*/ BuildContext context) {
-    return FadeInImage.assetNetwork(
-      placeholder: PlaceHolders.loadingImage,
-      image: uri,
-      imageErrorBuilder: (context, error, stackTrace) => Stack(children: [
-        Text('Error loading image',
-            style: TextStyle(color: Theme.of(context).errorColor)),
-        Image.asset(PlaceHolders.loadingImage, fit: BoxFit.fill, width: 1000),
-      ]),
-      // height: height,
-      fit: BoxFit.fill,
-      width: 1000,
-      fadeOutDuration: const Duration(milliseconds: 400),
+    return ColorFiltered(
+      colorFilter: ColorFilter.mode(
+          flyExhibit.willBeRemoved ? Colors.grey : Color.fromRGBO(0, 0, 0, 0),
+          BlendMode.saturation),
+      child: FadeInImage.assetNetwork(
+        placeholder: PlaceHolders.loadingImage,
+        image: uri,
+        imageErrorBuilder: (context, error, stackTrace) => Stack(children: [
+          Text('Error loading image',
+              style: TextStyle(color: Theme.of(context).errorColor)),
+          Image.asset(
+            PlaceHolders.loadingImage,
+            fit: BoxFit.fill,
+            width: 1000,
+          ),
+        ]),
+        // height: height,
+        fit: BoxFit.fill,
+        width: 1000,
+        fadeOutDuration: const Duration(milliseconds: 400),
+      ),
     );
   }
 
