@@ -31,7 +31,11 @@ class FlyExhibit {
   });
 
   FlyExhibit.fromUserProfileAndFly(
-      {this.flyExhibitType, this.fly, this.userProfile})
+      {this.flyExhibitType,
+      this.fly,
+      this.userProfile,
+      this.willBeRemoved = false,
+      this.isRemoved = false})
       : requiredMaterialCountFly = fly.materialList.length,
         requiredMaterialCountUser = _countFlyMaterialsOnHand(userProfile, fly),
         isFavorited = _isFavorited(fly, userProfile);

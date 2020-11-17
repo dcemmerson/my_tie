@@ -62,6 +62,8 @@ class FavoritedFlyExhibitBloc extends FlyExhibitBloc {
       // User probably tapps to favorite a fly exhibit, meaning we need to add
       // the favorited fly exhibit to the top of the parent classes flyExhibits
       // and update stream.
+      flyExhibit.willBeRemoved = false;
+      flyExhibit.isRemoved = false;
       flies.insert(0, flyExhibit);
       fliesStreamController.add(flies);
     }

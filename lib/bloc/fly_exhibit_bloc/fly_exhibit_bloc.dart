@@ -83,6 +83,11 @@ abstract class FlyExhibitBloc {
           flyExhibitType: flyExhibitType,
           fly: flyExhibit.fly,
           userProfile: userProfile,
+          // These flags are only used on the "By Favorites" tab to the UI
+          // can correctly indicate to the user when they unfavorite a fly,
+          // and we can delay then animate the fly exhibit out of favorites tab.
+          willBeRemoved: flyExhibit.willBeRemoved,
+          isRemoved: flyExhibit.isRemoved,
         );
       }).toList();
 

@@ -25,14 +25,14 @@ class FavoritedFlyExhibitService extends FlyExhibitService {
         .get();
   }
 
-  Stream<QuerySnapshot> initGetCompletedFliesStream({String uid}) {
-    return FirebaseFirestore.instance
-        .collection(DbCollections.favoritedFlies)
-        .where(DbNames.uid, isEqualTo: uid)
-        .orderBy(DbNames.dateFavorited, descending: true)
-        .limit(5)
-        .snapshots();
-  }
+  // Stream<QuerySnapshot> initGetCompletedFliesStream({String uid}) {
+  //   return FirebaseFirestore.instance
+  //       .collection(DbCollections.favoritedFlies)
+  //       .where(DbNames.uid, isEqualTo: uid)
+  //       .orderBy(DbNames.dateFavorited, descending: true)
+  //       .limit(5)
+  //       .snapshots();
+  // }
 
   // name: getCompletedFliesXStream
   // description: Fetch count number flies from Firestore as a stream. We
@@ -40,15 +40,15 @@ class FavoritedFlyExhibitService extends FlyExhibitService {
   //  guarantee which flies we may be fetching. For example, user may have
   //  liked/disliked additional flies since last query, which may replace flies
   //  at specific locations in previous query.
-  @override
-  Stream<QuerySnapshot> getCompletedXFliesStream({String uid, int count = 5}) {
-    return FirebaseFirestore.instance
-        .collection(DbCollections.favoritedFlies)
-        .orderBy(DbNames.dateFavorited, descending: true)
-        .where(DbNames.uid, isEqualTo: uid)
-        .limit(count)
-        .snapshots();
-  }
+  // @override
+  // Stream<QuerySnapshot> getCompletedXFliesStream({String uid, int count = 5}) {
+  //   return FirebaseFirestore.instance
+  //       .collection(DbCollections.favoritedFlies)
+  //       .orderBy(DbNames.dateFavorited, descending: true)
+  //       .where(DbNames.uid, isEqualTo: uid)
+  //       .limit(count)
+  //       .snapshots();
+  // }
 
   /// name: getCompletedFliesByDateAfterDoc
   /// description: function use by stream controller triggered by UI, when user
