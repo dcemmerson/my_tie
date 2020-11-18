@@ -21,6 +21,7 @@ environment:
   sdk: ">=2.7.0 <3.0.0"
 
 dependencies:
+  animated_stream_list: ^1.1.0
   app_settings: 4.0.2
   carousel_slider: ^2.2.1
   confetti: ^0.5.4+1

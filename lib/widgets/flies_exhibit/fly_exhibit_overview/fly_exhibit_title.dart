@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:my_tie/bloc/state/my_tie_state.dart';
 import 'package:my_tie/models/fly_exhibits/fly_exhibit.dart';
+import 'package:my_tie/pages/tab_based_pages/tab_page.dart';
 import 'package:my_tie/styles/styles.dart';
 
 class FlyExhibitTitle extends StatelessWidget {
@@ -15,11 +16,29 @@ class FlyExhibitTitle extends StatelessWidget {
   FlyExhibitTitle({this.flyExhibit, this.centered = false});
 
   void _handleFavorited(BuildContext context) {
-    MyTieStateContainer.of(context)
-        .blocProvider
-        .newestFlyExhibitBloc
-        .favoritedFlySink
-        .add(flyExhibit);
+    switch (flyExhibit.flyExhibitType) {
+      case FlyExhibitType.Newest:
+        MyTieStateContainer.of(context)
+            .blocProvider
+            .newestFlyExhibitBloc
+            .favoritedFlySink
+            ?.add(flyExhibit);
+        break;
+      case FlyExhibitType.MaterialMatch:
+        MyTieStateContainer.of(context)
+            .blocProvider
+            .byMaterialsFlyExhibitBloc
+            .favoritedFlySink
+            ?.add(flyExhibit);
+        break;
+      case FlyExhibitType.Favorites:
+        MyTieStateContainer.of(context)
+            .blocProvider
+            .favoritedFlyExhibitBloc
+            .favoritedFlySink
+            ?.add(flyExhibit);
+        break;
+    }
   }
 
   @override

@@ -32,7 +32,7 @@ abstract class FlyExhibitBloc {
   final FlyFormTemplateService flyFormTemplateService;
 
   final _favoritedFliesStreamController = StreamController<FlyExhibit>();
-  StreamSink<FlyExhibit> favoritedFlySink;
+  StreamSink<FlyExhibit> _favoritedFlySink;
   final requestFetchFlies = StreamController<FetchFliesEvent>();
   StreamSink<FetchFliesEvent> requestFetchFliesSink;
   StreamController<FlyExhibit> flyDetailStreamController;
@@ -53,6 +53,9 @@ abstract class FlyExhibitBloc {
 
   FlyExhibitType get flyExhibitType;
 
+  // Define this in a getter so we can easily override in subclasses.
+  StreamSink<FlyExhibit> get favoritedFlySink => _favoritedFlySink;
+
   FlyExhibitBloc({
     this.userBloc,
     this.flyExhibitService,
@@ -60,7 +63,7 @@ abstract class FlyExhibitBloc {
   }) : this.favoritingBloc = FavoritingBloc.sharedInstance {
     fliesStream = fliesStreamController.stream;
     fliesStreamController.onListen = initFliesFetch;
-    favoritedFlySink = favoritingBloc.favoritedFlySink;
+    _favoritedFlySink = favoritingBloc.favoritedFlySink;
     // favoritedFlySink = _favoritedFliesStreamController.sink;
     requestFetchFliesSink = requestFetchFlies.sink;
 
@@ -243,7 +246,7 @@ abstract class FlyExhibitBloc {
     requestFetchFliesSink.close();
     fliesStreamController.close();
     _favoritedFliesStreamController.close();
-    favoritedFlySink.close();
+    _favoritedFlySink.close();
 
     // _newestFlyDetailStreamController could be null if user never clicked
     // on a fly exhibit to see details/instructions.

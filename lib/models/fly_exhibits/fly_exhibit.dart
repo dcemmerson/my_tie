@@ -58,4 +58,13 @@ class FlyExhibit {
       return prevValue;
     });
   }
+
+  static bool equals(FlyExhibit a, FlyExhibit b) {
+    print('equalizer');
+    if (a.fly?.docId == b.fly?.docId) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 }

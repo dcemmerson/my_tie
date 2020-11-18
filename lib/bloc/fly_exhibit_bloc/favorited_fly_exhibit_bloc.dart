@@ -5,6 +5,7 @@ import 'package:my_tie/models/db_names.dart';
 import 'package:my_tie/models/fly_exhibits/fly_exhibit.dart';
 import 'package:my_tie/models/new_fly/fly.dart';
 import 'package:my_tie/models/new_fly/new_fly_form_template.dart';
+import 'package:my_tie/models/user_profile/user_materials_transfer.dart';
 import 'package:my_tie/pages/tab_based_pages/tab_page.dart';
 import 'package:my_tie/services/network/fly_exhibit_services/favorited_fly_exhibit_service.dart';
 import 'package:my_tie/services/network/fly_form_template_service.dart';
@@ -19,6 +20,11 @@ class FavoritedFlyExhibitBloc extends FlyExhibitBloc {
   final String exhibitBlocType = 'FavoritedFlyExhibitBloc';
 
   FlyExhibitType get flyExhibitType => FlyExhibitType.Favorites;
+
+  // We need to override the getter for favoritedFlySink in the
+  // FavoritedFlyExhibitBloc specifically because
+  // @override
+  // StreamSink<FlyExhibit> get favoritedFlySink => null;
 
   FavoritedFlyExhibitBloc({
     UserBloc userBloc,
@@ -38,32 +44,16 @@ class FavoritedFlyExhibitBloc extends FlyExhibitBloc {
       // probably tapped the heart to unfavorite this flyExhibit, so we need
       // to search through out flyExhibits in parent class and mark for removal,
       // if this flyExhibit exists in our flyExhibits in parent class.
-      final List<FlyExhibit> updatedFlyExhibitsWillRemove = flies.map((flyEx) {
-        if (flyEx.fly?.docId == flyExhibit.fly.docId) {
-          flyEx.willBeRemoved = true;
-        }
-        return flyEx;
-      }).toList();
-      flies = updatedFlyExhibitsWillRemove;
+
+      flies.removeWhere((flyEx) => flyEx.fly?.docId == flyExhibit.fly.docId);
       fliesStreamController.add(flies);
-
-      Timer(Duration(seconds: 3), () {
-        final List<FlyExhibit> updatedFlyExhibitsRemoved = flies.map((flyEx) {
-          if (flyEx.fly?.docId == flyExhibit.fly.docId) {
-            flyEx.isRemoved = true;
-          }
-          return flyEx;
-        }).toList();
-
-        flies = updatedFlyExhibitsRemoved;
-        fliesStreamController.add(flies);
-      });
+      // });
     } else {
       // User probably tapps to favorite a fly exhibit, meaning we need to add
       // the favorited fly exhibit to the top of the parent classes flyExhibits
       // and update stream.
-      flyExhibit.willBeRemoved = false;
-      flyExhibit.isRemoved = false;
+      // flyExhibit.willBeRemoved = false;
+      // flyExhibit.isRemoved = false;
       flies.insert(0, flyExhibit);
       fliesStreamController.add(flies);
     }

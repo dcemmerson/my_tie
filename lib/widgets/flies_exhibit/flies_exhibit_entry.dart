@@ -5,6 +5,7 @@ import 'package:my_tie/bloc/state/my_tie_state.dart';
 import 'package:my_tie/models/fly_exhibits/fly_exhibit.dart';
 import 'package:my_tie/pages/tab_based_pages/tab_page.dart';
 import 'package:my_tie/widgets/misc/creation_aware_widget.dart';
+import 'package:animated_stream_list/animated_stream_list.dart';
 
 import 'all_flies_loaded.dart';
 import 'flies_exhibit_overview_stream_builder.dart';
@@ -100,9 +101,66 @@ class _FliesExhibitEntryState extends State<FliesExhibitEntry>
         ]);
   }
 
+  Widget _buildTile(
+      FlyExhibit flyExhibit, int index, Animation<double> animation) {
+    // TextStyle textStyle = TextStyle();
+    if (flyExhibit is FlyExhibitLoadingIndicator)
+      return Container(child: CircularProgressIndicator());
+    else if (flyExhibit is FlyExhibitEndCapIndicator)
+      return AllFliesLoaded();
+    else
+      return SizeTransition(
+        axis: Axis.vertical,
+        sizeFactor: animation,
+        child: CreationAwareWidget(
+          index: index,
+          child: FlyOverviewExhibit(flyExhibit),
+          itemCreated: _handleItemCreated,
+        ),
+      );
+  }
+
+  Widget _buildRemovedTile(
+      FlyExhibit flyExhibit, int index, Animation<double> animation) {
+    // print('\n\n\n');
+    // print(index);
+
+    // TextStyle textStyle = TextStyle();
+    if (flyExhibit is FlyExhibitLoadingIndicator)
+      return Container(child: CircularProgressIndicator());
+    else if (flyExhibit is FlyExhibitEndCapIndicator)
+      return AllFliesLoaded();
+    else
+      return SizeTransition(
+        axis: Axis.vertical,
+        sizeFactor: animation,
+        child: CreationAwareWidget(
+          index: index,
+          child: FlyOverviewExhibit(flyExhibit),
+          itemCreated: _handleItemCreated,
+        ),
+      );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return FliesExhibitOverviewStreamBuilder(
-        builder: buildFlyExhibit, stream: _flyExhibitBloc.fliesStream);
+    print('build fly exhibit entry');
+    if (widget.flyExhibitType == FlyExhibitType.Favorites) {
+      return AnimatedStreamList<FlyExhibit>(
+          initialList: [],
+          duration: Duration(seconds: 5),
+          equals: (a, b) {
+            print('hello world');
+            return FlyExhibit.equals(a as FlyExhibit, b as FlyExhibit);
+          },
+          itemBuilder: (flyExhibit, index, context, animation) =>
+              _buildTile(flyExhibit, index, animation),
+          itemRemovedBuilder: (flyExhibit, index, context, animation) =>
+              _buildRemovedTile(flyExhibit, index, animation),
+          streamList: _flyExhibitBloc.fliesStream);
+    } else {
+      return FliesExhibitOverviewStreamBuilder(
+          builder: buildFlyExhibit, stream: _flyExhibitBloc.fliesStream);
+    }
   }
 }
