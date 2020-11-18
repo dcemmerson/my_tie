@@ -59,7 +59,7 @@ class FavoritedFlyExhibitBloc extends FlyExhibitBloc {
         fliesStreamController.add(flies);
       });
     } else {
-      // User probably tapps to favorite a fly exhibit, meaning we need to add
+      // User probably taps to favorite a fly exhibit, meaning we need to add
       // the favorited fly exhibit to the top of the parent classes flyExhibits
       // and update stream.
       flyExhibit.willBeRemoved = false;

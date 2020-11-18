@@ -8,6 +8,7 @@ class FlyExhibit {
   // a fly exhibit.
   bool willBeRemoved = false;
   bool isRemoved = false;
+  bool hasBeenInserted = false;
 
   final Fly fly;
   // flyExhibitType is only used when user clicks on a fly in the
