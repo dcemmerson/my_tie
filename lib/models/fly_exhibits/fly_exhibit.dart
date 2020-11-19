@@ -1,14 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:my_tie/bloc/fly_exhibit_bloc/fly_exhibit_bloc.dart';
 import 'package:my_tie/models/new_fly/fly.dart';
 import 'package:my_tie/models/new_fly/fly_materials.dart';
 import 'package:my_tie/models/user_profile/user_profile.dart';
 import 'package:my_tie/pages/tab_based_pages/tab_page.dart';
 
 class FlyExhibit {
-  // Flags used for animating flyExhibits in/out when user favorites/unfavorites
-  // a fly exhibit.
-  bool willBeRemoved = false;
-  bool isRemoved = false;
-
   final Fly fly;
   // flyExhibitType is only used when user clicks on a fly in the
   // fly exhibit. The fly details exhibit needs to know which page the user
@@ -30,13 +27,20 @@ class FlyExhibit {
     this.flyExhibitType,
   });
 
-  FlyExhibit.fromUserProfileAndFly(
-      {this.flyExhibitType,
-      this.fly,
-      this.userProfile,
-      this.willBeRemoved = false,
-      this.isRemoved = false})
-      : requiredMaterialCountFly = fly.materialList.length,
+  FlyExhibit.fromFlyExhibit(FlyExhibit flyExhibit,
+      {FlyExhibitType flyExhibitType, bool favorited: false})
+      : this.fly = flyExhibit.fly,
+        this.flyExhibitType = flyExhibitType ?? flyExhibit.flyExhibitType,
+        this.userProfile = flyExhibit.userProfile,
+        this.requiredMaterialCountFly = flyExhibit.requiredMaterialCountFly,
+        this.requiredMaterialCountUser = flyExhibit.requiredMaterialCountUser,
+        this.isFavorited = favorited;
+
+  FlyExhibit.fromUserProfileAndFly({
+    this.flyExhibitType,
+    this.fly,
+    this.userProfile,
+  })  : requiredMaterialCountFly = fly.materialList.length,
         requiredMaterialCountUser = _countFlyMaterialsOnHand(userProfile, fly),
         isFavorited = _isFavorited(fly, userProfile);
 
@@ -60,8 +64,13 @@ class FlyExhibit {
   }
 
   static bool equals(FlyExhibit a, FlyExhibit b) {
-    print('equalizer');
     if (a.fly?.docId == b.fly?.docId) {
+      return true;
+    } else if (a is FlyExhibitEndCapIndicator &&
+        b is FlyExhibitEndCapIndicator) {
+      return true;
+    } else if (a is FlyExhibitLoadingIndicator &&
+        b is FlyExhibitLoadingIndicator) {
       return true;
     } else {
       return false;
@@ -71,6 +80,12 @@ class FlyExhibit {
   @override
   bool operator ==(other) {
     if (this.fly?.docId == other.fly?.docId) {
+      return true;
+    } else if (this is FlyExhibitEndCapIndicator &&
+        other is FlyExhibitEndCapIndicator) {
+      return true;
+    } else if (this is FlyExhibitLoadingIndicator &&
+        other is FlyExhibitLoadingIndicator) {
       return true;
     } else {
       return false;

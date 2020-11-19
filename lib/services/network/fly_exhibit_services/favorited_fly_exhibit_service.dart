@@ -20,35 +20,10 @@ class FavoritedFlyExhibitService extends FlyExhibitService {
     return FirebaseFirestore.instance
         .collection(DbCollections.favoritedFlies)
         .where(DbNames.uid, isEqualTo: uid)
-        // .orderBy(DbNames.dateFavorited, descending: true)
+        .orderBy(DbNames.dateFavorited, descending: true)
         .limit(5)
         .get();
   }
-
-  // Stream<QuerySnapshot> initGetCompletedFliesStream({String uid}) {
-  //   return FirebaseFirestore.instance
-  //       .collection(DbCollections.favoritedFlies)
-  //       .where(DbNames.uid, isEqualTo: uid)
-  //       .orderBy(DbNames.dateFavorited, descending: true)
-  //       .limit(5)
-  //       .snapshots();
-  // }
-
-  // name: getCompletedFliesXStream
-  // description: Fetch count number flies from Firestore as a stream. We
-  //  perform possible refetches every time we increase count, as there is no
-  //  guarantee which flies we may be fetching. For example, user may have
-  //  liked/disliked additional flies since last query, which may replace flies
-  //  at specific locations in previous query.
-  // @override
-  // Stream<QuerySnapshot> getCompletedXFliesStream({String uid, int count = 5}) {
-  //   return FirebaseFirestore.instance
-  //       .collection(DbCollections.favoritedFlies)
-  //       .orderBy(DbNames.dateFavorited, descending: true)
-  //       .where(DbNames.uid, isEqualTo: uid)
-  //       .limit(count)
-  //       .snapshots();
-  // }
 
   /// name: getCompletedFliesByDateAfterDoc
   /// description: function use by stream controller triggered by UI, when user
@@ -56,12 +31,15 @@ class FavoritedFlyExhibitService extends FlyExhibitService {
   @override
   Future<QuerySnapshot> getCompletedFliesByDateAfterDoc(
       {String uid, DocumentSnapshot prevDoc}) {
+    print(prevDoc.data());
+    print(prevDoc.data()[DbNames.dateFavorited]);
     return FirebaseFirestore.instance
         .collection(DbCollections.favoritedFlies)
-        // .orderBy(DbNames.dateFavorited, descending: true)
+        .orderBy(DbNames.dateFavorited, descending: true)
         .where(DbNames.uid, isEqualTo: uid)
         .limit(5)
-        .startAfterDocument(prevDoc)
+        .startAfter(prevDoc.data()[DbNames.dateFavorited])
+        // .startAfterDocument(prevDoc)
         .get();
   }
 }

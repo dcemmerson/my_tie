@@ -136,7 +136,7 @@ class _FliesExhibitEntryState extends State<FliesExhibitEntry>
         sizeFactor: animation,
         child: CreationAwareWidget(
           index: index,
-          child: FlyOverviewExhibit(flyExhibit),
+          child: FlyOverviewExhibit(flyExhibit, isDisabled: true),
           itemCreated: _handleItemCreated,
         ),
       );

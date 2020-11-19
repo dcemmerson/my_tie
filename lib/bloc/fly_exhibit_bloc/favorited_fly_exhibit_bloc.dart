@@ -5,7 +5,6 @@ import 'package:my_tie/models/db_names.dart';
 import 'package:my_tie/models/fly_exhibits/fly_exhibit.dart';
 import 'package:my_tie/models/new_fly/fly.dart';
 import 'package:my_tie/models/new_fly/new_fly_form_template.dart';
-import 'package:my_tie/models/user_profile/user_materials_transfer.dart';
 import 'package:my_tie/pages/tab_based_pages/tab_page.dart';
 import 'package:my_tie/services/network/fly_exhibit_services/favorited_fly_exhibit_service.dart';
 import 'package:my_tie/services/network/fly_form_template_service.dart';
@@ -17,6 +16,7 @@ class FavoritedFlyExhibitBloc extends FlyExhibitBloc {
   int flyRequestCount = 0;
   int flyFetchCount = 0;
 
+  // final List<QueryDocumentSnapshot> favoriteDocs = [];
   final String exhibitBlocType = 'FavoritedFlyExhibitBloc';
 
   FlyExhibitType get flyExhibitType => FlyExhibitType.Favorites;
@@ -44,17 +44,19 @@ class FavoritedFlyExhibitBloc extends FlyExhibitBloc {
       // probably tapped the heart to unfavorite this flyExhibit, so we need
       // to search through out flyExhibits in parent class and mark for removal,
       // if this flyExhibit exists in our flyExhibits in parent class.
-
       flies.removeWhere((flyEx) => flyEx.fly?.docId == flyExhibit.fly.docId);
+      // favoriteDocs.removeWhere((doc) => doc.id == flyExhibit.fly.docId);
       fliesStreamController.add(flies);
       // });
     } else {
-      // User probably tapps to favorite a fly exhibit, meaning we need to add
+      // User probably tapped to favorite a fly exhibit, meaning we need to add
       // the favorited fly exhibit to the top of the parent classes flyExhibits
       // and update stream.
-      // flyExhibit.willBeRemoved = false;
-      // flyExhibit.isRemoved = false;
-      flies.insert(0, flyExhibit);
+      flies.insert(
+          0,
+          FlyExhibit.fromFlyExhibit(flyExhibit,
+              flyExhibitType: FlyExhibitType.Favorites, favorited: true));
+      // tallyFavoritedFliesDocs(flyExhibit);
       fliesStreamController.add(flies);
     }
   }
@@ -78,12 +80,17 @@ class FavoritedFlyExhibitBloc extends FlyExhibitBloc {
         NewFlyFormTemplate.fromDoc((await flyTemplateDocF).docs[0].data());
     final flyQueries = await queryF;
 
+    // Add all the QueryDocumentSnapshot to our favoriteDocs list so we can
+    // keep track of what docs we have already shown user and know where to
+    // start the next query, when user scrolls to bottom of favorites page.
+    // favoriteDocs.addAll(flyQueries.docs);
+
     final flyDocs = await Future.wait(flyQueries.docs.map((query) {
       return flyExhibitService
           .getFlyDoc(query.data()[DbNames.originalFlyDocId]);
     }).toList());
 
-    setPrevDoc(flyQueries);
+    // setPrevDoc(flyQueries);
     formatDocSnapshotsAndSendFliesToUI(flyDocs, flyFormTemplateDoc);
   }
 
@@ -92,58 +99,37 @@ class FavoritedFlyExhibitBloc extends FlyExhibitBloc {
   ///   reason described in initFliesFetch.
   @override
   void fliesFetch() async {
+    if (flies.length == 0) {
+      // User must have "unliked" all favorited flies since last fetch, meaning
+      // we no longer have a prevDoc to rely on to use in the next query. In this
+      // case, we can just simply call initFliesFetch and return.
+      initFliesFetch();
+      return;
+    }
     final Future<QuerySnapshot> flyTemplateDocF =
         flyFormTemplateService.newFlyForm;
     final Future<QuerySnapshot> queryF =
         flyExhibitService.getCompletedFliesByDateAfterDoc(
-            uid: userProfile.uid, prevDoc: prevFlyDoc);
+            uid: userProfile.uid, prevDoc: flies[flies.length - 1].fly.doc);
 
     // No need to use Future.wait, as query depeneds on flyFormTemplate.
     final flyFormTemplateDoc =
         NewFlyFormTemplate.fromDoc((await flyTemplateDocF).docs[0].data());
     final flyQueries = await queryF;
 
+    // Add all the QueryDocumentSnapshot to our favoriteDocs list so we can
+    // keep track of what docs we have already shown user and know where to
+    // start the next query, when user scrolls to bottom of favorites page.
+    // favoriteDocs.addAll(flyQueries.docs);
+
     final flyDocs = await Future.wait(flyQueries.docs.map((query) {
       return flyExhibitService
           .getFlyDoc(query.data()[DbNames.originalFlyDocId]);
     }).toList());
 
-    setPrevDoc(flyQueries);
+    // setPrevDoc(flyQueries);
     formatDocSnapshotsAndSendFliesToUI(flyDocs, flyFormTemplateDoc);
   }
-
-  // @override
-  // void fliesFetch() async {
-  //   if (flyFetchCount == flyRequestCount) {
-  //     flyRequestCount += 5;
-  //     print('flyCount = ' + flyRequestCount.toString());
-
-  //     favoritedFliesStream = flyExhibitService.getCompletedXFliesStream(
-  //         uid: userProfile.uid, count: flyRequestCount);
-  //     final Future<QuerySnapshot> templateDocF =
-  //         flyFormTemplateService.newFlyForm;
-  //     final flyFormTemplateDoc =
-  //         NewFlyFormTemplate.fromDoc((await templateDocF).docs[0].data());
-
-  //     favoritedFliesStream.listen((flyQueries) async {
-  //       print('init flies fetch emitting');
-  //       final flyDocs = await Future.wait(flyQueries.docs.map((query) {
-  //         return flyExhibitService
-  //             .getFlyDoc(query.data()[DbNames.originalFlyDocId]);
-  //       }).toList());
-
-  //       flyFetchCount = flyQueries.docs.length;
-
-  //       formatDocSnapshotsAndSendFliesToUI(flyDocs, flyFormTemplateDoc);
-  //     });
-  //   } else {
-  //     flies.removeWhere((fly) => fly is FlyExhibitLoadingIndicator);
-  //     if (!flies.contains((fly) => fly is FlyExhibitEndCapIndicator)) {
-  //       flies.add(FlyExhibitEndCapIndicator());
-  //     }
-  //     fliesStreamController.add(flies);
-  //   }
-  // }
 
   void formatDocSnapshotsAndSendFliesToUI(List<DocumentSnapshot> flyDocs,
       NewFlyFormTemplate flyFormTemplateDoc) async {
@@ -159,6 +145,7 @@ class FavoritedFlyExhibitBloc extends FlyExhibitBloc {
         userProfile: userProfile,
         fly: Fly.formattedForExhibit(
           docId: doc.id,
+          doc: doc,
           flyName: flyDoc[DbNames.flyName],
           flyDescription: flyDoc[DbNames.flyDescription],
           attrs: flyDoc[DbNames.attributes],
@@ -171,8 +158,9 @@ class FavoritedFlyExhibitBloc extends FlyExhibitBloc {
     }).toList();
 
     flies.addAll(flyExhibits);
-    flies.removeWhere((fly) => fly is FlyExhibitLoadingIndicator);
-    if (flyExhibits.isEmpty) flies.add(FlyExhibitEndCapIndicator());
-    fliesStreamController.add(flies);
+    final List<FlyExhibit> fliesCopy = List.from(flyExhibits);
+    // flies.removeWhere((fly) => fly is FlyExhibitLoadingIndicator);
+    if (fliesCopy.isEmpty) flies.add(FlyExhibitEndCapIndicator());
+    fliesStreamController.add(fliesCopy);
   }
 }

@@ -56,7 +56,9 @@ class AuthBloc {
       BehaviorSubject<User>(seedValue: null);
 
   AuthBloc(this._authService) {
-    _authService.authStatus.listen((user) => _authStatusController.add(user));
+    _authService.authStatus.listen((user) {
+      _authStatusController.add(user);
+    });
   }
 
   Future<UserCredential> signIn({LoginType type, BuildContext context}) {

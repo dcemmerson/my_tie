@@ -86,11 +86,6 @@ abstract class FlyExhibitBloc {
           flyExhibitType: flyExhibitType,
           fly: flyExhibit.fly,
           userProfile: userProfile,
-          // These flags are only used on the "By Favorites" tab to the UI
-          // can correctly indicate to the user when they unfavorite a fly,
-          // and we can delay then animate the fly exhibit out of favorites tab.
-          willBeRemoved: flyExhibit.willBeRemoved,
-          isRemoved: flyExhibit.isRemoved,
         );
       }).toList();
 
@@ -126,8 +121,9 @@ abstract class FlyExhibitBloc {
   void listenForRequestFliesFetch() {
     requestFetchFlies.stream.listen((ffe) {
       if (ffe is FetchNewestFliesEvent) {
-        flies.add(FlyExhibitLoadingIndicator());
-        fliesStreamController.add(flies);
+        final List<FlyExhibit> fliesCopy = List.from(flies);
+        fliesCopy.add(FlyExhibitLoadingIndicator());
+        fliesStreamController.add(fliesCopy);
         fliesFetch();
       } else {
         // Unreachable, but you never know...
@@ -195,6 +191,7 @@ abstract class FlyExhibitBloc {
         userProfile: userProfile,
         fly: Fly.formattedForExhibit(
           docId: doc.id,
+          doc: doc,
           flyName: flyDoc[DbNames.flyName],
           flyDescription: flyDoc[DbNames.flyDescription],
           attrs: flyDoc[DbNames.attributes],
@@ -207,9 +204,10 @@ abstract class FlyExhibitBloc {
     }).toList();
 
     flies.addAll(flyExhibits);
-    flies.removeWhere((fly) => fly is FlyExhibitLoadingIndicator);
-    if (flyExhibits.isEmpty) flies.add(FlyExhibitEndCapIndicator());
-    fliesStreamController.add(flies);
+    final List<FlyExhibit> fliesCopy = List.from(flies);
+    // flies.removeWhere((fly) => fly is FlyExhibitLoadingIndicator);
+    if (flyExhibits.isEmpty) fliesCopy.add(FlyExhibitEndCapIndicator());
+    fliesStreamController.add(fliesCopy);
   }
 
   // name: getFlyExhibit

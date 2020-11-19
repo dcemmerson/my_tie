@@ -11,34 +11,29 @@ import 'fly_exhibit_title.dart';
 
 class FlyOverviewExhibit extends StatelessWidget {
   static const double defaultImageWidth = 750;
-
+  final bool isDisabled;
   final FlyExhibit flyExhibit;
 
-  FlyOverviewExhibit(this.flyExhibit);
+  FlyOverviewExhibit(this.flyExhibit, {this.isDisabled = false});
 
   Widget _imageWithLoadingBar(
       String uri, /*double width, double height,*/ BuildContext context) {
-    return ColorFiltered(
-      colorFilter: ColorFilter.mode(
-          flyExhibit.willBeRemoved ? Colors.grey : Color.fromRGBO(0, 0, 0, 0),
-          BlendMode.saturation),
-      child: FadeInImage.assetNetwork(
-        placeholder: PlaceHolders.loadingImage,
-        image: uri,
-        imageErrorBuilder: (context, error, stackTrace) => Stack(children: [
-          Text('Error loading image',
-              style: TextStyle(color: Theme.of(context).errorColor)),
-          Image.asset(
-            PlaceHolders.loadingImage,
-            fit: BoxFit.fill,
-            width: 1000,
-          ),
-        ]),
-        // height: height,
-        fit: BoxFit.fill,
-        width: 1000,
-        fadeOutDuration: const Duration(milliseconds: 400),
-      ),
+    return FadeInImage.assetNetwork(
+      placeholder: PlaceHolders.loadingImage,
+      image: uri,
+      imageErrorBuilder: (context, error, stackTrace) => Stack(children: [
+        Text('Error loading image',
+            style: TextStyle(color: Theme.of(context).errorColor)),
+        Image.asset(
+          PlaceHolders.loadingImage,
+          fit: BoxFit.fill,
+          width: 1000,
+        ),
+      ]),
+      // height: height,
+      fit: BoxFit.fill,
+      width: 1000,
+      fadeOutDuration: const Duration(milliseconds: 400),
     );
   }
 
@@ -96,7 +91,9 @@ class FlyOverviewExhibit extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () => FlyExhibitRoutes.flyExhibitDetail(context, flyExhibit),
+      onTap: isDisabled
+          ? null
+          : () => FlyExhibitRoutes.flyExhibitDetail(context, flyExhibit),
       child: LayoutBuilder(builder: (context, constraints) {
         final screenHeight = MediaQuery.of(context).size.height;
         return Card(

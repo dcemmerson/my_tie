@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 import '../db_names.dart';
 import 'new_fly_form_template.dart';
 import 'fly_attribute.dart';
@@ -19,6 +21,7 @@ class Fly {
   static const nullDescriptionReplacement = '[No description]';
 
   final String docId;
+  final DocumentSnapshot doc;
   final String flyName;
   final String flyDescription;
   final List<FlyAttribute> attributes;
@@ -29,6 +32,7 @@ class Fly {
 
   Fly({
     this.docId,
+    this.doc,
     this.flyName,
     this.flyDescription,
     List imageUris,
@@ -42,6 +46,7 @@ class Fly {
 
   Fly.formattedForExhibit({
     this.docId,
+    this.doc,
     List imageUris,
     String flyName,
     String flyDescription,
@@ -65,6 +70,7 @@ class Fly {
   ///   materials values to the value passed in, or Fly.nullReplacement.
   Fly.formattedForReview({
     this.docId,
+    this.doc,
     List imageUris,
     String flyName,
     String flyDescription,
@@ -85,6 +91,7 @@ class Fly {
 
   Fly.formattedForEditing({
     this.docId,
+    this.doc,
     this.flyName,
     this.flyDescription,
     List imageUris,
