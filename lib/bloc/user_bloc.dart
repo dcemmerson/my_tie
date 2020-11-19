@@ -60,7 +60,7 @@ class UserBloc {
 
   Stream<UserMaterialsTransfer> get userMaterialsProfile {
     Stream<QuerySnapshot> userProfileStream =
-        userService.getUserProfileStream(authService.currentUser.uid);
+        userService.getUserProfileStream(authService.currentUser?.uid);
     Stream<QuerySnapshot> flyTemplateDocStream =
         flyFormTemplateService.newFlyFormStream;
 

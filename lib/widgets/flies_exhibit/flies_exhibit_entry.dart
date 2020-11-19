@@ -144,15 +144,13 @@ class _FliesExhibitEntryState extends State<FliesExhibitEntry>
 
   @override
   Widget build(BuildContext context) {
-    print('build fly exhibit entry');
     if (widget.flyExhibitType == FlyExhibitType.Favorites) {
       return AnimatedStreamList<FlyExhibit>(
           initialList: [],
-          duration: Duration(seconds: 5),
-          equals: (a, b) {
-            print('hello world');
-            return FlyExhibit.equals(a as FlyExhibit, b as FlyExhibit);
-          },
+          // duration: Duration(seconds: 5),
+          // equals: (a, b) {
+          //   return FlyExhibit.equals(a as FlyExhibit, b as FlyExhibit);
+          // },
           itemBuilder: (flyExhibit, index, context, animation) =>
               _buildTile(flyExhibit, index, animation),
           itemRemovedBuilder: (flyExhibit, index, context, animation) =>

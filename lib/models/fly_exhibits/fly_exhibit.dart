@@ -67,4 +67,16 @@ class FlyExhibit {
       return false;
     }
   }
+
+  @override
+  bool operator ==(other) {
+    if (this.fly?.docId == other.fly?.docId) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  @override
+  int get hashCode => super.hashCode;
 }
