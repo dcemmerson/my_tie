@@ -25,6 +25,11 @@ class FlyExhibitLoadingIndicator extends FlyExhibit {}
 class FlyExhibitEndCapIndicator extends FlyExhibit {}
 
 abstract class FlyExhibitBloc {
+  // Flags used to determine if we need to signal to the UI to add an end cap
+  // indicator or
+  bool isEndCapIndicator = false;
+  bool isLoadingIndicator = false;
+
   // final AuthBloc authBloc;
   final UserBloc userBloc;
   final FavoritingBloc favoritingBloc;
@@ -55,6 +60,9 @@ abstract class FlyExhibitBloc {
 
   // Define this in a getter so we can easily override in subclasses.
   StreamSink<FlyExhibit> get favoritedFlySink => _favoritedFlySink;
+
+  // Define in getter here so our favorited fy exhibit bloc class can override this
+  // and actually return List<FavoritedFlyExhibit>.
 
   FlyExhibitBloc({
     this.userBloc,

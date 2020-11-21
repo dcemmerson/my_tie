@@ -31,14 +31,12 @@ class FavoritedFlyExhibitService extends FlyExhibitService {
   @override
   Future<QuerySnapshot> getCompletedFliesByDateAfterDoc(
       {String uid, DocumentSnapshot prevDoc}) {
-    print(prevDoc.data());
-    print(prevDoc.data()[DbNames.dateFavorited]);
     return FirebaseFirestore.instance
         .collection(DbCollections.favoritedFlies)
         .orderBy(DbNames.dateFavorited, descending: true)
         .where(DbNames.uid, isEqualTo: uid)
         .limit(5)
-        .startAfter(prevDoc.data()[DbNames.dateFavorited])
+        .startAfterDocument(prevDoc)
         // .startAfterDocument(prevDoc)
         .get();
   }

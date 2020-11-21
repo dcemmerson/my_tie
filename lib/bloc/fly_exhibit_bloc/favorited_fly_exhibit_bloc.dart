@@ -2,9 +2,11 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:my_tie/models/db_names.dart';
+import 'package:my_tie/models/fly_exhibits/favorited_fly_exhibit.dart';
 import 'package:my_tie/models/fly_exhibits/fly_exhibit.dart';
 import 'package:my_tie/models/new_fly/fly.dart';
 import 'package:my_tie/models/new_fly/new_fly_form_template.dart';
+import 'package:my_tie/models/user_profile/user_materials_transfer.dart';
 import 'package:my_tie/pages/tab_based_pages/tab_page.dart';
 import 'package:my_tie/services/network/fly_exhibit_services/favorited_fly_exhibit_service.dart';
 import 'package:my_tie/services/network/fly_form_template_service.dart';
@@ -39,26 +41,26 @@ class FavoritedFlyExhibitBloc extends FlyExhibitBloc {
   }
 
   void _handleFlyExhibitFavorited(FlyExhibit flyExhibit) {
-    if (flyExhibit.isFavorited) {
-      // This means the flyExhibit on UI was previously favorited and user
-      // probably tapped the heart to unfavorite this flyExhibit, so we need
-      // to search through out flyExhibits in parent class and mark for removal,
-      // if this flyExhibit exists in our flyExhibits in parent class.
-      flies.removeWhere((flyEx) => flyEx.fly?.docId == flyExhibit.fly.docId);
-      // favoriteDocs.removeWhere((doc) => doc.id == flyExhibit.fly.docId);
-      fliesStreamController.add(flies);
-      // });
-    } else {
-      // User probably tapped to favorite a fly exhibit, meaning we need to add
-      // the favorited fly exhibit to the top of the parent classes flyExhibits
-      // and update stream.
-      flies.insert(
-          0,
-          FlyExhibit.fromFlyExhibit(flyExhibit,
-              flyExhibitType: FlyExhibitType.Favorites, favorited: true));
-      // tallyFavoritedFliesDocs(flyExhibit);
-      fliesStreamController.add(flies);
-    }
+    // if (flyExhibit.isFavorited) {
+    //   // This means the flyExhibit on UI was previously favorited and user
+    //   // probably tapped the heart to unfavorite this flyExhibit, so we need
+    //   // to search through out flyExhibits in parent class and mark for removal,
+    //   // if this flyExhibit exists in our flyExhibits in parent class.
+    //   flies.removeWhere((flyEx) => flyEx.fly?.docId == flyExhibit.fly.docId);
+    //   // favoriteDocs.removeWhere((doc) => doc.id == flyExhibit.fly.docId);
+    //   fliesStreamController.add(flies);
+    //   // });
+    // } else {
+    //   // User probably tapped to favorite a fly exhibit, meaning we need to add
+    //   // the favorited fly exhibit to the top of the parent classes flyExhibits
+    //   // and update stream.
+    //   flies.insert(
+    //       0,
+    //       FlyExhibit.fromFlyExhibit(flyExhibit,
+    //           flyExhibitType: FlyExhibitType.Favorites, favorited: true));
+    //   // tallyFavoritedFliesDocs(flyExhibit);
+    //   fliesStreamController.add(flies);
+    // }
   }
 
   /// name: initFliesFetch
@@ -75,23 +77,7 @@ class FavoritedFlyExhibitBloc extends FlyExhibitBloc {
     final Future<QuerySnapshot> queryF =
         flyExhibitService.initGetCompletedFlies(uid: userProfile.uid);
 
-    // No need to use Future.wait, as query depeneds on flyFormTemplate.
-    final flyFormTemplateDoc =
-        NewFlyFormTemplate.fromDoc((await flyTemplateDocF).docs[0].data());
-    final flyQueries = await queryF;
-
-    // Add all the QueryDocumentSnapshot to our favoriteDocs list so we can
-    // keep track of what docs we have already shown user and know where to
-    // start the next query, when user scrolls to bottom of favorites page.
-    // favoriteDocs.addAll(flyQueries.docs);
-
-    final flyDocs = await Future.wait(flyQueries.docs.map((query) {
-      return flyExhibitService
-          .getFlyDoc(query.data()[DbNames.originalFlyDocId]);
-    }).toList());
-
-    // setPrevDoc(flyQueries);
-    formatDocSnapshotsAndSendFliesToUI(flyDocs, flyFormTemplateDoc);
+    awaitFormatAndSendToUI(queryF, flyTemplateDocF);
   }
 
   /// name: fliesFetch
@@ -110,8 +96,14 @@ class FavoritedFlyExhibitBloc extends FlyExhibitBloc {
         flyFormTemplateService.newFlyForm;
     final Future<QuerySnapshot> queryF =
         flyExhibitService.getCompletedFliesByDateAfterDoc(
-            uid: userProfile.uid, prevDoc: flies[flies.length - 1].fly.doc);
+            uid: userProfile.uid,
+            prevDoc: (flies[flies.length - 1] as FavoritedFlyExhibit).doc);
 
+    awaitFormatAndSendToUI(queryF, flyTemplateDocF);
+  }
+
+  void awaitFormatAndSendToUI(Future<QuerySnapshot> queryF,
+      Future<QuerySnapshot> flyTemplateDocF) async {
     // No need to use Future.wait, as query depeneds on flyFormTemplate.
     final flyFormTemplateDoc =
         NewFlyFormTemplate.fromDoc((await flyTemplateDocF).docs[0].data());
@@ -121,46 +113,40 @@ class FavoritedFlyExhibitBloc extends FlyExhibitBloc {
     // keep track of what docs we have already shown user and know where to
     // start the next query, when user scrolls to bottom of favorites page.
     // favoriteDocs.addAll(flyQueries.docs);
-
-    final flyDocs = await Future.wait(flyQueries.docs.map((query) {
+    final favoritedFlyExhibits =
+        await Future.wait(flyQueries.docs.map((favoritedFlyDoc) {
       return flyExhibitService
-          .getFlyDoc(query.data()[DbNames.originalFlyDocId]);
+          .getFlyDoc(favoritedFlyDoc.data()[DbNames.originalFlyDocId])
+          .then((doc) {
+        final flyDoc = doc.data();
+
+        return FavoritedFlyExhibit(
+          doc: favoritedFlyDoc,
+          fly: Fly.formattedForExhibit(
+            docId: doc.id,
+            doc: doc,
+            flyName: flyDoc[DbNames.flyName],
+            flyDescription: flyDoc[DbNames.flyDescription],
+            attrs: flyDoc[DbNames.attributes],
+            mats: flyDoc[DbNames.materials],
+            instr: flyDoc[DbNames.instructions],
+            imageUris: flyDoc[DbNames.topLevelImageUris],
+            flyFormTemplate: flyFormTemplateDoc,
+          ),
+          userProfile: userProfile,
+        );
+      });
     }).toList());
 
     // setPrevDoc(flyQueries);
-    formatDocSnapshotsAndSendFliesToUI(flyDocs, flyFormTemplateDoc);
+    updateFliesAndSendToUI(favoritedFlyExhibits);
   }
 
-  void formatDocSnapshotsAndSendFliesToUI(List<DocumentSnapshot> flyDocs,
-      NewFlyFormTemplate flyFormTemplateDoc) async {
-    // final UserMaterialsTransfer userMaterials =
-    //     await userBloc.userMaterialsProfile.first;
-
-    // userService.getUserProfile(authService.currentUser.uid);
-
-    final List<FlyExhibit> flyExhibits = flyDocs.map((doc) {
-      final flyDoc = doc.data();
-      return FlyExhibit.fromUserProfileAndFly(
-        flyExhibitType: flyExhibitType,
-        userProfile: userProfile,
-        fly: Fly.formattedForExhibit(
-          docId: doc.id,
-          doc: doc,
-          flyName: flyDoc[DbNames.flyName],
-          flyDescription: flyDoc[DbNames.flyDescription],
-          attrs: flyDoc[DbNames.attributes],
-          mats: flyDoc[DbNames.materials],
-          instr: flyDoc[DbNames.instructions],
-          imageUris: flyDoc[DbNames.topLevelImageUris],
-          flyFormTemplate: flyFormTemplateDoc,
-        ),
-      );
-    }).toList();
-
+  void updateFliesAndSendToUI(List<FavoritedFlyExhibit> flyExhibits) {
     flies.addAll(flyExhibits);
-    final List<FlyExhibit> fliesCopy = List.from(flyExhibits);
-    // flies.removeWhere((fly) => fly is FlyExhibitLoadingIndicator);
-    if (fliesCopy.isEmpty) flies.add(FlyExhibitEndCapIndicator());
+
+    final List<FlyExhibit> fliesCopy = List.from(flies);
+    if (flyExhibits.isEmpty) fliesCopy.add(FlyExhibitEndCapIndicator());
     fliesStreamController.add(fliesCopy);
   }
 }
