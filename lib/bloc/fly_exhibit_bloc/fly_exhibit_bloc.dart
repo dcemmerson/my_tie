@@ -245,8 +245,12 @@ abstract class FlyExhibitBloc {
     // list of flyExhibits stored in FlyExhibitBloc class. Used when user
     // clicks to see details on a fly exhibit.
     FlyExhibit extractFlyExhibit(List<FlyExhibit> flyExhibits) {
+      // Note that flyExhibit could be instance of FlyExhibitEndCapIndicator or
+      // FlyExhibitLoadingIndicator, which are both subclasses of FlyExhibit. Hence,
+      // we need the '?' in flyExhibit.fly?.docId as flyExhibit.fly very well
+      // might turn up null;
       return flyExhibits.firstWhere(
-          (flyExhibit) => flyExhibit.fly.docId == docId,
+          (flyExhibit) => flyExhibit.fly?.docId == docId,
           orElse: () => null);
     }
 
