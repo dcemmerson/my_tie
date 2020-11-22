@@ -72,6 +72,10 @@ class FavoritedFlyExhibitBloc extends FlyExhibitBloc {
   ///   the doc id obtained from each fly stub.
   @override
   void initFliesFetch() async {
+    // First just add the FlyExhibitLoadingIndicator to stream so UI will know
+    // to display a circular progress indicator.
+    // fliesStreamController.add([FlyExhibitLoadingIndicator()]);
+
     final Future<QuerySnapshot> flyTemplateDocF =
         flyFormTemplateService.newFlyForm;
     final Future<QuerySnapshot> queryF =
@@ -138,6 +142,8 @@ class FavoritedFlyExhibitBloc extends FlyExhibitBloc {
       });
     }).toList());
 
+    isFetching = false;
+
     // setPrevDoc(flyQueries);
     updateFliesAndSendToUI(favoritedFlyExhibits);
   }
@@ -146,7 +152,12 @@ class FavoritedFlyExhibitBloc extends FlyExhibitBloc {
     flies.addAll(flyExhibits);
 
     final List<FlyExhibit> fliesCopy = List.from(flies);
-    if (flyExhibits.isEmpty) fliesCopy.add(FlyExhibitEndCapIndicator());
+    if (flyExhibits.isEmpty) {
+      print('addng end cap indicator');
+      isEndCapIndicator = true;
+      fliesCopy.add(FlyExhibitEndCapIndicator());
+    }
+    print('send fliesCopy to ui for favorites');
     fliesStreamController.add(fliesCopy);
   }
 }

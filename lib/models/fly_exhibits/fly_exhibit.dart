@@ -76,22 +76,4 @@ class FlyExhibit {
       return false;
     }
   }
-
-  @override
-  bool operator ==(other) {
-    if (this.fly?.docId == other.fly?.docId) {
-      return true;
-    } else if (this is FlyExhibitEndCapIndicator &&
-        other is FlyExhibitEndCapIndicator) {
-      return true;
-    } else if (this is FlyExhibitLoadingIndicator &&
-        other is FlyExhibitLoadingIndicator) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  @override
-  int get hashCode => super.hashCode;
 }

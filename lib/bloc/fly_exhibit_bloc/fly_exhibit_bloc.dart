@@ -28,7 +28,7 @@ abstract class FlyExhibitBloc {
   // Flags used to determine if we need to signal to the UI to add an end cap
   // indicator or
   bool isEndCapIndicator = false;
-  bool isLoadingIndicator = false;
+  bool isFetching = false;
 
   // final AuthBloc authBloc;
   final UserBloc userBloc;
@@ -88,8 +88,8 @@ abstract class FlyExhibitBloc {
       userProfile = umt.userProfile;
 
       flies = flies.map((FlyExhibit flyExhibit) {
-        if (flyExhibit is FlyExhibitEndCapIndicator)
-          return FlyExhibitEndCapIndicator();
+        // if (flyExhibit is FlyExhibitEndCapIndicator)
+        //   return FlyExhibitEndCapIndicator();
         return FlyExhibit.fromUserProfileAndFly(
           flyExhibitType: flyExhibitType,
           fly: flyExhibit.fly,
@@ -97,7 +97,12 @@ abstract class FlyExhibitBloc {
         );
       }).toList();
 
-      fliesStreamController.add(flies);
+      List<FlyExhibit> fliesCopy = List.from(flies);
+
+      if (isEndCapIndicator) fliesCopy.add(FlyExhibitEndCapIndicator());
+      // else if (isLoadingIndicator) fliesCopy.add(FlyExhibitLoadingIndicator());
+
+      fliesStreamController.add(fliesCopy);
     });
   }
 
@@ -107,6 +112,11 @@ abstract class FlyExhibitBloc {
   ///   can then be used for subsequent calls to Firestore for additional fly
   ///   docs for newest fly exhibit, in an infinite scroll/fetch manner.
   void initFliesFetch() async {
+    // First just add the FlyExhibitLoadingIndicator to stream so UI will know
+    // to display a circular progress indicator.
+    fliesStreamController.add([FlyExhibitLoadingIndicator()]);
+    isFetching = true;
+
     final Future<QuerySnapshot> flyTemplateDocF =
         flyFormTemplateService.newFlyForm;
     final Future<QuerySnapshot> queryF =
@@ -117,6 +127,7 @@ abstract class FlyExhibitBloc {
         NewFlyFormTemplate.fromDoc((await flyTemplateDocF).docs[0].data());
     final flyQueries = await queryF;
 
+    isFetching = false;
     setPrevDoc(flyQueries);
     formatAndSendFliesToUI(flyQueries, flyFormTemplateDoc);
   }
@@ -124,27 +135,31 @@ abstract class FlyExhibitBloc {
   /// Listen for fetch flies events being added to sink from UI (eg, when user
   ///  scrolls to bottom of screen and infinite scroll needs to load more
   ///  flies). First add the FlyExhibitLoadingIndicator, to tell UI to show
-  ///  spinner, then call _newestFliesFetch which will make request to db,
-  ///  update _newestFlies, then add flies to fliesStreamController.
+  ///  spinner, then call fliesFetch which will make request to db,
+  ///  update flies, then add flies to fliesStreamController.
   void listenForRequestFliesFetch() {
     requestFetchFlies.stream.listen((ffe) {
-      if (ffe is FetchNewestFliesEvent) {
+      if (ffe is FetchNewestFliesEvent && !isFetching) {
         final List<FlyExhibit> fliesCopy = List.from(flies);
+
+        // Add the FlyExhibitLoadingIndicator to our copied list of FlyExhibit and
+        // add this to the fliesStreamController, which indicates to the UI to display
+        // a loading indicator while we are fetching the next batch of flies.
         fliesCopy.add(FlyExhibitLoadingIndicator());
+        isFetching = true;
+
         fliesStreamController.add(fliesCopy);
         fliesFetch();
+      } else if (isFetching) {
+        print('Received fetch request...ignoring - fetch in progress.');
       } else {
         // Unreachable, but you never know...
-        print('event not found - unimplemented $ffe');
-        throw Error();
+        throw Exception('event not found - unimplemented $ffe');
       }
     });
   }
 
   void fliesFetch() async {
-    print('this is instance of newestflyexhibitbloc = ');
-    print(this is NewestFlyExhibitBloc);
-
     final Future<QuerySnapshot> flyTemplateDocF =
         flyFormTemplateService.newFlyForm;
     final Future<QuerySnapshot> queryF =
@@ -156,6 +171,7 @@ abstract class FlyExhibitBloc {
         NewFlyFormTemplate.fromDoc((await flyTemplateDocF).docs[0].data());
     final flyQueries = await queryF;
 
+    isFetching = false;
     setPrevDoc(flyQueries);
     formatAndSendFliesToUI(flyQueries, flyFormTemplateDoc);
   }
@@ -214,7 +230,10 @@ abstract class FlyExhibitBloc {
     flies.addAll(flyExhibits);
     final List<FlyExhibit> fliesCopy = List.from(flies);
     // flies.removeWhere((fly) => fly is FlyExhibitLoadingIndicator);
-    if (flyExhibits.isEmpty) fliesCopy.add(FlyExhibitEndCapIndicator());
+    if (flyExhibits.isEmpty) {
+      isEndCapIndicator = true;
+      fliesCopy.add(FlyExhibitEndCapIndicator());
+    }
     fliesStreamController.add(fliesCopy);
   }
 

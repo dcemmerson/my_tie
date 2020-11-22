@@ -104,11 +104,11 @@ class _FliesExhibitEntryState extends State<FliesExhibitEntry>
   Widget _buildTile(
       FlyExhibit flyExhibit, int index, Animation<double> animation) {
     // TextStyle textStyle = TextStyle();
-    if (flyExhibit is FlyExhibitLoadingIndicator)
+    if (flyExhibit is FlyExhibitLoadingIndicator) {
       return Container(child: CircularProgressIndicator());
-    else if (flyExhibit is FlyExhibitEndCapIndicator)
+    } else if (flyExhibit is FlyExhibitEndCapIndicator) {
       return AllFliesLoaded();
-    else
+    } else
       return SizeTransition(
         axis: Axis.vertical,
         sizeFactor: animation,
