@@ -6,6 +6,7 @@ import 'package:my_tie/models/fly_exhibits/favorited_fly_exhibit.dart';
 import 'package:my_tie/models/fly_exhibits/fly_exhibit.dart';
 import 'package:my_tie/models/new_fly/fly.dart';
 import 'package:my_tie/models/new_fly/new_fly_form_template.dart';
+import 'package:my_tie/models/user_profile/user_materials_transfer.dart';
 import 'package:my_tie/pages/tab_based_pages/tab_page.dart';
 import 'package:my_tie/services/network/fly_exhibit_services/favorited_fly_exhibit_service.dart';
 import 'package:my_tie/services/network/fly_form_template_service.dart';
@@ -88,6 +89,8 @@ class FavoritedFlyExhibitBloc extends FlyExhibitBloc {
     }
     final Future<QuerySnapshot> flyTemplateDocF =
         flyFormTemplateService.newFlyForm;
+    print('flies = ');
+    print(flies);
     final Future<QuerySnapshot> queryF =
         flyExhibitService.getCompletedFliesByDateAfterDoc(
             uid: userProfile.uid,
@@ -185,10 +188,13 @@ class FavoritedFlyExhibitBloc extends FlyExhibitBloc {
       {bool insertAtFront: false}) {
     if (insertAtFront) {
       print('inserted at front called');
-
+      print('updateFliesAndSendToUI insertingAll flyExhibits:');
+      print(flyExhibits);
       flies.insertAll(0, flyExhibits);
       print('inserted at fron');
     } else {
+      print('updateFliesAndSendToUI addAll flyExhibits:');
+      print(flyExhibits);
       flies.addAll(flyExhibits);
     }
 
@@ -200,5 +206,33 @@ class FavoritedFlyExhibitBloc extends FlyExhibitBloc {
     }
     print('send fliesCopy to ui for favorites');
     fliesStreamController.add(fliesCopy);
+  }
+
+  /// Get userProfile, and listen for changes to userProfile. Update all
+  /// FavoritedFlyExhibit if upon changes to userProfile (materials on hand
+  /// for each fly may change when user profile is updated).
+  /// We must override this method to ensure the FavoritedFlyExhibitBloc (this class)
+  /// maintains instances of FavoritedFlyExhibit in flies list. If we don't override
+  /// here, flies list will eventually end up with the FavoritedFlyExhibit instances
+  /// replaced with FlyExhibit instances upon the next userMaterialsProfile update.
+  void listenForUserMaterialProfileEvents() {
+    userBloc.userMaterialsProfile.listen((UserMaterialsTransfer umt) {
+      userProfile = umt.userProfile;
+
+      flies = flies.map((FlyExhibit flyExhibit) {
+        return FavoritedFlyExhibit(
+          doc: (flyExhibit as FavoritedFlyExhibit).doc,
+          fly: flyExhibit.fly,
+          userProfile: userProfile,
+        );
+      }).toList();
+
+      List<FlyExhibit> fliesCopy = List.from(flies);
+
+      if (isEndCapIndicator) fliesCopy.add(FlyExhibitEndCapIndicator());
+      // else if (isLoadingIndicator) fliesCopy.add(FlyExhibitLoadingIndicator());
+
+      fliesStreamController.add(fliesCopy);
+    });
   }
 }
