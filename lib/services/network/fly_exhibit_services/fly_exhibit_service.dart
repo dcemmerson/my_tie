@@ -10,7 +10,16 @@ import 'package:my_tie/models/db_names.dart';
 abstract class FlyExhibitService {
   static const fliesPerFetch = 5;
 
-  Future<DocumentSnapshot> getFlyDoc(docId) {
+  // flyCollectionDocId should correspond to fly's doc id found in the fly collection,
+  // not the favorited_flies collection.
+  Future<QuerySnapshot> getFavoritedFlyDoc(String flyCollectionDocId) {
+    return FirebaseFirestore.instance
+        .collection(DbCollections.favoritedFlies)
+        .where(DbNames.originalFlyDocId, isEqualTo: flyCollectionDocId)
+        .get();
+  }
+
+  Future<DocumentSnapshot> getFlyDoc(String docId) {
     return FirebaseFirestore.instance
         .collection(DbCollections.fly)
         .doc(docId)
