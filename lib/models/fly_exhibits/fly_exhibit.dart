@@ -64,8 +64,6 @@ class FlyExhibit {
   }
 
   static bool equals(dynamic a, dynamic b) {
-    // return a == b;
-
     if (a is! FavoritedFlyExhibit || b is! FavoritedFlyExhibit) {
       return a == b;
     } else {
