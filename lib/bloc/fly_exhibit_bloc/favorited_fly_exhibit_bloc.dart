@@ -81,16 +81,23 @@ class FavoritedFlyExhibitBloc extends FlyExhibitBloc {
   @override
   void fliesFetch() async {
     if (flies.length == 0) {
-      // User must have "unliked" all favorited flies since last fetch, meaning
-      // we no longer have a prevDoc to rely on to use in the next query. In this
-      // case, we can just simply call initFliesFetch and return.
+      // Always check if flies.length is 0 because there are two scenarios where
+      // this condition is true:
+      // 1. When fliesStreamController is first listened to.
+      //    - Caveat: under favorites tab, the first time fliesStreamController is
+      //      listened to, there is possibility that flies.length != 0. This can
+      //      occur if user presses "favorite" button, before navigating to the
+      //      favorite flies tab.
+      // 2. User must have "unliked" all favorited flies since last fetch, meaning
+      //    we no longer have a prevDoc to rely on to use in the next query. This
+      //    condition is only a concern if this FlyExhibitBloc is a
+      //    FavoritedFlyExhibitBloc.
       initFliesFetch();
       return;
     }
     final Future<QuerySnapshot> flyTemplateDocF =
         flyFormTemplateService.newFlyForm;
-    print('flies = ');
-    print(flies);
+
     final Future<QuerySnapshot> queryF =
         flyExhibitService.getCompletedFliesByDateAfterDoc(
             uid: userProfile.uid,

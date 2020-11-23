@@ -70,7 +70,7 @@ abstract class FlyExhibitBloc {
     this.flyFormTemplateService,
   }) : this.favoritingBloc = FavoritingBloc.sharedInstance {
     fliesStream = fliesStreamController.stream;
-    fliesStreamController.onListen = initFliesFetch;
+    fliesStreamController.onListen = fliesFetch;
     _favoritedFlySink = favoritingBloc.favoritedFlySink;
     // favoritedFlySink = _favoritedFliesStreamController.sink;
     requestFetchFliesSink = requestFetchFlies.sink;
@@ -160,6 +160,22 @@ abstract class FlyExhibitBloc {
   }
 
   void fliesFetch() async {
+    if (flies.length == 0) {
+      // Always check if flies.length is 0 because there are two scenarios where
+      // this condition is true:
+      // 1. When fliesStreamController is first listened to.
+      //    - Caveat: under favorites tab, the first time fliesStreamController is
+      //      listened to, there is possibility that flies.length != 0. This can
+      //      occur if user presses "favorite" button, before navigating to the
+      //      favorite flies tab.
+      // 2. User must have "unliked" all favorited flies since last fetch, meaning
+      //    we no longer have a prevDoc to rely on to use in the next query. This
+      //    condition is only a concern if this FlyExhibitBloc is a
+      //    FavoritedFlyExhibitBloc.
+      initFliesFetch();
+      return;
+    }
+
     final Future<QuerySnapshot> flyTemplateDocF =
         flyFormTemplateService.newFlyForm;
     final Future<QuerySnapshot> queryF =
