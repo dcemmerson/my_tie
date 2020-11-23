@@ -62,13 +62,13 @@ class _AnimatedStreamListState<E> extends State<AnimatedStreamList<E>>
 
   void startListening() {
     _subscription?.cancel();
-    _subscription = widget.streamList
-        .asyncExpand((list) => _diffUtil
-            .calculateDiff(_listController.items, list,
-                equalizer: widget.equals)
-            .then(_diffApplier.applyDiffs)
-            .asStream())
-        .listen((list) {});
+    _subscription = widget.streamList.asyncExpand((list) {
+      print(list);
+      return _diffUtil
+          .calculateDiff(_listController.items, list, equalizer: widget.equals)
+          .then(_diffApplier.applyDiffs)
+          .asStream();
+    }).listen((list) {});
   }
 
   void stopListening() {
@@ -113,7 +113,6 @@ class _AnimatedStreamListState<E> extends State<AnimatedStreamList<E>>
 
   @override
   Widget build(BuildContext context) {
-    print('building animated list');
     return AnimatedList(
       initialItemCount: _listController.items.length,
       key: _globalKey,

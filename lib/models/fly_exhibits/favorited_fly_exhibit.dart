@@ -16,12 +16,11 @@ import 'fly_exhibit.dart';
 
 class FavoritedFlyExhibit extends FlyExhibit {
   final DocumentSnapshot doc;
+  final bool materialUpdate;
 
-  FavoritedFlyExhibit({
-    this.doc,
-    UserProfile userProfile,
-    Fly fly,
-  }) : super.fromUserProfileAndFly(
+  FavoritedFlyExhibit(
+      {this.doc, UserProfile userProfile, Fly fly, this.materialUpdate = true})
+      : super.fromUserProfileAndFly(
             flyExhibitType: FlyExhibitType.Favorites,
             fly: fly,
             userProfile: userProfile);

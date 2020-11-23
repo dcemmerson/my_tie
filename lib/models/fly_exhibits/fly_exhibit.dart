@@ -1,4 +1,5 @@
 import 'package:my_tie/bloc/fly_exhibit_bloc/fly_exhibit_bloc.dart';
+import 'package:my_tie/models/fly_exhibits/favorited_fly_exhibit.dart';
 import 'package:my_tie/models/new_fly/fly.dart';
 import 'package:my_tie/models/new_fly/fly_materials.dart';
 import 'package:my_tie/models/user_profile/user_profile.dart';
@@ -63,15 +64,42 @@ class FlyExhibit {
   }
 
   static bool equals(dynamic a, dynamic b) {
-    // We need to check here is a.fly is null (or we could check if b.fly
-    // is null instead) so that we don't evaluate null == null and incorrectly
-    // return true. This could occur when comparing is a FlyExhibitEndCapIndicator
-    // is equal to a FlyExhibitLoadingIndicator, since neither of these FlyExhibit
-    // subclasses would have a non-null fly attribute.
-    if (a.fly != null && a.fly?.docId == b.fly?.docId) {
-      return true;
+    // return a == b;
+
+    if (a is! FavoritedFlyExhibit || b is! FavoritedFlyExhibit) {
+      return a == b;
     } else {
-      return false;
+      final flyA = a as FavoritedFlyExhibit;
+      final flyB = b as FavoritedFlyExhibit;
+      // We test if materialsFractions are equal here as this will tell us
+      // if a material update just came through the stream, in which case info
+      // in the fly exhibit needs to be updated on the UI (which the stream
+      // builder needs to be able to handle, and using the == operator will allow
+      // the stream builder to correctly detect this).
+      if (flyA.materialsFraction != flyB.materialsFraction) {
+        return a == b;
+      } else {
+        // Else we need to define the equality for cases where the AnimatedListStream
+        // is attempting to determine which FavoritedFlyExhibits were actually
+        // removed by comparing the items emitted in the previous stream event
+        // and the items emitted in the latest stream event. In this case,
+        // AnimatedListStream will animate out any items that are no longer
+        // contained in the latest stream emission.
+        // We need to check here is a.fly is null (or we could check if b.fly
+        // is null instead) so that we don't risk evaluating null == null and accidentally
+        // return true. This could occur when comparing is a FlyExhibitEndCapIndicator
+        // is equal to a FlyExhibitLoadingIndicator, since neither of these FlyExhibit
+        // subclasses would have a non-null fly attribute.
+        return a.fly != null && a.fly?.docId == b.fly?.docId;
+      }
     }
+    // if (a == b) {
+    //   return true;
+    // }
+    // if (a.fly != null && a.fly?.docId == b.fly?.docId) {
+    //   return true;
+    // } else {
+    //   return false;
+    // }
   }
 }

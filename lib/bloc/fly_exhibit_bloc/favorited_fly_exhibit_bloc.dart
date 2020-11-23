@@ -232,6 +232,7 @@ class FavoritedFlyExhibitBloc extends FlyExhibitBloc {
           doc: (flyExhibit as FavoritedFlyExhibit).doc,
           fly: flyExhibit.fly,
           userProfile: userProfile,
+          materialUpdate: true,
         );
       }).toList();
 
