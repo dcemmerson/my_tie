@@ -4,6 +4,8 @@ import 'package:my_tie/models/fly_exhibits/fly_exhibit.dart';
 import 'package:my_tie/pages/tab_based_pages/tab_page.dart';
 import 'package:my_tie/styles/styles.dart';
 
+typedef OnUnfavorited = void Function();
+
 class FlyExhibitTitle extends StatelessWidget {
   final FlyExhibit flyExhibit;
   // final String title;
@@ -32,6 +34,12 @@ class FlyExhibitTitle extends StatelessWidget {
             ?.add(flyExhibit);
         break;
       case FlyExhibitType.Favorites:
+        // If user is currently viewing the fly details modal route and selects
+        // the unfavorite button, we need to pop the current route, as this
+        // currently viewed page no longer exists in the user's favorite flies.
+        if (flyExhibit.isFavorited) {
+          Navigator.of(context).pop();
+        }
         MyTieStateContainer.of(context)
             .blocProvider
             .favoritedFlyExhibitBloc

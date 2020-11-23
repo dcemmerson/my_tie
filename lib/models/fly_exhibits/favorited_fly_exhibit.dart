@@ -34,21 +34,24 @@ class FavoritedFlyExhibit extends FlyExhibit {
   // calc is performed, thus defaulting to using (a, b) => a == b when comparing
   // FlyExhibits. An issue has been opened for this Flutter package.
   // November 2020
-  @override
-  bool operator ==(other) {
-    if (this is FlyExhibitEndCapIndicator &&
-        other is FlyExhibitEndCapIndicator) {
-      return true;
-    } else if (this is FlyExhibitLoadingIndicator &&
-        other is FlyExhibitLoadingIndicator) {
-      return true;
-    } else if (this.fly?.docId == other.fly?.docId) {
-      return true;
-    } else {
-      return false;
-    }
-  }
+  // Equality override commented out for now. Causes issues with asynchronously
+  // updating fly exhibits. Current effect of commenting out this override is the
+  // wrong fly exhibit gets animated out on favorites tab.
+  // @override
+  // bool operator ==(other) {
+  //   if (this is FlyExhibitEndCapIndicator &&
+  //       other is FlyExhibitEndCapIndicator) {
+  //     return true;
+  //   } else if (this is FlyExhibitLoadingIndicator &&
+  //       other is FlyExhibitLoadingIndicator) {
+  //     return true;
+  //   } else if (this.fly?.docId == other.fly?.docId) {
+  //     return true;
+  //   } else {
+  //     return false;
+  //   }
+  // }
 
-  @override
-  int get hashCode => super.hashCode;
+  // @override
+  // int get hashCode => super.hashCode;
 }

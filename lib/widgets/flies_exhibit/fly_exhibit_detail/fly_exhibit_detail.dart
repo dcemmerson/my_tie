@@ -16,6 +16,7 @@ import 'fly_carousel.dart';
 import 'fly_exhibit_detail_instructions.dart';
 import 'fly_exhibit_detail_materials.dart';
 
+// ignore: must_be_immutable
 class FlyExhibitDetail extends StatelessWidget {
   BuildContext context;
   Widget _materialsHeader;
@@ -128,8 +129,6 @@ class FlyExhibitDetail extends StatelessWidget {
       builder: (flyExhibit) => SingleChildScrollView(
         child: LayoutBuilder(builder: (context, constraints) {
           final screenHeight = MediaQuery.of(context).size.height;
-          print('\n\nFly exhibit = ');
-          print(flyExhibit);
 
           return Column(children: [
             Card(
