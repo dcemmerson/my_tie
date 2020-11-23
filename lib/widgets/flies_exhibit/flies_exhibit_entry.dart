@@ -4,8 +4,8 @@ import 'package:my_tie/bloc/fly_exhibit_bloc/fly_exhibit_bloc.dart';
 import 'package:my_tie/bloc/state/my_tie_state.dart';
 import 'package:my_tie/models/fly_exhibits/fly_exhibit.dart';
 import 'package:my_tie/pages/tab_based_pages/tab_page.dart';
+import 'package:my_tie/widgets/animated_stream_list/animated_stream_list.dart';
 import 'package:my_tie/widgets/misc/creation_aware_widget.dart';
-import 'package:animated_stream_list/animated_stream_list.dart';
 
 import 'all_flies_loaded.dart';
 import 'flies_exhibit_overview_stream_builder.dart';
@@ -146,6 +146,7 @@ class _FliesExhibitEntryState extends State<FliesExhibitEntry>
   Widget build(BuildContext context) {
     if (widget.flyExhibitType == FlyExhibitType.Favorites) {
       return AnimatedStreamList<FlyExhibit>(
+          equals: FlyExhibit.equals,
           initialList: [],
           // duration: Duration(seconds: 5),
           // equals: (a, b) {

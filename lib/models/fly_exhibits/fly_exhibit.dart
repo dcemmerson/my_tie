@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:my_tie/bloc/fly_exhibit_bloc/fly_exhibit_bloc.dart';
 import 'package:my_tie/models/new_fly/fly.dart';
 import 'package:my_tie/models/new_fly/fly_materials.dart';
@@ -63,7 +62,10 @@ class FlyExhibit {
     });
   }
 
-  static bool equals(FlyExhibit a, FlyExhibit b) {
+  static bool equals(dynamic a, dynamic b) {
+    a = a as FlyExhibit;
+    b = b as FlyExhibit;
+
     if (a.fly?.docId == b.fly?.docId) {
       return true;
     } else if (a is FlyExhibitEndCapIndicator &&
