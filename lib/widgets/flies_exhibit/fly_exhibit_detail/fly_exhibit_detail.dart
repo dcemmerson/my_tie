@@ -63,6 +63,7 @@ class FlyExhibitDetail extends StatelessWidget {
       FlyExhibitTitle(
         flyExhibit: flyExhibit,
         centered: true,
+        detailMode: true,
       ),
       // SizedBox(height: 10),
       FlyExhibitAttributes(flyExhibit.fly.attributes),

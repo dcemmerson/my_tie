@@ -8,6 +8,7 @@ typedef OnUnfavorited = void Function();
 
 class FlyExhibitTitle extends StatelessWidget {
   final FlyExhibit flyExhibit;
+  final bool detailMode;
   // final String title;
   // Number of required materials user has on hand, vs number of required
   // materials to tie the fly in this exhibit.
@@ -15,7 +16,8 @@ class FlyExhibitTitle extends StatelessWidget {
   // final FlyAttribute difficultyAttribute;
   final bool centered;
 
-  FlyExhibitTitle({this.flyExhibit, this.centered = false});
+  FlyExhibitTitle(
+      {this.flyExhibit, this.centered = false, this.detailMode = false});
 
   void _handleFavorited(BuildContext context) {
     switch (flyExhibit.flyExhibitType) {
@@ -37,7 +39,7 @@ class FlyExhibitTitle extends StatelessWidget {
         // If user is currently viewing the fly details modal route and selects
         // the unfavorite button, we need to pop the current route, as this
         // currently viewed page no longer exists in the user's favorite flies.
-        if (flyExhibit.isFavorited) {
+        if (flyExhibit.isFavorited && detailMode) {
           Navigator.of(context).pop();
         }
         MyTieStateContainer.of(context)
