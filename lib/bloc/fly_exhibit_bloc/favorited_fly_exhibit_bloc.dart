@@ -212,6 +212,7 @@ class FavoritedFlyExhibitBloc extends FlyExhibitBloc {
       fliesCopy.add(FlyExhibitEndCapIndicator());
     }
     print('send fliesCopy to ui for favorites');
+    print(fliesCopy);
     fliesStreamController.add(fliesCopy);
   }
 

@@ -8,7 +8,6 @@
 ///   last doc retrieved, we need to use the previous fly doc that belongs to the
 ///   favorited fly collection, and not the fly collection.
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:my_tie/bloc/fly_exhibit_bloc/fly_exhibit_bloc.dart';
 import 'package:my_tie/models/new_fly/fly.dart';
 import 'package:my_tie/models/user_profile/user_profile.dart';
 import 'package:my_tie/pages/tab_based_pages/tab_page.dart';

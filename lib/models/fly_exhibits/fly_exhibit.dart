@@ -63,16 +63,12 @@ class FlyExhibit {
   }
 
   static bool equals(dynamic a, dynamic b) {
-    a = a as FlyExhibit;
-    b = b as FlyExhibit;
-
-    if (a.fly?.docId == b.fly?.docId) {
-      return true;
-    } else if (a is FlyExhibitEndCapIndicator &&
-        b is FlyExhibitEndCapIndicator) {
-      return true;
-    } else if (a is FlyExhibitLoadingIndicator &&
-        b is FlyExhibitLoadingIndicator) {
+    // We need to check here is a.fly is null (or we could check if b.fly
+    // is null instead) so that we don't evaluate null == null and incorrectly
+    // return true. This could occur when comparing is a FlyExhibitEndCapIndicator
+    // is equal to a FlyExhibitLoadingIndicator, since neither of these FlyExhibit
+    // subclasses would have a non-null fly attribute.
+    if (a.fly != null && a.fly?.docId == b.fly?.docId) {
       return true;
     } else {
       return false;
