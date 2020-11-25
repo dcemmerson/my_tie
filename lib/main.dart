@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/material.dart';
@@ -25,14 +26,14 @@ import 'services/network/fly_exhibit_services/newest_fly_exhibit_service.dart';
 // import 'package:flutter/scheduler.dart' show timeDilation;
 
 void main() async {
-  // timeDilation = 3.0;
   runApp(await initApp());
 }
 
 Future<Widget> initApp() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-
+  // FirebaseFirestore.instance.settings = Settings(
+  //     host: '10.0.2.2:8080', sslEnabled: false, persistenceEnabled: false);
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.landscapeLeft,
     DeviceOrientation.portraitUp,

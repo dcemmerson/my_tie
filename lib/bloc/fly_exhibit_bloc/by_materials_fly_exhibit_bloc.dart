@@ -19,4 +19,20 @@ class ByMaterialsFlyExhibitBloc extends FlyExhibitBloc {
             userBloc: userBloc,
             flyExhibitService: byMaterialsFlyExhibitService,
             flyFormTemplateService: flyFormTemplateService);
+
+  /// name: initFliesFetch
+  /// description: We must override this method from FlyExhibitBloc because
+  ///   favorited flies are stored in a top level collection (for simple
+  ///   querying functionallity). When we query Firestore for a user's
+  ///   favorites (from the favorites collection), we only obtain fly stubs
+  ///   and not the entire fly doc - thus we must query the fly collection with
+  ///   the doc id obtained from each fly stub.
+  @override
+  void initFliesFetch() async {}
+
+  /// name: fliesFetch
+  /// description: We must override this method from FlyExhibitBloc for same
+  ///   reason described in initFliesFetch.
+  @override
+  void fliesFetch() async {}
 }

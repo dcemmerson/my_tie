@@ -16,10 +16,20 @@ class ByMaterialsFlyExhibitService extends FlyExhibitService {
   Future<QuerySnapshot> initGetCompletedFlies({String uid}) {
     return FirebaseFirestore.instance
         .collection(DbCollections.fly)
+        // .where(, )
         .orderBy(DbNames.lastModified, descending: true)
         .limit(5)
         .get();
   }
+
+  // @override
+  // Future<QuerySnapshot> initGetCompletedFlies({String uid}) {
+  //   return FirebaseFirestore.instance
+  //       .collection(DbCollections.fly)
+  //       .orderBy(DbNames.lastModified, descending: true)
+  //       .limit(5)
+  //       .get();
+  // }
 
   /// name: getCompletedFliesByDateAfterDoc
   /// description: function use by stream controller triggered by UI, when user

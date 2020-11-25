@@ -116,36 +116,6 @@ class FavoritedFlyExhibitBloc extends FlyExhibitBloc {
         flyExhibitService.getFavoritedFlyDoc(flyCollectionDocId);
     awaitFormatAndSendToUI(queryF, flyTemplateDocF,
         insertAtFront: insertAtFront);
-
-    // final Future<QuerySnapshot> flyTemplateDocF =
-    //     flyFormTemplateService.newFlyForm;
-    // final favoritedFlyDoc = flyExhibitService
-    //     .getFavoritedFlyDoc(flyCollectionDocId)
-    //     .then((favoritedFlyDoc) {
-    //   return flyExhibitService
-    //       .getFlyDoc(favoritedFlyDoc.data()[DbNames.originalFlyDocId])
-    //       .then((doc) async {
-    //     final flyDoc = doc.data();
-    //     return FavoritedFlyExhibit(
-    //       doc: favoritedFlyDoc,
-    //       fly: Fly.formattedForExhibit(
-    //         docId: doc.id,
-    //         doc: doc,
-    //         flyName: flyDoc[DbNames.flyName],
-    //         flyDescription: flyDoc[DbNames.flyDescription],
-    //         attrs: flyDoc[DbNames.attributes],
-    //         mats: flyDoc[DbNames.materials],
-    //         instr: flyDoc[DbNames.instructions],
-    //         imageUris: flyDoc[DbNames.topLevelImageUris],
-    //         flyFormTemplate: NewFlyFormTemplate.fromDoc(
-    //             (await flyTemplateDocF).docs[0].data()),
-    //       ),
-    //       userProfile: userProfile,
-    //     );
-    //   });
-    // });
-
-    // updateFliesAndSendToUI([await favoritedFlyDoc]);
   }
 
   void awaitFormatAndSendToUI(
@@ -194,14 +164,8 @@ class FavoritedFlyExhibitBloc extends FlyExhibitBloc {
   void updateFliesAndSendToUI(List<FavoritedFlyExhibit> flyExhibits,
       {bool insertAtFront: false}) {
     if (insertAtFront) {
-      print('inserted at front called');
-      print('updateFliesAndSendToUI insertingAll flyExhibits:');
-      print(flyExhibits);
       flies.insertAll(0, flyExhibits);
-      print('inserted at fron');
     } else {
-      print('updateFliesAndSendToUI addAll flyExhibits:');
-      print(flyExhibits);
       flies.addAll(flyExhibits);
     }
 
