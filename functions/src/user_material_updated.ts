@@ -65,11 +65,18 @@ function calcNumMaterialsOnHand(userMaterials: Materials, flyMaterials: Material
 
     Object.keys(flyMaterials as Object).forEach((k: string) => {
         const currFlyMaterial = flyMaterials[k];
-        const currUserMaterial = userMaterials[k];
-    
+        const currUserMaterial = userMaterials[k] as [{[key: string]: any}];
+        console.log('material key = ' + k);
+        console.log('currFlymaterial = ');
+        console.log(currFlyMaterial);
+        console.log('currUserMaterial = ');
+        console.log(currUserMaterial)
+
         currFlyMaterial.forEach((material) => {
             flyMaterialCount++;
-            if(hasExactUnitMaterialMatch(currUserMaterial, material)) {
+            const isExactMatch = hasExactUnitMaterialMatch(currUserMaterial, material);
+            console.log('exact match = ' + isExactMatch);
+            if(isExactMatch) {
                 userMaterialCount++;
             }
         });
@@ -77,22 +84,23 @@ function calcNumMaterialsOnHand(userMaterials: Materials, flyMaterials: Material
     return [userMaterialCount, flyMaterialCount];
 }
 
-function hasExactUnitMaterialMatch(userMaterials: Object[], material: Object): Boolean {
+function hasExactUnitMaterialMatch(userMaterials: [{[key: string]: any}], material: {[key: string]: any}): Boolean {
     if(!userMaterials) return false;
     // eg: userMaterials = [{color: "red", size: "small"}, {color: "black", size: "medium", type: "lead"}]
     // eg: material = {"color": green, type: "plastic"}
     const materialKeys = Object.keys(material);
-    console.log('********************* material keys: ');
-    console.log(materialKeys);
-    return Object.keys(userMaterials).reduce((acc: Boolean, curr: Object): Boolean => {
-        let foundMatch = false;
+
+    console.log('checking exact match with: ');
+    console.log('material = ');
+    console.log(material);
+    return userMaterials.reduce((acc: Boolean, curr: {[key: string]: any}): Boolean => {
+        let foundMatch = true;
         materialKeys.forEach((k: string) => {
-            // We can safely set default values to null for both cases here
-            // as we are guaranteed that material[k] !== null is true.
-            const flyMat = material?[k] : null;
-            const userMat = curr?[k] : null;
-            if(flyMat === userMat) {
-                foundMatch = true;
+
+            const flyMat = material[k];
+            const userMat = curr[k];
+            if(flyMat !== userMat) {
+                foundMatch = false;
             }
         });
         return acc || foundMatch;
