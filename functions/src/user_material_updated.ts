@@ -28,24 +28,36 @@ interface Materials {
 
 const db = admin.firestore();
 export { userMaterialUpdated };
+const byMaterialsFlies = 'by_materials_flies';
 
 const userMaterialUpdated = functions.firestore
     .document('user/{userId}')
     .onWrite(async (change, context) => {
-        const beforeMaterials: Materials = change.before.data()?.materials_on_hand;
-        const afterMaterials: Materials = change.after.data()?.materials_on_hand;
+        if(context.auth) {
+            await deleteUserByMaterialFlies(context.auth.uid);
 
-        if(!deepEquals(beforeMaterials, afterMaterials)) {
-            // Then we need to re-index current user's entries in 
-            const flyDocs: FirebaseFirestore.QuerySnapshot<FirebaseFirestore.DocumentData> = await db.collection('fly').get();
-            console.log('!!!fly docs!!!');
-            indexFliesByMaterials(afterMaterials, flyDocs.docs);
+            const beforeMaterials: Materials = change.before.data()?.materials_on_hand;
+            const afterMaterials: Materials = change.after.data()?.materials_on_hand;
+
+            if(!deepEquals(beforeMaterials, afterMaterials)) {
+                // Then we need to re-index current user's entries in 
+                const flyDocs: FirebaseFirestore.QuerySnapshot<FirebaseFirestore.DocumentData> = await db.collection('fly').get();
+                indexFliesByMaterials(afterMaterials, flyDocs.docs);
+            }
         }
     });
 
+async function deleteUserByMaterialFlies(uid: string): Promise<Promise<FirebaseFirestore.WriteResult>[]> {
+    const docsToDelete = await db.collection(byMaterialsFlies).where('uid', '==', uid).get();
+
+    // Can't use map method here, so add each promise to empty array;
+    const promises: Promise<FirebaseFirestore.WriteResult>[] = [];
+    docsToDelete.forEach(doc => promises.push(doc.ref.delete()));
+
+    return promises;
+}
+
 function indexFliesByMaterials(userMaterials: Materials, flyDocs: QueryDocumentSnapshot[]) {
-    console.log('index flies by mats');
-    console.log(userMaterials);
 
     flyDocs.forEach((doc: QueryDocumentSnapshot) => {
         
@@ -66,11 +78,6 @@ function calcNumMaterialsOnHand(userMaterials: Materials, flyMaterials: Material
     Object.keys(flyMaterials as Object).forEach((k: string) => {
         const currFlyMaterial = flyMaterials[k];
         const currUserMaterial = userMaterials[k] as [{[key: string]: any}];
-        console.log('material key = ' + k);
-        console.log('currFlymaterial = ');
-        console.log(currFlyMaterial);
-        console.log('currUserMaterial = ');
-        console.log(currUserMaterial)
 
         currFlyMaterial.forEach((material) => {
             flyMaterialCount++;
@@ -90,9 +97,6 @@ function hasExactUnitMaterialMatch(userMaterials: [{[key: string]: any}], materi
     // eg: material = {"color": green, type: "plastic"}
     const materialKeys = Object.keys(material);
 
-    console.log('checking exact match with: ');
-    console.log('material = ');
-    console.log(material);
     return userMaterials.reduce((acc: Boolean, curr: {[key: string]: any}): Boolean => {
         let foundMatch = true;
         materialKeys.forEach((k: string) => {
