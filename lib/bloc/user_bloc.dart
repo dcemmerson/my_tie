@@ -43,19 +43,23 @@ class UserBloc {
   }
 
   void _handleDeleteUserFlyMaterial(UserProfileFlyMaterialAddOrDelete upfmd) {
+    // No need to await either Future
     userService.deleteUserProfileMaterial(
         uid: authService.currentUser.uid,
         docId: upfmd.userProfile.docId,
         name: upfmd.flyMaterial.name,
         properties: upfmd.flyMaterial.properties);
+    userService.requestFlyReindex(authService.currentUser.uid);
   }
 
   void _handleAddUserFlyMaterial(UserProfileFlyMaterialAddOrDelete upfma) {
+    // No need to await either Future
     userService.addUserProfileMaterial(
         uid: authService.currentUser.uid,
         docId: upfma.userProfile.docId,
         name: upfma.flyMaterial.name,
         properties: upfma.flyMaterial.properties);
+    userService.requestFlyReindex(authService.currentUser.uid);
   }
 
   Stream<UserMaterialsTransfer> get userMaterialsProfile {

@@ -77,4 +77,10 @@ class UserService {
       SetOptions(merge: true),
     );
   }
+
+  Future requestFlyReindex(String uid) {
+    return FirebaseFirestore.instance
+        .collection(DbCollections.materialReindexRequests)
+        .add({'uid': uid});
+  }
 }

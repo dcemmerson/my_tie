@@ -28,36 +28,35 @@ interface Materials {
 
 const db = admin.firestore();
 export { userMaterialUpdated };
-const byMaterialsFlies = 'by_materials_flies';
+
+const collections = {
+    byMaterialsFlies: 'by_materials_flies',
+    materialReindexRequests: 'material_renidex_requests',
+    user: 'user',
+}
 
 const userMaterialUpdated = functions.firestore
-    .document('user/{userId}')
+    .document('material_reindex_requests/{userId}')
     .onWrite(async (change, context) => {
-        console.log('context.auth = ');
-        console.log(context.auth);
-        if(context.auth) {
-            console.log('call delete')
+        const uid: string = change.after.data()?.uid;
 
-            await deleteUserByMaterialFlies(context.auth.uid);
-            console.log('deleted');
-            const beforeMaterials: Materials = change.before.data()?.materials_on_hand;
-            const afterMaterials: Materials = change.after.data()?.materials_on_hand;
 
-            if(!deepEquals(beforeMaterials, afterMaterials)) {
-                // Then we need to re-index current user's entries in 
-                // const flyDocs: FirebaseFirestore.QuerySnapshot<FirebaseFirestore.DocumentData> = await db.collection('fly').get();
-                // indexFliesByMaterials(afterMaterials, flyDocs.docs);
-                console.log('get fly collections')
-                const flyDocs: FirebaseFirestore.QuerySnapshot<FirebaseFirestore.DocumentData> = await db.collection('fly').get();
-                console.log('await next');
-                await Promise.all(indexFliesByMaterials(context.auth.uid, afterMaterials, flyDocs.docs));
-                console.log('now exit');
-            }
+        if(uid) {
+            await deleteMaterialReindexRequests(uid);
+
+            const afterMaterialsDocs = (await db.collection(collections.user).where('uid', '==', uid).get());
+
+            const afterMaterials = afterMaterialsDocs.docs[0]?.data().materials_on_hand;
+
+            await deleteUserByMaterialFlies(uid);
+            // Then we need to re-index current user's entries in 
+            const flyDocs: FirebaseFirestore.QuerySnapshot<FirebaseFirestore.DocumentData> = await db.collection('fly').get();
+            await Promise.all(indexFliesByMaterials(uid, afterMaterials, flyDocs.docs));
         }
     });
 
 async function deleteUserByMaterialFlies(uid: string): Promise<Promise<FirebaseFirestore.WriteResult>[]> {
-    const docsToDelete = await db.collection(byMaterialsFlies).where('uid', '==', uid).get();
+    const docsToDelete = await db.collection(collections.byMaterialsFlies).where('uid', '==', uid).get();
 
     // Can't use map method here, so add each promise to empty array;
     const promises: Promise<FirebaseFirestore.WriteResult>[] = [];
@@ -66,6 +65,15 @@ async function deleteUserByMaterialFlies(uid: string): Promise<Promise<FirebaseF
     return promises;
 }
 
+async function deleteMaterialReindexRequests(uid: string): Promise<Promise<FirebaseFirestore.WriteResult>[]> {
+    const docsToDelete = await db.collection(collections.materialReindexRequests).where('uid', '==', uid).get();
+
+    // Can't use map method here, so add each promise to empty array;
+    const promises: Promise<FirebaseFirestore.WriteResult>[] = [];
+    docsToDelete.forEach(doc => promises.push(doc.ref.delete()));
+
+    return promises;
+}
 function indexFliesByMaterials(uid: string, userMaterials: Materials, flyDocs: QueryDocumentSnapshot[]): Promise<any>[] {
 
     return flyDocs.map((doc: QueryDocumentSnapshot) => {
@@ -76,7 +84,7 @@ function indexFliesByMaterials(uid: string, userMaterials: Materials, flyDocs: Q
             console.log("***** we have ");
             console.log(`${currMaterialCount} /  ${totalMaterialCount}`);
             
-            return db.collection(byMaterialsFlies).add({
+            return db.collection(collections.byMaterialsFlies).add({
                                                         ...doc.data(), 
                                                         uid: uid, 
                                                         last_indexed: Date(),
@@ -127,24 +135,24 @@ function hasExactUnitMaterialMatch(userMaterials: [{[key: string]: any}], materi
     }, false);
 }
 
-function deepEquals(before: any, after: any) : Boolean {
+// function deepEquals(before: any, after: any) : Boolean {
 
-    if(!(before instanceof Array && before instanceof Object) || before === null) {
-        return before === after;
-    }
+//     if(!(before instanceof Array && before instanceof Object) || before === null) {
+//         return before === after;
+//     }
 
-    let keys: IterableIterator<any>; 
-    if(after instanceof Array){
-        keys = after.keys();
-    }
-    else {
-        keys = Object.keys(after).values();
-    }
+//     let keys: IterableIterator<any>; 
+//     if(after instanceof Array){
+//         keys = after.keys();
+//     }
+//     else {
+//         keys = Object.keys(after).values();
+//     }
     
-    for(const k of keys) {
-        if(!deepEquals(before[k], after[k])) {
-            return false;
-        }
-    }
-    return true;
-}
+//     for(const k of keys) {
+//         if(!deepEquals(before[k], after[k])) {
+//             return false;
+//         }
+//     }
+//     return true;
+// }

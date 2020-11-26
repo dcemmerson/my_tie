@@ -10,6 +10,7 @@ class DbCollections {
   static const flyIncoming = 'fly_incoming';
   static const user = 'user';
   static const favoritedFlies = 'favorited_flies';
+  static const materialReindexRequests = 'material_reindex_requests';
 }
 
 class DbNames {
