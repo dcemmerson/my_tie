@@ -33,16 +33,25 @@ const byMaterialsFlies = 'by_materials_flies';
 const userMaterialUpdated = functions.firestore
     .document('user/{userId}')
     .onWrite(async (change, context) => {
+        console.log('context.auth = ');
+        console.log(context.auth);
         if(context.auth) {
-            await deleteUserByMaterialFlies(context.auth.uid);
+            console.log('call delete')
 
+            await deleteUserByMaterialFlies(context.auth.uid);
+            console.log('deleted');
             const beforeMaterials: Materials = change.before.data()?.materials_on_hand;
             const afterMaterials: Materials = change.after.data()?.materials_on_hand;
 
             if(!deepEquals(beforeMaterials, afterMaterials)) {
                 // Then we need to re-index current user's entries in 
+                // const flyDocs: FirebaseFirestore.QuerySnapshot<FirebaseFirestore.DocumentData> = await db.collection('fly').get();
+                // indexFliesByMaterials(afterMaterials, flyDocs.docs);
+                console.log('get fly collections')
                 const flyDocs: FirebaseFirestore.QuerySnapshot<FirebaseFirestore.DocumentData> = await db.collection('fly').get();
-                indexFliesByMaterials(afterMaterials, flyDocs.docs);
+                console.log('await next');
+                await Promise.all(indexFliesByMaterials(context.auth.uid, afterMaterials, flyDocs.docs));
+                console.log('now exit');
             }
         }
     });
@@ -57,17 +66,24 @@ async function deleteUserByMaterialFlies(uid: string): Promise<Promise<FirebaseF
     return promises;
 }
 
-function indexFliesByMaterials(userMaterials: Materials, flyDocs: QueryDocumentSnapshot[]) {
+function indexFliesByMaterials(uid: string, userMaterials: Materials, flyDocs: QueryDocumentSnapshot[]): Promise<any>[] {
 
-    flyDocs.forEach((doc: QueryDocumentSnapshot) => {
-        
+    return flyDocs.map((doc: QueryDocumentSnapshot) => {
         if(doc.exists) {
             const flyMaterials: Materials = doc.data().materials
             const [currMaterialCount, totalMaterialCount] 
                 = calcNumMaterialsOnHand(userMaterials, flyMaterials);
             console.log("***** we have ");
             console.log(`${currMaterialCount} /  ${totalMaterialCount}`);
+            
+            return db.collection(byMaterialsFlies).add({
+                                                        ...doc.data(), 
+                                                        uid: uid, 
+                                                        last_indexed: Date(),
+                                                        materials_on_hand_count: `${currMaterialCount} /  ${totalMaterialCount}`, 
+                                                    });
         }
+        return Promise.resolve();
     });
 }
 
