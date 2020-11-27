@@ -3,19 +3,19 @@ import * as admin from 'firebase-admin';
 import { QueryDocumentSnapshot } from 'firebase-functions/lib/providers/firestore';
 
 interface Materials {
-    [index: string] : Array<Object>,
-    beads: Array<Object>,
-    dubbings: Array<Object>,
-    eyes: Array<Object>,
-    feathers: Array<Object>,
-    flosses: Array<Object>,
-    furs: Array<Object>,
-    hooks: Array<Object>,
-    synthetics: Array<Object>,
-    threads: Array<Object>,
-    tinsels: Array<Object>,
-    wires: Array<Object>,
-    yarns: Array<Object>,
+    [index: string] : Array<object>,
+    beads: Array<object>,
+    dubbings: Array<object>,
+    eyes: Array<object>,
+    feathers: Array<object>,
+    flosses: Array<object>,
+    furs: Array<object>,
+    hooks: Array<object>,
+    synthetics: Array<object>,
+    threads: Array<object>,
+    tinsels: Array<object>,
+    wires: Array<object>,
+    yarns: Array<object>,
     // keys: Function,
 }
 
@@ -39,7 +39,6 @@ const userMaterialUpdated = functions.firestore
     .document('material_reindex_requests/{userId}')
     .onWrite(async (change, context) => {
         const uid: string = change.after.data()?.uid;
-
 
         if(uid) {
             await deleteMaterialReindexRequests(uid);
@@ -88,7 +87,7 @@ function indexFliesByMaterials(uid: string, userMaterials: Materials, flyDocs: Q
                                                         ...doc.data(), 
                                                         uid: uid, 
                                                         last_indexed: Date(),
-                                                        materials_on_hand_count: `${currMaterialCount} /  ${totalMaterialCount}`, 
+                                                        materials_on_hand_count: currMaterialCount as number / (totalMaterialCount as number), 
                                                     });
         }
         return Promise.resolve();
@@ -99,7 +98,7 @@ function calcNumMaterialsOnHand(userMaterials: Materials, flyMaterials: Material
     let userMaterialCount = 0;
     let flyMaterialCount = 0;
 
-    Object.keys(flyMaterials as Object).forEach((k: string) => {
+    Object.keys(flyMaterials as object).forEach((k: string) => {
         const currFlyMaterial = flyMaterials[k];
         const currUserMaterial = userMaterials[k] as [{[key: string]: any}];
 

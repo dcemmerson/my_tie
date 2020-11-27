@@ -10,6 +10,7 @@ class DbCollections {
   static const flyIncoming = 'fly_incoming';
   static const user = 'user';
   static const favoritedFlies = 'favorited_flies';
+  static const byMaterialsFlies = 'by_materials_flies';
   static const materialReindexRequests = 'material_reindex_requests';
 }
 
@@ -26,6 +27,7 @@ class DbNames {
   // static const fly_is_moved = 'fly_is_moved';
   // static const editable = 'editable';
   static const toBePublished = 'to_be_published';
+  static const materialsOnHandCount = 'materials_on_hand_count';
 
   // Field names
   static const lastModified = 'last_modified';

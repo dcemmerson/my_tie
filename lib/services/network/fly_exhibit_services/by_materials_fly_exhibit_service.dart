@@ -15,9 +15,9 @@ class ByMaterialsFlyExhibitService extends FlyExhibitService {
   @override
   Future<QuerySnapshot> initGetCompletedFlies({String uid}) {
     return FirebaseFirestore.instance
-        .collection(DbCollections.fly)
-        // .where(, )
-        .orderBy(DbNames.lastModified, descending: true)
+        .collection(DbCollections.byMaterialsFlies)
+        .where('uid', isEqualTo: uid)
+        .orderBy(DbNames.materialsOnHandCount, descending: true)
         .limit(5)
         .get();
   }
@@ -38,8 +38,9 @@ class ByMaterialsFlyExhibitService extends FlyExhibitService {
   Future<QuerySnapshot> getCompletedFliesByDateAfterDoc(
       {String uid, DocumentSnapshot prevDoc}) {
     return FirebaseFirestore.instance
-        .collection(DbCollections.fly)
-        .orderBy(DbNames.lastModified, descending: true)
+        .collection(DbCollections.byMaterialsFlies)
+        .where('uid', isEqualTo: uid)
+        .orderBy(DbNames.materialsOnHandCount, descending: true)
         .limit(5)
         .startAfterDocument(prevDoc)
         .get();

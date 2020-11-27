@@ -27,12 +27,12 @@ class ByMaterialsFlyExhibitBloc extends FlyExhibitBloc {
   ///   favorites (from the favorites collection), we only obtain fly stubs
   ///   and not the entire fly doc - thus we must query the fly collection with
   ///   the doc id obtained from each fly stub.
-  @override
-  void initFliesFetch() async {}
+  // @override
+  // void initFliesFetch() async {}
 
   /// name: fliesFetch
   /// description: We must override this method from FlyExhibitBloc for same
   ///   reason described in initFliesFetch.
-  @override
-  void fliesFetch() async {}
+  // @override
+  // void fliesFetch() async {}
 }
