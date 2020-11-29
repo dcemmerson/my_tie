@@ -24,6 +24,7 @@ class FlyExhibitLoadingIndicator extends FlyExhibit {}
 class FlyExhibitEndCapIndicator extends FlyExhibit {}
 
 abstract class FlyExhibitBloc {
+  static const flyFetchCount = 5;
   // Flags used to determine if we need to signal to the UI to add an end cap
   // indicator or
   bool isEndCapIndicator = false;
@@ -83,26 +84,29 @@ abstract class FlyExhibitBloc {
   /// if upon changes to userProfile (materials on hand for each fly may change
   ///  when user profile is updated).
   void listenForUserMaterialProfileEvents() {
-    userBloc.userMaterialsProfile.listen((UserMaterialsTransfer umt) {
-      userProfile = umt.userProfile;
+    userBloc.userMaterialsProfile
+        .listen(updateFliesFromUserMaterialProfileEvent);
+  }
 
-      flies = flies.map((FlyExhibit flyExhibit) {
-        // if (flyExhibit is FlyExhibitEndCapIndicator)
-        //   return FlyExhibitEndCapIndicator();
-        return FlyExhibit.fromUserProfileAndFly(
-          flyExhibitType: flyExhibitType,
-          fly: flyExhibit.fly,
-          userProfile: userProfile,
-        );
-      }).toList();
+  void updateFliesFromUserMaterialProfileEvent(UserMaterialsTransfer umt) {
+    userProfile = umt.userProfile;
 
-      List<FlyExhibit> fliesCopy = List.from(flies);
+    flies = flies.map((FlyExhibit flyExhibit) {
+      // if (flyExhibit is FlyExhibitEndCapIndicator)
+      //   return FlyExhibitEndCapIndicator();
+      return FlyExhibit.fromUserProfileAndFly(
+        flyExhibitType: flyExhibitType,
+        fly: flyExhibit.fly,
+        userProfile: userProfile,
+      );
+    }).toList();
 
-      if (isEndCapIndicator) fliesCopy.add(FlyExhibitEndCapIndicator());
-      // else if (isLoadingIndicator) fliesCopy.add(FlyExhibitLoadingIndicator());
+    List<FlyExhibit> fliesCopy = List.from(flies);
 
-      fliesStreamController.add(fliesCopy);
-    });
+    if (isEndCapIndicator) fliesCopy.add(FlyExhibitEndCapIndicator());
+    // else if (isLoadingIndicator) fliesCopy.add(FlyExhibitLoadingIndicator());
+
+    fliesStreamController.add(fliesCopy);
   }
 
   /// name: initFliesFetch
@@ -114,6 +118,9 @@ abstract class FlyExhibitBloc {
     // First just add the FlyExhibitLoadingIndicator to stream so UI will know
     // to display a circular progress indicator.
     fliesStreamController.add([FlyExhibitLoadingIndicator()]);
+
+    // Set isFetching true while we make fetch request,
+    // which will prevent us from making excessive fetch calls to Firestore.
     isFetching = true;
 
     final Future<QuerySnapshot> flyTemplateDocF =
@@ -223,7 +230,25 @@ abstract class FlyExhibitBloc {
 
   void formatAndSendFliesToUI(
       QuerySnapshot flyQueries, NewFlyFormTemplate flyFormTemplateDoc) async {
-    final List<FlyExhibit> flyExhibits = flyQueries.docs.map((doc) {
+    final List<FlyExhibit> flyExhibits =
+        formatQueryAsFlyExhibits(flyQueries, flyFormTemplateDoc);
+    sendToUI(flyExhibits);
+  }
+
+  void sendToUI(List<FlyExhibit> flyExhibits) {
+    flies.addAll(flyExhibits);
+    final List<FlyExhibit> fliesCopy = List.from(flies);
+    // flies.removeWhere((fly) => fly is FlyExhibitLoadingIndicator);
+    if (flyExhibits.isEmpty) {
+      isEndCapIndicator = true;
+      fliesCopy.add(FlyExhibitEndCapIndicator());
+    }
+    fliesStreamController.add(fliesCopy);
+  }
+
+  List<FlyExhibit> formatQueryAsFlyExhibits(
+      QuerySnapshot flyQueries, NewFlyFormTemplate flyFormTemplateDoc) {
+    return flyQueries.docs.map((doc) {
       final flyDoc = doc.data();
       return FlyExhibit.fromUserProfileAndFly(
         flyExhibitType: flyExhibitType,
@@ -241,15 +266,6 @@ abstract class FlyExhibitBloc {
         ),
       );
     }).toList();
-
-    flies.addAll(flyExhibits);
-    final List<FlyExhibit> fliesCopy = List.from(flies);
-    // flies.removeWhere((fly) => fly is FlyExhibitLoadingIndicator);
-    if (flyExhibits.isEmpty) {
-      isEndCapIndicator = true;
-      fliesCopy.add(FlyExhibitEndCapIndicator());
-    }
-    fliesStreamController.add(fliesCopy);
   }
 
   // name: getFlyExhibit

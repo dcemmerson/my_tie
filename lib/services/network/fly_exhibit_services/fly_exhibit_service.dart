@@ -8,8 +8,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:my_tie/models/db_names.dart';
 
 abstract class FlyExhibitService {
-  static const fliesPerFetch = 5;
-
   // flyCollectionDocId should correspond to fly's doc id found in the fly collection,
   // not the favorited_flies collection.
   Future<QuerySnapshot> getFavoritedFlyDoc(String flyCollectionDocId) {
