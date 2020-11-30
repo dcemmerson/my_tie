@@ -31,7 +31,7 @@ export { userMaterialUpdated };
 
 const collections = {
     byMaterialsFlies: 'by_materials_flies',
-    materialReindexRequests: 'material_renidex_requests',
+    materialReindexRequests: 'material_reindex_requests',
     user: 'user',
 }
 
@@ -54,24 +54,23 @@ const userMaterialUpdated = functions.firestore
         }
     });
 
-async function deleteUserByMaterialFlies(uid: string): Promise<Promise<FirebaseFirestore.WriteResult>[]> {
+async function deleteUserByMaterialFlies(uid: string): Promise<void> {
     const docsToDelete = await db.collection(collections.byMaterialsFlies).where('uid', '==', uid).get();
 
     // Can't use map method here, so add each promise to empty array;
     const promises: Promise<FirebaseFirestore.WriteResult>[] = [];
     docsToDelete.forEach(doc => promises.push(doc.ref.delete()));
 
-    return promises;
+    await Promise.all(promises);
 }
 
-async function deleteMaterialReindexRequests(uid: string): Promise<Promise<FirebaseFirestore.WriteResult>[]> {
+async function deleteMaterialReindexRequests(uid: string): Promise<void> {
     const docsToDelete = await db.collection(collections.materialReindexRequests).where('uid', '==', uid).get();
 
-    // Can't use map method here, so add each promise to empty array;
+    // Can't use map method here, so add each promise to empty array.
     const promises: Promise<FirebaseFirestore.WriteResult>[] = [];
     docsToDelete.forEach(doc => promises.push(doc.ref.delete()));
-
-    return promises;
+    await Promise.all(promises);
 }
 function indexFliesByMaterials(uid: string, userMaterials: Materials, flyDocs: QueryDocumentSnapshot[]): Promise<any>[] {
 
