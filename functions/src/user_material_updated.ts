@@ -16,15 +16,7 @@ interface Materials {
     tinsels: Array<object>,
     wires: Array<object>,
     yarns: Array<object>,
-    // keys: Function,
 }
-
-// interface Attributes {
-//     difficulty: string,
-//     style: string,
-//     target: string,
-//     type: string
-// }
 
 const db = admin.firestore();
 export { userMaterialUpdated };
@@ -79,14 +71,13 @@ function indexFliesByMaterials(uid: string, userMaterials: Materials, flyDocs: Q
             const flyMaterials: Materials = doc.data().materials
             const [currMaterialCount, totalMaterialCount] 
                 = calcNumMaterialsOnHand(userMaterials, flyMaterials);
-            console.log(`${currMaterialCount} /  ${totalMaterialCount}`);
             
             return db.collection(collections.byMaterialsFlies).add({
                                                         original_fly_doc_id: doc.id,
                                                         ...doc.data(), 
                                                         uid: uid, 
                                                         last_indexed: Date(),
-                                                        materials_on_hand_count: currMaterialCount as number / (totalMaterialCount as number), 
+                                                        materials_on_hand_count: (currMaterialCount as number) / (totalMaterialCount as number), 
                                                     });
         }
         return Promise.resolve();
@@ -132,25 +123,3 @@ function hasExactUnitMaterialMatch(userMaterials: [{[key: string]: any}], materi
         return acc || foundMatch;
     }, false);
 }
-
-// function deepEquals(before: any, after: any) : Boolean {
-
-//     if(!(before instanceof Array && before instanceof Object) || before === null) {
-//         return before === after;
-//     }
-
-//     let keys: IterableIterator<any>; 
-//     if(after instanceof Array){
-//         keys = after.keys();
-//     }
-//     else {
-//         keys = Object.keys(after).values();
-//     }
-    
-//     for(const k of keys) {
-//         if(!deepEquals(before[k], after[k])) {
-//             return false;
-//         }
-//     }
-//     return true;
-// }

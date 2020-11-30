@@ -5,15 +5,17 @@ admin.initializeApp();
 
 import * as newFlyFormIncoming from './new_fly_form_incoming';
 import * as editNewFlyInstructions from './edit_new_fly_instructions';
-import * as publishFly from './publish_fly';
-import * as userSignInFirstTime from './user_sign_in_first_time';
-import * as userMaterialUpdated from './user_material_updated';
+import { publishFly } from './publish_fly';
+import { userSignInFirstTime } from './user_sign_in_first_time';
+import { userMaterialUpdated } from './user_material_updated';
+import { flyWritten } from './fly';
 
 //  Firestore events.
 exports.addToNewFlyFormTemplate = newFlyFormIncoming.addToNewFlyFormTemplate;
 exports.editNewFlyInstructions = editNewFlyInstructions.editNewFlyInstructions;
-exports.userMaterialsUpdated = userMaterialUpdated.userMaterialUpdated;
+exports.userMaterialsUpdated = userMaterialUpdated;
+exports.flyWritten = flyWritten;
 
 //  Https callable functions.
-exports.publishFly = publishFly.publishFly;
-exports.userSignInFirstTime = userSignInFirstTime.userSignInFirstTime;
+exports.publishFly = publishFly;
+exports.userSignInFirstTime = userSignInFirstTime;
