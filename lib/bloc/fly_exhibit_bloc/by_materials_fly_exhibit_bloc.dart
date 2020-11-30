@@ -31,57 +31,67 @@ class ByMaterialsFlyExhibitBloc extends FlyExhibitBloc {
   ///   favorites (from the favorites collection), we only obtain fly stubs
   ///   and not the entire fly doc - thus we must query the fly collection with
   ///   the doc id obtained from each fly stub.
-  @override
-  void initFliesFetch() async {
-    // First just add the FlyExhibitLoadingIndicator to stream so UI will know
-    // to display a circular progress indicator.
-    fliesStreamController.add([FlyExhibitLoadingIndicator()]);
+  // @override
+  // void initFliesFetch() async {
+  //   // First just add the FlyExhibitLoadingIndicator to stream so UI will know
+  //   // to display a circular progress indicator.
+  //   fliesStreamController.add([FlyExhibitLoadingIndicator()]);
 
-    // Set isFetching true while we make fetch request,
-    // which will prevent us from making excessive fetch calls to Firestore.
-    isFetching = true;
+  //   // Set isFetching true while we make fetch request,
+  //   // which will prevent us from making excessive fetch calls to Firestore.
+  //   isFetching = true;
 
-    final Future<QuerySnapshot> flyTemplateDocF =
-        flyFormTemplateService.newFlyForm;
-    final Future<QuerySnapshot> queryF =
-        flyExhibitService.initGetCompletedFlies(uid: userProfile.uid);
+  //   final Future<QuerySnapshot> flyTemplateDocF =
+  //       flyFormTemplateService.newFlyForm;
+  //   final Future<QuerySnapshot> queryF =
+  //       flyExhibitService.initGetCompletedFlies(uid: userProfile.uid);
 
-    // No need to use Future.wait, as query depeneds on flyFormTemplate.
-    final flyFormTemplateDoc =
-        NewFlyFormTemplate.fromDoc((await flyTemplateDocF).docs[0].data());
-    final flyQueries = await queryF;
+  //   // No need to use Future.wait, as query depeneds on flyFormTemplate.
+  //   final flyFormTemplateDoc =
+  //       NewFlyFormTemplate.fromDoc((await flyTemplateDocF).docs[0].data());
+  //   final flyQueries = await queryF;
 
-    isFetching = false;
-    setPrevDoc(flyQueries);
-    formatAndSendFliesToUI(flyQueries, flyFormTemplateDoc);
-  }
+  //   isFetching = false;
+  //   setPrevDoc(flyQueries);
+  //   formatAndSendFliesToUI(flyQueries, flyFormTemplateDoc);
+  // }
 
   /// name: fliesFetch
   /// description: We must override this method from FlyExhibitBloc for same
   ///   reason described in initFliesFetch.
+  // @override
+  // void fliesFetch() async {
+  //   if (flies.length == 0) {
+  //     initFliesFetch();
+  //     return;
+  //   }
+  //   final Future<QuerySnapshot> flyTemplateDocF =
+  //       flyFormTemplateService.newFlyForm;
+  //   final Future<QuerySnapshot> queryF =
+  //       flyExhibitService.getCompletedFliesByDateAfterDoc(
+  //           uid: userProfile.uid, prevDoc: prevFlyDoc);
+
+  //   // No need to use Future.wait, as query depeneds on flyFormTemplate.
+  //   final flyFormTemplateDoc =
+  //       NewFlyFormTemplate.fromDoc((await flyTemplateDocF).docs[0].data());
+  //   final flyQueries = await queryF;
+
+  //   isFetching = false;
+  //   setPrevDoc(flyQueries);
+  //   formatAndSendFliesToUI(flyQueries, flyFormTemplateDoc);
+  // }
+
+  /// name: initFliesFetch
+  /// description: We must override this method from FlyExhibitBloc because
+  ///   favorited flies are stored in a top level collection (for simple
+  ///   querying functionallity). When we query Firestore for a user's
+  ///   favorites (from the favorites collection), we only obtain fly stubs
+  ///   and not the entire fly doc - thus we must query the fly collection with
+  ///   the doc id obtained from each fly stub.
   @override
-  void fliesFetch() async {
-    if (flies.length == 0) {
-      initFliesFetch();
-      return;
-    }
-    final Future<QuerySnapshot> flyTemplateDocF =
-        flyFormTemplateService.newFlyForm;
-    final Future<QuerySnapshot> queryF =
-        flyExhibitService.getCompletedFliesByDateAfterDoc(
-            uid: userProfile.uid, prevDoc: prevFlyDoc);
+  void initFliesFetch() async {
+    materialsReindexedSinceLastFetch = false;
 
-    // No need to use Future.wait, as query depeneds on flyFormTemplate.
-    final flyFormTemplateDoc =
-        NewFlyFormTemplate.fromDoc((await flyTemplateDocF).docs[0].data());
-    final flyQueries = await queryF;
-
-    isFetching = false;
-    setPrevDoc(flyQueries);
-    formatAndSendFliesToUI(flyQueries, flyFormTemplateDoc);
-  }
-
-  void initFliesFetchPostMaterialReindex() async {
     final Future<QuerySnapshot> flyTemplateDocF =
         flyFormTemplateService.newFlyForm;
     final List<FlyExhibit> fliesFetched = [];
@@ -111,6 +121,51 @@ class ByMaterialsFlyExhibitBloc extends FlyExhibitBloc {
       }
     }
 
+    isFetching = false;
+    prevFlyDoc = prevFlyDocFetched;
+    sendToUI(fliesFetched);
+  }
+
+  /// name: fliesFetch
+  /// description: We must override this method from FlyExhibitBloc for same
+  ///   reason described in initFliesFetch.
+  @override
+  void fliesFetch() async {
+    if (flies.length == 0) {
+      initFliesFetch();
+      return;
+    }
+
+    final Future<QuerySnapshot> flyTemplateDocF =
+        flyFormTemplateService.newFlyForm;
+    final flyFormTemplateDoc =
+        NewFlyFormTemplate.fromDoc((await flyTemplateDocF).docs[0].data());
+
+    final List<FlyExhibit> fliesFetched = [];
+    var prevFlyDocFetched = flies[flies.length - 1].fly.doc;
+
+    List<FlyExhibit> lastFliesFetched = [];
+
+    var numberFetchedFlies = 0;
+
+    // Use do-while loop here as we need to ensure we execute loop at minimum
+    // one time.
+    do {
+      final query = await flyExhibitService.getCompletedFliesByDateAfterDoc(
+          prevDoc: prevFlyDocFetched,
+          uid: userBloc.authService.currentUser.uid);
+      lastFliesFetched = formatQueryAsFlyExhibits(query, flyFormTemplateDoc);
+      numberFetchedFlies = lastFliesFetched.length;
+
+      if (lastFliesFetched.length > 0) {
+        prevFlyDocFetched = query.docs[query.docs.length - 1];
+        stripRefetchedFlies(lastFliesFetched);
+        fliesFetched.addAll(lastFliesFetched);
+      }
+    } while (fliesFetched.length < FlyExhibitBloc.flyFetchCount &&
+        numberFetchedFlies > 0);
+
+    isFetching = false;
     prevFlyDoc = prevFlyDocFetched;
     sendToUI(fliesFetched);
   }
@@ -146,6 +201,47 @@ class ByMaterialsFlyExhibitBloc extends FlyExhibitBloc {
     userBloc.userMaterialsProfile.listen((UserMaterialsTransfer umt) {
       materialsReindexedSinceLastFetch = true;
       super.updateFliesFromUserMaterialProfileEvent(umt);
+    });
+  }
+
+  /// Listen for fetch flies events being added to sink from UI (eg, when user
+  ///  scrolls to bottom of screen and infinite scroll needs to load more
+  ///  flies). First add the FlyExhibitLoadingIndicator, to tell UI to show
+  ///  spinner, then call fliesFetch which will make request to db,
+  ///  update flies, then add flies to fliesStreamController. We must override
+  ///  this method in the ByMaterialsByExhibitBloc subclass so we can correctly
+  ///  handle behavior of following situation: user tabs over to by materials tab
+  ///  on ui, thus causing this bloc to request by materials fly fetch. User
+  ///  then selects one or more materials they have on hand, followed by scrolling
+  ///  to bottom of by materials tab, thus triggering another by materials fly
+  ///  fetch. The underlying issue is that in this scenario, we can no longer
+  ///  rely on the last fetched doc to be a reliable indicator of where we should
+  ///  pick up from for the next by materials fly fetch, and instead we need to
+  ///  go back through the ByMaterialsFlyExhibitBloc.initFliesFetch algorithm
+  ///  to correctly select the next batch of flies from Firestore to show user.
+  void listenForRequestFliesFetch() {
+    requestFetchFlies.stream.listen((ffe) {
+      if (ffe is FetchNewestFliesEvent && !isFetching) {
+        final List<FlyExhibit> fliesCopy = List.from(flies);
+
+        // Add the FlyExhibitLoadingIndicator to our copied list of FlyExhibit and
+        // add this to the fliesStreamController, which indicates to the UI to display
+        // a loading indicator while we are fetching the next batch of flies.
+        fliesCopy.add(FlyExhibitLoadingIndicator());
+        isFetching = true;
+
+        fliesStreamController.add(fliesCopy);
+        if (materialsReindexedSinceLastFetch) {
+          initFliesFetch();
+        } else {
+          fliesFetch();
+        }
+      } else if (isFetching) {
+        print('Received fetch request...ignoring - fetch in progress.');
+      } else {
+        // Unreachable, but you never know...
+        throw Exception('event not found - unimplemented $ffe');
+      }
     });
   }
 }
