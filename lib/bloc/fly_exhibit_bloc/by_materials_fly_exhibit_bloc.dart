@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:my_tie/models/db_names.dart';
 import 'package:my_tie/models/fly_exhibits/fly_exhibit.dart';
+import 'package:my_tie/models/new_fly/fly.dart';
 import 'package:my_tie/models/new_fly/new_fly_form_template.dart';
 import 'package:my_tie/models/user_profile/user_materials_transfer.dart';
 import 'package:my_tie/pages/tab_based_pages/tab_page.dart';
@@ -26,68 +28,8 @@ class ByMaterialsFlyExhibitBloc extends FlyExhibitBloc {
 
   /// name: initFliesFetch
   /// description: We must override this method from FlyExhibitBloc because
-  ///   favorited flies are stored in a top level collection (for simple
-  ///   querying functionallity). When we query Firestore for a user's
-  ///   favorites (from the favorites collection), we only obtain fly stubs
-  ///   and not the entire fly doc - thus we must query the fly collection with
-  ///   the doc id obtained from each fly stub.
-  // @override
-  // void initFliesFetch() async {
-  //   // First just add the FlyExhibitLoadingIndicator to stream so UI will know
-  //   // to display a circular progress indicator.
-  //   fliesStreamController.add([FlyExhibitLoadingIndicator()]);
-
-  //   // Set isFetching true while we make fetch request,
-  //   // which will prevent us from making excessive fetch calls to Firestore.
-  //   isFetching = true;
-
-  //   final Future<QuerySnapshot> flyTemplateDocF =
-  //       flyFormTemplateService.newFlyForm;
-  //   final Future<QuerySnapshot> queryF =
-  //       flyExhibitService.initGetCompletedFlies(uid: userProfile.uid);
-
-  //   // No need to use Future.wait, as query depeneds on flyFormTemplate.
-  //   final flyFormTemplateDoc =
-  //       NewFlyFormTemplate.fromDoc((await flyTemplateDocF).docs[0].data());
-  //   final flyQueries = await queryF;
-
-  //   isFetching = false;
-  //   setPrevDoc(flyQueries);
-  //   formatAndSendFliesToUI(flyQueries, flyFormTemplateDoc);
-  // }
-
-  /// name: fliesFetch
-  /// description: We must override this method from FlyExhibitBloc for same
-  ///   reason described in initFliesFetch.
-  // @override
-  // void fliesFetch() async {
-  //   if (flies.length == 0) {
-  //     initFliesFetch();
-  //     return;
-  //   }
-  //   final Future<QuerySnapshot> flyTemplateDocF =
-  //       flyFormTemplateService.newFlyForm;
-  //   final Future<QuerySnapshot> queryF =
-  //       flyExhibitService.getCompletedFliesByDateAfterDoc(
-  //           uid: userProfile.uid, prevDoc: prevFlyDoc);
-
-  //   // No need to use Future.wait, as query depeneds on flyFormTemplate.
-  //   final flyFormTemplateDoc =
-  //       NewFlyFormTemplate.fromDoc((await flyTemplateDocF).docs[0].data());
-  //   final flyQueries = await queryF;
-
-  //   isFetching = false;
-  //   setPrevDoc(flyQueries);
-  //   formatAndSendFliesToUI(flyQueries, flyFormTemplateDoc);
-  // }
-
-  /// name: initFliesFetch
-  /// description: We must override this method from FlyExhibitBloc because
-  ///   favorited flies are stored in a top level collection (for simple
-  ///   querying functionallity). When we query Firestore for a user's
-  ///   favorites (from the favorites collection), we only obtain fly stubs
-  ///   and not the entire fly doc - thus we must query the fly collection with
-  ///   the doc id obtained from each fly stub.
+  ///   by materials flies are stored in a top level collection (for simple
+  ///   querying functionallity).
   @override
   void initFliesFetch() async {
     materialsReindexedSinceLastFetch = false;
@@ -204,7 +146,7 @@ class ByMaterialsFlyExhibitBloc extends FlyExhibitBloc {
     });
   }
 
-  /// Listen for fetch flies events being added to sink from UI (eg, when user
+  ///  Listen for fetch flies events being added to sink from UI (eg, when user
   ///  scrolls to bottom of screen and infinite scroll needs to load more
   ///  flies). First add the FlyExhibitLoadingIndicator, to tell UI to show
   ///  spinner, then call fliesFetch which will make request to db,
@@ -243,5 +185,32 @@ class ByMaterialsFlyExhibitBloc extends FlyExhibitBloc {
         throw Exception('event not found - unimplemented $ffe');
       }
     });
+  }
+
+  // We are overriding formatQueryAsFlyExhibits since by materials fly docs
+  // are stored in separate top level collection, we need to insert the original
+  // fly doc id in FlyExhibit.Fly so the favorite/unfavorite functionallity will
+  // plug in correctly.
+  @override
+  List<FlyExhibit> formatQueryAsFlyExhibits(
+      QuerySnapshot flyQueries, NewFlyFormTemplate flyFormTemplateDoc) {
+    return flyQueries.docs.map((doc) {
+      final flyDoc = doc.data();
+      return FlyExhibit.fromUserProfileAndFly(
+        flyExhibitType: flyExhibitType,
+        userProfile: userProfile,
+        fly: Fly.formattedForExhibit(
+          docId: flyDoc[DbNames.originalFlyDocId],
+          doc: doc,
+          flyName: flyDoc[DbNames.flyName],
+          flyDescription: flyDoc[DbNames.flyDescription],
+          attrs: flyDoc[DbNames.attributes],
+          mats: flyDoc[DbNames.materials],
+          instr: flyDoc[DbNames.instructions],
+          imageUris: flyDoc[DbNames.topLevelImageUris],
+          flyFormTemplate: flyFormTemplateDoc,
+        ),
+      );
+    }).toList();
   }
 }

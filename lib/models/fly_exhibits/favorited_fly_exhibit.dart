@@ -16,40 +16,10 @@ import 'fly_exhibit.dart';
 
 class FavoritedFlyExhibit extends FlyExhibit {
   final DocumentSnapshot doc;
-  final bool materialUpdate;
 
-  FavoritedFlyExhibit(
-      {this.doc, UserProfile userProfile, Fly fly, this.materialUpdate = true})
+  FavoritedFlyExhibit({this.doc, UserProfile userProfile, Fly fly})
       : super.fromUserProfileAndFly(
             flyExhibitType: FlyExhibitType.Favorites,
             fly: fly,
             userProfile: userProfile);
-
-  // This override of the equality operator is required due to a bug in the
-  // AnimatedListStream used in the FlyExhibitEntry widget. The AnimatedListStream
-  // allows us to pass an equality closure, but the AnimatedListStream does not
-  // correctly pass the equality closure to the isolate where the Myers diff
-  // calc is performed, thus defaulting to using (a, b) => a == b when comparing
-  // FlyExhibits. An issue has been opened for this Flutter package.
-  // November 2020
-  // Equality override commented out for now. Causes issues with asynchronously
-  // updating fly exhibits. Current effect of commenting out this override is the
-  // wrong fly exhibit gets animated out on favorites tab.
-  // @override
-  // bool operator ==(other) {
-  //   if (this is FlyExhibitEndCapIndicator &&
-  //       other is FlyExhibitEndCapIndicator) {
-  //     return true;
-  //   } else if (this is FlyExhibitLoadingIndicator &&
-  //       other is FlyExhibitLoadingIndicator) {
-  //     return true;
-  //   } else if (this.fly?.docId == other.fly?.docId) {
-  //     return true;
-  //   } else {
-  //     return false;
-  //   }
-  // }
-
-  // @override
-  // int get hashCode => super.hashCode;
 }

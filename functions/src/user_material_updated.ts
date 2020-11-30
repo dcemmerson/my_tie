@@ -80,10 +80,10 @@ function indexFliesByMaterials(uid: string, userMaterials: Materials, flyDocs: Q
             const flyMaterials: Materials = doc.data().materials
             const [currMaterialCount, totalMaterialCount] 
                 = calcNumMaterialsOnHand(userMaterials, flyMaterials);
-            console.log("***** we have ");
             console.log(`${currMaterialCount} /  ${totalMaterialCount}`);
             
             return db.collection(collections.byMaterialsFlies).add({
+                                                        original_fly_doc_id: doc.id,
                                                         ...doc.data(), 
                                                         uid: uid, 
                                                         last_indexed: Date(),
