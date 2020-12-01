@@ -65,7 +65,6 @@ function calcNumMaterialsOnHand(userMaterials: Materials, flyMaterials: Material
         currFlyMaterial.forEach((material) => {
             flyMaterialCount++;
             const isExactMatch = hasExactUnitMaterialMatch(currUserMaterial, material);
-            console.log('exact match = ' + isExactMatch);
             if(isExactMatch) {
                 userMaterialCount++;
             }

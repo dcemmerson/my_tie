@@ -1,6 +1,8 @@
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
 import { DocumentSnapshot } from 'firebase-functions/lib/providers/firestore';
+import { collections } from './collections';
+import { flyInProgress } from './document_fields';
 
 
 const db = admin.firestore();
@@ -86,10 +88,10 @@ const editNewFlyInstructions = functions.firestore.document('/fly_in_progress/{d
       //  if the order needs to be updated.
       if (orderedInstructions !== changedInstructions) {
         //  delete instructions that were present, followed by inserting the ordered list.
-        await db.collection('fly_in_progress').doc(changedDoc.id)
-          .set({ 'instructions': admin.firestore.FieldValue.delete() }, { merge: true })
+        await db.collection(collections.flyInProgress).doc(changedDoc.id)
+          .set({ [flyInProgress.instructions]: admin.firestore.FieldValue.delete() }, { merge: true })
         return db.collection('fly_in_progress').doc(changedDoc.id)
-          .set({ 'instructions': orderedInstructions }, { merge: true })
+          .set({ [flyInProgress.instructions]: orderedInstructions }, { merge: true })
       }
       else return;
     }

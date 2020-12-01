@@ -1,5 +1,6 @@
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
+import { collections } from './collections';
 // import { DocumentSnapshot } from 'firebase-functions/lib/providers/firestore';
 
 
@@ -9,7 +10,7 @@ export { userSignInFirstTime };
 const userSignInFirstTime = functions.auth.user().onCreate(async (user) => {
 
     // Add document for this user in user collection.
-    const userDocRef = await db.collection('user').add({
+    const userDocRef = await db.collection(collections.user).add({
         user: user.email,
         name: user.displayName,
         phone_number: user.phoneNumber,
@@ -22,7 +23,7 @@ const userSignInFirstTime = functions.auth.user().onCreate(async (user) => {
 
     // Now add this newly added user's uid to the material_reindex_requests
     // collection which will trigger a fly material reindex for this user.
-    await db.collection('material_reindex_requests').add({uid: userDoc.data()?['uid'] : null});
+    await db.collection(collections.materialReindexRequests).add({uid: userDoc.data()?['uid'] : null});
 
     return;
 });

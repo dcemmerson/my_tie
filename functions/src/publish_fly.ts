@@ -1,5 +1,6 @@
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
+import { collections } from './collections';
 
 
 const db = admin.firestore();
@@ -7,12 +8,12 @@ export { publishFly };
 
 const publishFly = functions.https.onCall(async (data, context) => {
     const flyInProgressDocId: string = data.docId;
-    const doc = await db.collection('fly_in_progress').doc(flyInProgressDocId).get();
+    const doc = await db.collection(collections.flyInProgress).doc(flyInProgressDocId).get();
     const docData = doc.data();
 
     if (docData !== null && docData !== undefined && validate(docData)) {
-        await db.collection('fly').add(docData);
-        await db.collection('fly_in_progress').doc(flyInProgressDocId).delete();
+        await db.collection(collections.fly).add(docData);
+        await db.collection(collections.flyInProgress).doc(flyInProgressDocId).delete();
     }
 
     return;

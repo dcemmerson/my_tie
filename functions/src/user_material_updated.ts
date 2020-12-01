@@ -1,6 +1,8 @@
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
 import { QueryDocumentSnapshot } from 'firebase-functions/lib/providers/firestore';
+import { collections } from './collections';
+import { byMaterialsFlies } from './document_fields';
 
 interface Materials {
     [index: string] : Array<object>,
@@ -21,11 +23,7 @@ interface Materials {
 const db = admin.firestore();
 export { userMaterialUpdated };
 
-const collections = {
-    byMaterialsFlies: 'by_materials_flies',
-    materialReindexRequests: 'material_reindex_requests',
-    user: 'user',
-}
+
 
 const userMaterialUpdated = functions.firestore
     .document('material_reindex_requests/{userId}')
@@ -73,11 +71,11 @@ function indexFliesByMaterials(uid: string, userMaterials: Materials, flyDocs: Q
                 = calcNumMaterialsOnHand(userMaterials, flyMaterials);
             
             return db.collection(collections.byMaterialsFlies).add({
-                                                        original_fly_doc_id: doc.id,
+                                                        [byMaterialsFlies.originalFlyDocId]: doc.id,
                                                         ...doc.data(), 
-                                                        uid: uid, 
-                                                        last_indexed: Date(),
-                                                        materials_on_hand_count: (currMaterialCount as number) / (totalMaterialCount as number), 
+                                                        [byMaterialsFlies.uid]: uid, 
+                                                        [byMaterialsFlies.lastIndexed]: Date(),
+                                                        [byMaterialsFlies.materialsOnHandCount]: (currMaterialCount as number) / (totalMaterialCount as number), 
                                                     });
         }
         return Promise.resolve();

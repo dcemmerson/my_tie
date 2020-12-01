@@ -2,6 +2,7 @@ const collections = {
     byMaterialsFlies: 'by_materials_flies',
     materialReindexRequests: 'material_reindex_requests',
     user: 'user',
+    fly: 'fly',
     favoritedFlies: 'favorited_flies',
     flyInProgress: 'fly_in_progress',
     flyIncoming: 'fly_incoming',

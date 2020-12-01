@@ -5,4 +5,12 @@ const byMaterialsFlies = {
     lastIndexed: 'last_index',
 };
 
-export { byMaterialsFlies };
+const flyInProgress = {
+    instructions: 'instructions',
+};
+
+const newFlyForm = {
+    materials: 'materials',
+};
+
+export { byMaterialsFlies, flyInProgress, newFlyForm };
