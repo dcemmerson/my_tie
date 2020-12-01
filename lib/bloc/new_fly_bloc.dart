@@ -183,13 +183,15 @@ class NewFlyBloc {
   Future _handleAddNewFlyMaterial(FlyMaterialAddOrUpdate materialUpdate) async {
     // Add new material to array, then delete the old material since firestore
     //  doesn't currently have good support for update array.
-    newFlyService.addFlyInProgressMaterial(
+    // Await to delete as otherwise we introduce a potential race condition
+    // when user re-saves the same material.
+    await _handleDeleteFlyMaterial(materialUpdate);
+    await newFlyService.addFlyInProgressMaterial(
       docId: materialUpdate.fly.docId,
       uid: authService.currentUser.uid,
       name: materialUpdate.curr.name,
       properties: materialUpdate.curr.properties,
     );
-    return _handleDeleteFlyMaterial(materialUpdate);
   }
 
   Future _handleAddNewFlyAttributes(
