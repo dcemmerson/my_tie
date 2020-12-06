@@ -4,6 +4,7 @@ import 'package:my_tie/pages/tab_based_pages/tab_page.dart';
 import 'package:my_tie/styles/theme_manager.dart';
 import 'package:my_tie/widgets/drawer/settings_drawer.dart';
 import 'package:my_tie/widgets/drawer/settings_drawer_icon.dart';
+import 'package:my_tie/widgets/search_bar/search_bar.dart';
 
 enum PageType {
   HomePage,
@@ -137,13 +138,7 @@ class _PageBaseState extends State<PageBase>
   }
 
   Widget _tabbedAppBar(BuildContext context) {
-    return
-
-        // DefaultTabController(
-        //   length: widget.tabPages.length,
-        //   // initialIndex: 0,
-        //   child:
-        NestedScrollView(
+    return NestedScrollView(
       controller: _appBarScrollController,
       headerSliverBuilder: (context, innerBoxIsScrolled) => [
         SliverAppBar(
@@ -152,7 +147,7 @@ class _PageBaseState extends State<PageBase>
           centerTitle: true,
           elevation: 0.0,
           // floating: true,
-          title: Text(widget.pageTitle),
+          title: SearchBar(),
           textTheme: Theme.of(context).primaryTextTheme,
           actions: [
             SettingsDrawerIcon(),
@@ -165,25 +160,19 @@ class _PageBaseState extends State<PageBase>
                   .toList()),
         ),
       ],
-      body:
-          // PageStorage(
-          //   bucket: _bucket,
-          //   child:
-          TabBarView(
-              controller: _tabController,
-              children: widget.tabPages.map((tabPage) {
-                tabScrollControllers.add(tabPage.scrollController);
-                if (currTabIndex == -1 && tabScrollControllers.length > 1) {
-                  tabScrollControllers[1].addListener(_handleChildScroll);
-                  currTabIndex = 1;
-                }
-                return SafeArea(
-                    top: false,
-                    bottom: false,
-                    child: tabPage.widget(_appBarScrollController));
-              }).toList()),
-      // ),
-      // ),
+      body: TabBarView(
+          controller: _tabController,
+          children: widget.tabPages.map((tabPage) {
+            tabScrollControllers.add(tabPage.scrollController);
+            if (currTabIndex == -1 && tabScrollControllers.length > 1) {
+              tabScrollControllers[1].addListener(_handleChildScroll);
+              currTabIndex = 1;
+            }
+            return SafeArea(
+                top: false,
+                bottom: false,
+                child: tabPage.widget(_appBarScrollController));
+          }).toList()),
     );
   }
 

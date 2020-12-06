@@ -82,7 +82,7 @@ class _NewFlyFormPublishState extends State<NewFlyFormPublish> {
     bool deleteForm = await showDialog<bool>(
         context: context,
         builder: (BuildContext ctx) {
-          return CupertinoAlertDialog(
+          return AlertDialog(
             title: Text('Clear form?'),
             content: SingleChildScrollView(
               child: ListBody(
