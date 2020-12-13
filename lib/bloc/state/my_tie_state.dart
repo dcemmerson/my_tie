@@ -96,7 +96,6 @@ class MyTieState extends State<MyTieStateContainer> {
 class _MyTieContainer extends InheritedWidget {
   final MyTieState wasteagramState;
   final BlocProvider blocProvider;
-  // final int newFlyFormPageCount;
   final bool isDarkMode;
   final bool isCompactWasteListMode;
   final bool allUsersEntries;
@@ -105,7 +104,6 @@ class _MyTieContainer extends InheritedWidget {
     Key key,
     @required Widget child,
     @required this.wasteagramState,
-    // @required this.newFlyFormPageCount,
     @required this.blocProvider,
     @required this.isDarkMode,
     @required this.allUsersEntries,

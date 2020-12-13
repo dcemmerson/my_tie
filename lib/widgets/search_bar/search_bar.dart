@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:my_tie/bloc/fly_search_bloc.dart';
+import 'package:my_tie/bloc/state/my_tie_state.dart';
 
 class SearchBar extends StatefulWidget {
   @override
@@ -7,6 +9,16 @@ class SearchBar extends StatefulWidget {
 
 class _SearchBarState extends State<SearchBar> {
   final _formKey = GlobalKey<FormState>();
+  FlySearchBloc _flySearchBloc;
+
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _flySearchBloc = MyTieStateContainer.of(context).blocProvider.flySearchBloc;
+  }
+
+  void _handleInput(String str) {
+    _flySearchBloc.flySearchSink.add(str);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,20 +37,22 @@ class _SearchBarState extends State<SearchBar> {
           children: [
             Wrap(
               children: [
-                Icon(Icons.search),
+                Icon(Icons.search,
+                    color: Theme.of(context).colorScheme.primaryVariant),
                 FractionallySizedBox(
                   widthFactor: 0.85,
-                  child: TextFormField(
-                    initialValue: 'abc',
+                  child: TextField(
+                    onChanged: _handleInput,
+                    // initialValue: 'abc',
                     decoration: const InputDecoration(
                       contentPadding: EdgeInsets.all(5),
                       isDense: true,
                       isCollapsed: true,
                       hintText: 'Search',
                       // fillColor: Colors.red,
-                      border: OutlineInputBorder(
-                          // borderRadius: BorderRadius.all(Radius.circular(10)),
-                          ),
+                      // border: OutlineInputBorder(
+                      //     // borderRadius: BorderRadius.all(Radius.circular(10)),
+                      //     ),
                     ),
                   ),
                 ),

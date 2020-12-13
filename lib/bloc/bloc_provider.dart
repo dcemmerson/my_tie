@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:my_tie/bloc/auth_bloc.dart';
 import 'package:my_tie/bloc/edit_new_fly_template_bloc.dart';
 import 'package:my_tie/bloc/fly_exhibit_bloc/favorited_fly_exhibit_bloc.dart';
+import 'package:my_tie/bloc/fly_search_bloc.dart';
 import 'package:my_tie/bloc/new_fly_bloc.dart';
 import 'package:my_tie/bloc/user_bloc.dart';
 
@@ -16,6 +17,7 @@ class BlocProvider {
   final NewestFlyExhibitBloc newestFlyExhibitBloc;
   final FavoritedFlyExhibitBloc favoritedFlyExhibitBloc;
   final ByMaterialsFlyExhibitBloc byMaterialsFlyExhibitBloc;
+  final FlySearchBloc flySearchBloc;
 
   BlocProvider({
     @required this.authBloc,
@@ -25,5 +27,6 @@ class BlocProvider {
     @required this.newestFlyExhibitBloc,
     @required this.favoritedFlyExhibitBloc,
     @required this.byMaterialsFlyExhibitBloc,
+    @required this.flySearchBloc,
   });
 }

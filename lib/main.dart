@@ -9,6 +9,7 @@ import 'package:my_tie/bloc/bloc_provider.dart';
 import 'package:my_tie/bloc/fly_exhibit_bloc/favoriting_bloc.dart';
 import 'package:my_tie/bloc/fly_exhibit_bloc/newest_fly_exhibit_bloc.dart';
 import 'package:my_tie/bloc/edit_new_fly_template_bloc.dart';
+import 'package:my_tie/bloc/fly_search_bloc.dart';
 import 'package:my_tie/bloc/new_fly_bloc.dart';
 import 'package:my_tie/bloc/state/my_tie_state.dart';
 import 'package:my_tie/services/network/auth_service.dart';
@@ -79,6 +80,8 @@ Future<Widget> initApp() async {
       byMaterialsFlyExhibitService: byMaterialsFlyExhibitService,
       flyFormTemplateService: flyFormTemplateService);
 
+  final flySearchBloc = FlySearchBloc();
+
   FavoritingBloc.sharedInstance
       .init(flyExhibitService: favoritedFlyExhibitService, userBloc: userBloc);
 
@@ -91,6 +94,7 @@ Future<Widget> initApp() async {
       newestFlyExhibitBloc: newestFlyExhibitBloc,
       favoritedFlyExhibitBloc: favoritedFlyExhibitBloc,
       byMaterialsFlyExhibitBloc: byMaterialsFlyExhibitBloc,
+      flySearchBloc: flySearchBloc,
     ),
     child: MyTieApp(),
   );
