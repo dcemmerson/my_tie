@@ -117,17 +117,17 @@ class _PageBaseState extends State<PageBase>
     super.dispose();
   }
 
-  Widget _appBar(BuildContext context) {
+  Widget _appBar(BuildContext context, {showSearch: false}) {
     return NestedScrollView(
-      // controller: ScrollController(),
       headerSliverBuilder: (context, innerBoxIsScrolled) => [
         SliverAppBar(
           snap: true,
           floating: true,
           centerTitle: true,
           elevation: 0.0,
-          // floating: true,
-          title: Text(widget.pageTitle),
+          title: showSearch
+              ? SearchBar(isSearchable: true)
+              : Text(widget.pageTitle),
           textTheme: Theme.of(context).primaryTextTheme,
           actions: [
             SettingsDrawerIcon(),
@@ -148,7 +148,7 @@ class _PageBaseState extends State<PageBase>
           centerTitle: true,
           elevation: 0.0,
           // floating: true,
-          title: SearchBar(),
+          title: SearchBar(isSearchable: false),
           textTheme: Theme.of(context).primaryTextTheme,
           actions: [
             SettingsDrawerIcon(),
@@ -183,7 +183,8 @@ class _PageBaseState extends State<PageBase>
     if (widget.tabPages != null) {
       body = _tabbedAppBar(context);
     } else {
-      body = _appBar(context);
+      body = _appBar(context,
+          showSearch: widget.pageType == PageType.FlySearchPage);
     }
     return Theme(
       data: _themeManager.themeData,
