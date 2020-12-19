@@ -5,6 +5,7 @@ import 'package:my_tie/pages/bottom_navigation_based_pages/home_page.dart';
 import 'package:my_tie/pages/bottom_navigation_based_pages/new_fly_start_page.dart';
 import 'package:my_tie/pages/bottom_navigation_based_pages/profile_page.dart';
 import 'package:my_tie/pages/route_based_pages/fly_exhibit_pages/fly_exhibit_detail_page.dart';
+import 'package:my_tie/pages/route_based_pages/fly_search_pages/fly_search_page.dart';
 import 'package:my_tie/pages/route_based_pages/new_fly_pages/add_new_attribute_page.dart';
 import 'package:my_tie/pages/route_based_pages/new_fly_pages/add_new_property_page.dart';
 import 'package:my_tie/pages/route_based_pages/new_fly_pages/new_fly_attributes_page.dart';
@@ -14,6 +15,7 @@ import 'package:my_tie/pages/route_based_pages/new_fly_pages/new_fly_preview_pub
 import 'package:my_tie/pages/route_based_pages/new_fly_pages/new_fly_publish_page.dart';
 import 'package:my_tie/pages/route_based_pages/user_profile_pages/user_profile_edit_material_page.dart';
 import 'package:my_tie/pages/tab_based_pages/tab_page.dart';
+import 'package:my_tie/widgets/search_bar/fly_search.dart';
 
 class PageContainer extends PageBase {
   final PageType _pageType;
@@ -32,6 +34,9 @@ class PageContainer extends PageBase {
       // Start/Home page related.
       case PageType.HomePage:
         page = HomePage();
+        break;
+      case PageType.FlySearchPage:
+        page = FlySearchPage();
         break;
       // Fly exhibit related.
       case PageType.FlyExhibitDetailPage:
@@ -88,6 +93,8 @@ class PageContainer extends PageBase {
       // Start/Home page related.
       case PageType.HomePage:
         return HomePage.route;
+      case PageType.FlySearchPage:
+        return FlySearchPage.route;
       // Fly exhibit related.
       case PageType.FlyExhibitDetailPage:
         return FlyExhibitDetailPage.route;

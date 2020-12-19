@@ -8,6 +8,7 @@ import 'package:my_tie/widgets/search_bar/search_bar.dart';
 
 enum PageType {
   HomePage,
+  FlySearchPage,
   // Fly exhibit pages.
   FlyExhibitDetailPage,
   AuthenticationPage,
