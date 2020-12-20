@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:my_tie/bloc/fly_search_bloc.dart';
 import 'package:my_tie/models/db_names.dart';
 import 'package:my_tie/models/fly_exhibits/fly_exhibit.dart';
 import 'package:my_tie/models/new_fly/fly.dart';
@@ -21,10 +22,13 @@ class ByMaterialsFlyExhibitBloc extends FlyExhibitBloc {
     UserBloc userBloc,
     ByMaterialsFlyExhibitService byMaterialsFlyExhibitService,
     FlyFormTemplateService flyFormTemplateService,
+    FlySearchBloc flySearchBloc,
   }) : super(
-            userBloc: userBloc,
-            flyExhibitService: byMaterialsFlyExhibitService,
-            flyFormTemplateService: flyFormTemplateService);
+          userBloc: userBloc,
+          flyExhibitService: byMaterialsFlyExhibitService,
+          flyFormTemplateService: flyFormTemplateService,
+          flySearchBloc: flySearchBloc,
+        );
 
   /// name: initFliesFetch
   /// description: We must override this method from FlyExhibitBloc because

@@ -62,25 +62,31 @@ Future<Widget> initApp() async {
       authService: authService,
       flyFormTemplateService: flyFormTemplateService);
 
+  final flySearchBloc = FlySearchBloc();
+
   final newestFlyExhibitService = NewestFlyExhibitService();
   final newestFlyExhibitBloc = NewestFlyExhibitBloc(
-      userBloc: userBloc,
-      newestFlyExhibitService: newestFlyExhibitService,
-      flyFormTemplateService: flyFormTemplateService);
+    userBloc: userBloc,
+    newestFlyExhibitService: newestFlyExhibitService,
+    flyFormTemplateService: flyFormTemplateService,
+    flySearchBloc: flySearchBloc,
+  );
 
   final favoritedFlyExhibitService = FavoritedFlyExhibitService();
   final favoritedFlyExhibitBloc = FavoritedFlyExhibitBloc(
-      userBloc: userBloc,
-      favoritedFlyExhibitService: favoritedFlyExhibitService,
-      flyFormTemplateService: flyFormTemplateService);
+    userBloc: userBloc,
+    favoritedFlyExhibitService: favoritedFlyExhibitService,
+    flyFormTemplateService: flyFormTemplateService,
+    flySearchBloc: flySearchBloc,
+  );
 
   final byMaterialsFlyExhibitService = ByMaterialsFlyExhibitService();
   final byMaterialsFlyExhibitBloc = ByMaterialsFlyExhibitBloc(
-      userBloc: userBloc,
-      byMaterialsFlyExhibitService: byMaterialsFlyExhibitService,
-      flyFormTemplateService: flyFormTemplateService);
-
-  final flySearchBloc = FlySearchBloc();
+    userBloc: userBloc,
+    byMaterialsFlyExhibitService: byMaterialsFlyExhibitService,
+    flyFormTemplateService: flyFormTemplateService,
+    flySearchBloc: flySearchBloc,
+  );
 
   FavoritingBloc.sharedInstance
       .init(flyExhibitService: favoritedFlyExhibitService, userBloc: userBloc);

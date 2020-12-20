@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:my_tie/bloc/fly_search_bloc.dart';
 import 'package:my_tie/models/db_names.dart';
 import 'package:my_tie/models/fly_exhibits/fly_exhibit.dart';
 import 'package:my_tie/models/new_fly/fly.dart';
@@ -30,9 +31,10 @@ abstract class FlyExhibitBloc {
   bool isEndCapIndicator = false;
   bool isFetching = false;
 
-  // final AuthBloc authBloc;
   final UserBloc userBloc;
   final FavoritingBloc favoritingBloc;
+  final FlySearchBloc flySearchBloc;
+
   final FlyExhibitService flyExhibitService;
   final FlyFormTemplateService flyFormTemplateService;
 
@@ -68,6 +70,7 @@ abstract class FlyExhibitBloc {
     this.userBloc,
     this.flyExhibitService,
     this.flyFormTemplateService,
+    this.flySearchBloc,
   }) : this.favoritingBloc = FavoritingBloc.sharedInstance {
     fliesStream = fliesStreamController.stream;
     fliesStreamController.onListen = fliesFetch;
@@ -244,6 +247,11 @@ abstract class FlyExhibitBloc {
       fliesCopy.add(FlyExhibitEndCapIndicator());
     }
     fliesStreamController.add(fliesCopy);
+
+    // In addition to sending fly exhibits to UI, we also need to add these
+    // recently fetched fly exhibits to the flySearchBloc to ensure the
+    // recently fetched flies are available when user searches for a fly.
+    flySearchBloc.addFliesExhibits(flyExhibits);
   }
 
   List<FlyExhibit> formatQueryAsFlyExhibits(

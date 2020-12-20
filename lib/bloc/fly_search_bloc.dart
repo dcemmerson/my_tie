@@ -12,10 +12,25 @@ import 'package:my_tie/models/fly_exhibits/fly_exhibit.dart';
 
 class FlySearchBloc {
   final flySearchSink = StreamController<String>();
+  final List<FlyExhibit> flyExhibits = [];
 
+  // We pass in a list of the flies streams that are used for the fly exhibit
+  // bloc part of the app.
   FlySearchBloc() {
     flySearchSink.stream
         .listen(Debounce(Duration(milliseconds: 350), _handleSearches)());
+  }
+
+  void addFliesExhibits(List<FlyExhibit> fliesIncoming) {
+    fliesIncoming.forEach((flyIncoming) {
+      if (flyExhibits.length == 0 ||
+          flyExhibits.firstWhere(
+                  (flyExhibit) => flyExhibit.fly.docId == flyIncoming.fly.docId,
+                  orElse: () => null) ==
+              null) {
+        flyExhibits.add(flyIncoming);
+      }
+    });
   }
 
   void _handleSearches(String searchTerm) {

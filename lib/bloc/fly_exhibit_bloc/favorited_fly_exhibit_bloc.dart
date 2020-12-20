@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:my_tie/bloc/fly_search_bloc.dart';
 import 'package:my_tie/models/db_names.dart';
 import 'package:my_tie/models/fly_exhibits/favorited_fly_exhibit.dart';
 import 'package:my_tie/models/fly_exhibits/fly_exhibit.dart';
@@ -26,10 +27,13 @@ class FavoritedFlyExhibitBloc extends FlyExhibitBloc {
     UserBloc userBloc,
     FlyFormTemplateService flyFormTemplateService,
     FavoritedFlyExhibitService favoritedFlyExhibitService,
+    FlySearchBloc flySearchBloc,
   }) : super(
-            userBloc: userBloc,
-            flyExhibitService: favoritedFlyExhibitService,
-            flyFormTemplateService: flyFormTemplateService) {
+          userBloc: userBloc,
+          flyExhibitService: favoritedFlyExhibitService,
+          flyFormTemplateService: flyFormTemplateService,
+          flySearchBloc: flySearchBloc,
+        ) {
     favoritingBloc.favoritedFliesStreamController.stream
         .listen(_handleFlyExhibitFavorited);
   }
