@@ -18,7 +18,7 @@ class SearchBar extends StatelessWidget {
   SearchBar({this.isSearchable});
 
   void _handleInput(String str, FlySearchBloc flySearchBloc) {
-    flySearchBloc.flySearchSink.add(str);
+    flySearchBloc.flySearchTermSink.add(str);
   }
 
   @override

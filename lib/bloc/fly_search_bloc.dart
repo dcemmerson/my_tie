@@ -11,13 +11,19 @@ import 'package:my_tie/models/fly_exhibits/fly_exhibit.dart';
 ///   search result calls.
 
 class FlySearchBloc {
-  final flySearchSink = StreamController<String>();
+  final filteredFliesStreamController = StreamController<List<FlyExhibit>>();
+
+  final _searchTermStreamController = StreamController<String>();
+  StreamSink<String> flySearchTermSink;
+
   final List<FlyExhibit> flyExhibits = [];
 
   // We pass in a list of the flies streams that are used for the fly exhibit
   // bloc part of the app.
   FlySearchBloc() {
-    flySearchSink.stream
+    flySearchTermSink = _searchTermStreamController.sink;
+
+    _searchTermStreamController.stream
         .listen(Debounce(Duration(milliseconds: 350), _handleSearches)());
   }
 
@@ -34,10 +40,19 @@ class FlySearchBloc {
   }
 
   void _handleSearches(String searchTerm) {
-    print(searchTerm);
+    if (searchTerm.length > 0) {
+      final filteredFlyExhibits = flyExhibits
+          .where((flyExhibit) => flyExhibit.containsTerm(searchTerm))
+          .toList();
+
+      print('list of flies that contain term: ');
+      print(filteredFlyExhibits);
+      filteredFliesStreamController.add(filteredFlyExhibits);
+    }
   }
 
   void close() {
-    flySearchSink.close();
+    _searchTermStreamController.close();
+    flySearchTermSink.close();
   }
 }

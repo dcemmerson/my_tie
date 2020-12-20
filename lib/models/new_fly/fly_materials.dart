@@ -78,6 +78,11 @@ class FlyMaterial {
 
   String get value =>
       properties.values.fold('', (prev, prop) => prev + prop + ' ');
+
+  bool containsTerm(String searchTerm) {
+    return properties.values
+        .any((prop) => prop.toLowerCase().contains(searchTerm));
+  }
 }
 
 class FlyMaterials {
@@ -160,6 +165,9 @@ class FlyMaterials {
 
   String getProperty(String prop) {
     return 'unimplemented';
-//    return properties[prop];
+  }
+
+  bool containsTerm(String searchTerm) {
+    return flyMaterials.any((flyMat) => flyMat.containsTerm(searchTerm));
   }
 }

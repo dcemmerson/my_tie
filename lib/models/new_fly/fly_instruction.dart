@@ -57,4 +57,9 @@ class FlyInstruction {
 
   static List<File> _toListOfFile(List imgs) =>
       imgs?.map((dynImg) => dynImg as File)?.toList();
+
+  bool containsTerm(String searchTerm) {
+    return title.toLowerCase().contains(searchTerm) ||
+        description.toLowerCase().contains(searchTerm);
+  }
 }

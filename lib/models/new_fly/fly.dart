@@ -255,4 +255,26 @@ class Fly {
                 material.flyMaterials.length > 0,
             orElse: () => null);
   }
+
+  bool _attributesContainsTerm(String searchTerm) {
+    return false;
+  }
+
+  bool _materialsContainsTerm(String searchTerm) {
+    return false;
+  }
+
+  bool _instructionsContainsTerm(String searchTerm) {
+    return false;
+  }
+
+  // args: searchTerm should be user entered search string which has already
+  //  been converted to lowercase.
+  bool containsTerm(String searchTerm) {
+    return flyName.toLowerCase().contains(searchTerm) ||
+        flyDescription.toLowerCase().contains(searchTerm) ||
+        _attributesContainsTerm(searchTerm) ||
+        _materialsContainsTerm(searchTerm) ||
+        _instructionsContainsTerm(searchTerm);
+  }
 }

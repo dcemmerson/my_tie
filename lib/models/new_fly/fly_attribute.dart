@@ -55,4 +55,8 @@ class FlyAttribute {
         return Colors.black;
     }
   }
+
+  bool containsTerm(String searchTerm) {
+    return value.toLowerCase().contains(searchTerm);
+  }
 }
