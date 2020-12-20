@@ -8,6 +8,8 @@
 ///   flage to false for option 1, or true for option 2.
 
 import 'package:flutter/material.dart';
+import 'package:my_tie/bloc/fly_search_bloc.dart';
+import 'package:my_tie/bloc/state/my_tie_state.dart';
 import 'package:my_tie/routes/routes.dart';
 
 class SearchBar extends StatelessWidget {
@@ -15,8 +17,15 @@ class SearchBar extends StatelessWidget {
 
   SearchBar({this.isSearchable});
 
+  void _handleInput(String str, FlySearchBloc flySearchBloc) {
+    flySearchBloc.flySearchSink.add(str);
+  }
+
   @override
   Widget build(BuildContext context) {
+    final searchBloc =
+        MyTieStateContainer.of(context).blocProvider.flySearchBloc;
+
     return Container(
       decoration: BoxDecoration(
           color: Color.fromRGBO(255, 255, 255, 0.7),
@@ -35,9 +44,8 @@ class SearchBar extends StatelessWidget {
                       isSearchable ? null : () => Routes.flySearchPage(context),
                   child: TextField(
                     autofocus: true,
-                    onChanged: null,
+                    onChanged: (String s) => _handleInput(s, searchBloc),
                     enabled: isSearchable, //false,
-                    // initialValue: 'abc',
                     decoration: const InputDecoration(
                       contentPadding: EdgeInsets.all(5),
                       isDense: true,
