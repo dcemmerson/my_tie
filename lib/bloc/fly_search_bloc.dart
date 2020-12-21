@@ -11,7 +11,8 @@ import 'package:my_tie/models/fly_exhibits/fly_exhibit.dart';
 ///   search result calls.
 
 class FlySearchBloc {
-  final filteredFliesStreamController = StreamController<List<FlyExhibit>>();
+  final filteredFliesStreamController =
+      StreamController<List<FlyExhibit>>.broadcast();
 
   final _searchTermStreamController = StreamController<String>();
   StreamSink<String> flySearchTermSink;

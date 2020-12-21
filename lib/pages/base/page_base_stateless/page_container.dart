@@ -15,7 +15,7 @@ import 'package:my_tie/pages/route_based_pages/new_fly_pages/new_fly_preview_pub
 import 'package:my_tie/pages/route_based_pages/new_fly_pages/new_fly_publish_page.dart';
 import 'package:my_tie/pages/route_based_pages/user_profile_pages/user_profile_edit_material_page.dart';
 import 'package:my_tie/pages/tab_based_pages/tab_page.dart';
-import 'package:my_tie/widgets/search_bar/fly_search.dart';
+import 'package:my_tie/widgets/search_bar/fly_search_results.dart';
 
 class PageContainer extends PageBase {
   final PageType _pageType;

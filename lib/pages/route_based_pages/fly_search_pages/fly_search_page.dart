@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:my_tie/widgets/search_bar/fly_search.dart';
+import 'package:my_tie/widgets/search_bar/fly_search_results.dart';
 
 class FlySearchPage extends StatelessWidget {
   static const title = 'Fly Search';
@@ -7,6 +7,6 @@ class FlySearchPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(child: FlySearch());
+    return Container(child: FlySearchResults());
   }
 }

@@ -1,21 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:my_tie/bloc/fly_exhibit_bloc/fly_exhibit_bloc.dart';
+import 'package:my_tie/bloc/fly_search_bloc.dart';
 import 'package:my_tie/models/fly_exhibits/fly_exhibit.dart';
 
-typedef BuildPage = Widget Function(FlyExhibit);
+typedef BuildPage = Widget Function(List<FlyExhibit>);
 
-class FlyExhibitDetailStreamBuilder extends StatelessWidget {
-  final String docId;
-
+class FlySearchResultsStreamBuilder extends StatelessWidget {
   // Must pass in flyExhibitBloc so we can call the getFlyExhibit(docId) on the
   // correct FlyExhibitBloc subclass.
-  final FlyExhibitBloc flyExhibitBloc;
+  final FlySearchBloc flySearchBloc;
 
   final BuildPage builder;
 
-  FlyExhibitDetailStreamBuilder({
-    @required this.docId,
-    @required this.flyExhibitBloc,
+  FlySearchResultsStreamBuilder({
+    @required this.flySearchBloc,
     @required this.builder,
   });
 
@@ -28,9 +25,9 @@ class FlyExhibitDetailStreamBuilder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-        stream: flyExhibitBloc.getFlyExhibit(docId),
+        stream: flySearchBloc.filteredFliesStreamController.stream,
         // ignore: missing_return
-        builder: (context, AsyncSnapshot<FlyExhibit> snapshot) {
+        builder: (context, AsyncSnapshot<List<FlyExhibit>> snapshot) {
           if (snapshot.hasError) {
             print(snapshot.error);
             return Text('error occurred');
