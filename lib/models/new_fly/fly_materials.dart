@@ -168,6 +168,10 @@ class FlyMaterials {
   }
 
   bool containsTerm(String searchTerm) {
-    return flyMaterials.any((flyMat) => flyMat.containsTerm(searchTerm));
+    if (flyMaterials != null) {
+      return flyMaterials.any((flyMat) => flyMat.containsTerm(searchTerm));
+    } else {
+      return false;
+    }
   }
 }

@@ -257,15 +257,15 @@ class Fly {
   }
 
   bool _attributesContainsTerm(String searchTerm) {
-    return false;
+    return attributes.any((attr) => attr.containsTerm(searchTerm));
   }
 
   bool _materialsContainsTerm(String searchTerm) {
-    return false;
+    return materials.any((mat) => mat.containsTerm(searchTerm));
   }
 
   bool _instructionsContainsTerm(String searchTerm) {
-    return false;
+    return instructions.any((instr) => instr.containsTerm(searchTerm));
   }
 
   // args: searchTerm should be user entered search string which has already

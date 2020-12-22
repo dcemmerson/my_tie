@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:my_tie/misc/debounce.dart';
 import 'package:my_tie/models/fly_exhibits/fly_exhibit.dart';
+import 'package:rxdart/subjects.dart';
 
 /// filename: fly_search_bloc.dart
 /// last modified: 12/13/2020
@@ -12,7 +13,8 @@ import 'package:my_tie/models/fly_exhibits/fly_exhibit.dart';
 
 class FlySearchBloc {
   final filteredFliesStreamController =
-      StreamController<List<FlyExhibit>>.broadcast();
+      BehaviorSubject<List<FlyExhibit>>(seedValue: []);
+  // StreamController<List<FlyExhibit>>.broadcast();
 
   final _searchTermStreamController = StreamController<String>();
   StreamSink<String> flySearchTermSink;
@@ -45,11 +47,8 @@ class FlySearchBloc {
       final filteredFlyExhibits = flyExhibits
           .where((flyExhibit) => flyExhibit.containsTerm(searchTerm))
           .toList();
-
-      print('list of flies that contain term: ');
-      print(filteredFlyExhibits);
       filteredFliesStreamController.add(filteredFlyExhibits);
-    }
+    } else {}
   }
 
   void close() {
