@@ -21,6 +21,8 @@ class FlySearchBloc {
 
   final List<FlyExhibit> flyExhibits = [];
 
+  String currSearchTerm = '';
+
   // We pass in a list of the flies streams that are used for the fly exhibit
   // bloc part of the app.
   FlySearchBloc() {
@@ -32,23 +34,25 @@ class FlySearchBloc {
 
   void addFliesExhibits(List<FlyExhibit> fliesIncoming) {
     fliesIncoming.forEach((flyIncoming) {
-      if (flyExhibits.length == 0 ||
-          flyExhibits.firstWhere(
-                  (flyExhibit) => flyExhibit.fly.docId == flyIncoming.fly.docId,
-                  orElse: () => null) ==
-              null) {
+      final existingFlyIndex = flyExhibits.indexWhere(
+          (flyExhibit) => flyExhibit.fly.docId == flyIncoming.fly.docId);
+      if (existingFlyIndex == -1) {
         flyExhibits.add(flyIncoming);
       }
     });
   }
 
-  void _handleSearches(String searchTerm) {
-    if (searchTerm.length > 0) {
+  void _handleSearches([String searchTerm]) {
+    if (searchTerm != null) {
+      currSearchTerm = searchTerm;
+    }
+
+    if (currSearchTerm.length > 0) {
       final filteredFlyExhibits = flyExhibits
-          .where((flyExhibit) => flyExhibit.containsTerm(searchTerm))
+          .where((flyExhibit) => flyExhibit.containsTerm(currSearchTerm))
           .toList();
       filteredFliesStreamController.add(filteredFlyExhibits);
-    } else {}
+    }
   }
 
   void close() {

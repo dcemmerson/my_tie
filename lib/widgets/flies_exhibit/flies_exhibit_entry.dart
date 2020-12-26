@@ -103,7 +103,6 @@ class _FliesExhibitEntryState extends State<FliesExhibitEntry>
 
   Widget _buildTile(
       FlyExhibit flyExhibit, int index, Animation<double> animation) {
-    // TextStyle textStyle = TextStyle();
     if (flyExhibit is FlyExhibitLoadingIndicator) {
       return Container(child: CircularProgressIndicator());
     } else if (flyExhibit is FlyExhibitEndCapIndicator) {
@@ -122,10 +121,6 @@ class _FliesExhibitEntryState extends State<FliesExhibitEntry>
 
   Widget _buildRemovedTile(
       FlyExhibit flyExhibit, int index, Animation<double> animation) {
-    // print('\n\n\n');
-    // print(index);
-
-    // TextStyle textStyle = TextStyle();
     if (flyExhibit is FlyExhibitLoadingIndicator)
       return Container(child: CircularProgressIndicator());
     else if (flyExhibit is FlyExhibitEndCapIndicator)
@@ -148,10 +143,6 @@ class _FliesExhibitEntryState extends State<FliesExhibitEntry>
       return AnimatedStreamList<FlyExhibit>(
           equals: FlyExhibit.equals,
           initialList: [],
-          // duration: Duration(seconds: 5),
-          // equals: (a, b) {
-          //   return FlyExhibit.equals(a as FlyExhibit, b as FlyExhibit);
-          // },
           itemBuilder: (flyExhibit, index, context, animation) =>
               _buildTile(flyExhibit, index, animation),
           itemRemovedBuilder: (flyExhibit, index, context, animation) =>

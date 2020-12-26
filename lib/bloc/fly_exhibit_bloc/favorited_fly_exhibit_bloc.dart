@@ -175,12 +175,10 @@ class FavoritedFlyExhibitBloc extends FlyExhibitBloc {
 
     final List<FlyExhibit> fliesCopy = List.from(flies);
     if (flyExhibits.isEmpty || isEndCapIndicator) {
-      print('addng end cap indicator');
       isEndCapIndicator = true;
       fliesCopy.add(FlyExhibitEndCapIndicator());
     }
-    print('send fliesCopy to ui for favorites');
-    print(fliesCopy);
+
     fliesStreamController.add(fliesCopy);
   }
 
