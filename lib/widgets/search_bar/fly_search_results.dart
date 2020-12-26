@@ -6,10 +6,16 @@ import 'package:my_tie/widgets/search_bar/fly_search_results_stream_builder.dart
 
 class FlySearchResults extends StatelessWidget {
   Widget _buildFlyExhibitSearchResults(List<FlyExhibit> flyExhibits) {
-    return Column(
-        children: flyExhibits
-            .map((flyExhibit) => FlySearchResultPreview(flyExhibit))
-            .toList());
+    return ListView.builder(
+      padding: const EdgeInsets.all(0),
+      itemCount: flyExhibits.length,
+      itemBuilder: (context, index) =>
+          FlySearchResultPreview(flyExhibits[index]),
+    );
+    // return Column(
+    //     children: flyExhibits
+    //         .map((flyExhibit) => FlySearchResultPreview(flyExhibit))
+    //         .toList());
   }
 
   @override

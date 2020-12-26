@@ -8,6 +8,7 @@ import 'package:my_tie/styles/styles.dart';
 import 'fly_exhibit_attributes.dart';
 import 'fly_exhibit_description.dart';
 import 'fly_exhibit_title.dart';
+import 'fly_image_with_loading_bar.dart';
 
 class FlyOverviewExhibit extends StatelessWidget {
   static const double defaultImageWidth = 750;
@@ -16,34 +17,12 @@ class FlyOverviewExhibit extends StatelessWidget {
 
   FlyOverviewExhibit(this.flyExhibit, {this.isDisabled = false});
 
-  Widget _imageWithLoadingBar(
-      String uri, /*double width, double height,*/ BuildContext context) {
-    return FadeInImage.assetNetwork(
-      placeholder: PlaceHolders.loadingImage,
-      image: uri,
-      imageErrorBuilder: (context, error, stackTrace) => Stack(children: [
-        Text('Error loading image',
-            style: TextStyle(color: Theme.of(context).errorColor)),
-        Image.asset(
-          PlaceHolders.loadingImage,
-          fit: BoxFit.fill,
-          width: 1000,
-        ),
-      ]),
-      // height: height,
-      fit: BoxFit.fill,
-      width: 1000,
-      fadeOutDuration: const Duration(milliseconds: 400),
-    );
-  }
-
   Widget _buildSingleView(BuildContext context, double width, double height) {
     return Column(children: [
       _buildExhibitInfo(),
       SizedBox(
         height: height / 3,
-        child:
-            _imageWithLoadingBar(flyExhibit.fly.topLevelImageUris[0], context),
+        child: FlyImageWithLoadingBar(flyExhibit.fly.topLevelImageUris[0]),
       ),
     ]);
   }
@@ -60,9 +39,8 @@ class FlyOverviewExhibit extends StatelessWidget {
             flex: 6,
             child: Padding(
               padding: const EdgeInsets.all(edgePadding),
-              child: _imageWithLoadingBar(
+              child: FlyImageWithLoadingBar(
                 flyExhibit.fly.topLevelImageUris[0],
-                context,
               ),
             ),
           ),
