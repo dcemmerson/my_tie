@@ -22,6 +22,7 @@ environment:
 
 dependencies:
   # animated_stream_list: ^1.1.0 # this package is broken as of Nov 2020. Issue opened in Github.
+  algolia: ^0.1.7
   app_settings: 4.0.2
   carousel_slider: ^2.2.1
   confetti: ^0.5.4+1

@@ -9,6 +9,7 @@ import { publishFly } from './publish_fly';
 import { userSignInFirstTime } from './user_sign_in_first_time';
 import { userMaterialUpdated } from './user_material_updated';
 import { flyWritten } from './fly';
+import { algoliaOnCreate, algoliaOnDelete } from './algolia';
 
 //  Firestore events.
 exports.addToNewFlyFormTemplate = newFlyFormIncoming.addToNewFlyFormTemplate;
@@ -19,3 +20,8 @@ exports.flyWritten = flyWritten;
 //  Https callable functions.
 exports.publishFly = publishFly;
 exports.userSignInFirstTime = userSignInFirstTime;
+
+// Algolia indexing related.
+exports.algoliaOnCreate = algoliaOnCreate;
+exports.algoliaOnDelete = algoliaOnDelete;
+
