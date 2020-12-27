@@ -53,12 +53,12 @@ class FlyExhibit {
       '$requiredMaterialCountUser / $requiredMaterialCountFly';
 
   bool containsTerm(String searchTerm) {
-    final loweredSearchTerm = searchTerm.toLowerCase();
+    // final loweredSearchTerm = searchTerm.toLowerCase();
 
-    return flyExhibitType.flyExhibitType.contains(loweredSearchTerm) ||
-        requiredMaterialCountFly.toString().contains(loweredSearchTerm) ||
-        requiredMaterialCountUser.toString().contains(loweredSearchTerm) ||
-        fly.containsTerm(loweredSearchTerm);
+    return flyExhibitType.flyExhibitType.contains(searchTerm) ||
+        requiredMaterialCountFly.toString().contains(searchTerm) ||
+        requiredMaterialCountUser.toString().contains(searchTerm) ||
+        fly.containsTerm(searchTerm);
   }
 
   static int _countFlyMaterialsOnHand(UserProfile userProfile, Fly fly) {

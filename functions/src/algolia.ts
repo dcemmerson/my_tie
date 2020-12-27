@@ -17,12 +17,8 @@ const algoliaOnCreate = functions.firestore
   .onCreate((snap, context) => {
     // Get the fly document
     const fly = snap.data();
-    fly.objectId = snap.id;
+    // fly.objectId = snap.id;
     fly.objectID = snap.id;
-    console.log('ALGOLIA_ID');
-    console.log(ALGOLIA_ID);
-    console.log('ALGOLIA_ADMIN_KEY');
-    console.log(ALGOLIA_ADMIN_KEY);
 
     return index.saveObject(fly);
   });

@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/material.dart';
@@ -62,7 +61,8 @@ Future<Widget> initApp() async {
       authService: authService,
       flyFormTemplateService: flyFormTemplateService);
 
-  final flySearchBloc = FlySearchBloc();
+  final flySearchBloc = FlySearchBloc(
+      userBloc: userBloc, flyFormTemplateService: flyFormTemplateService);
 
   final newestFlyExhibitService = NewestFlyExhibitService();
   final newestFlyExhibitBloc = NewestFlyExhibitBloc(
