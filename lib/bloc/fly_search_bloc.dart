@@ -102,8 +102,20 @@ class FlySearchBloc {
           userProfile: userProfile,
         );
       }).toList();
-      filteredFliesStreamController.add(hits);
+      filteredFliesStreamController
+          .add(mergeFlyExhibits(hits, filteredFlyExhibits));
     }
+  }
+
+  List<FlyExhibit> mergeFlyExhibits(
+      List<FlyExhibit> hits, List<FlyExhibit> filteredFlyExhibits) {
+    final hitsWithoutDups = hits.where((hit) {
+      return filteredFlyExhibits.indexWhere(
+              (flyExhibit) => flyExhibit.fly.docId == hit.fly.docId) !=
+          -1;
+    }).toList();
+
+    return [...hitsWithoutDups, ...filteredFlyExhibits];
   }
 
   void close() {
