@@ -25,9 +25,4 @@ abstract class TabPage {
   Widget widget(ScrollController parentScrollController);
 
   final ScrollController scrollController = ScrollController();
-
-  // @override
-  // Widget build(BuildContext context) {
-  //   return widget;
-  // }
 }

@@ -16,7 +16,7 @@ class ThemeManager {
       textTheme: ButtonTextTheme.primary,
     ),
     brightness: Brightness.light,
-    primaryColor: Colors.blueGrey[600],
+    primaryColor: Colors.blueGrey[500],
     accentColor: Colors.blueGrey[300],
     disabledColor: Colors.grey[700],
 //      appBarTheme: AppBarTheme(iconTheme: IconThemeData(size: AppFonts.h6)),

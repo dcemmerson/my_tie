@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my_tie/bloc/state/my_tie_state.dart';
+import 'package:my_tie/misc/placeholders.dart';
 import 'package:my_tie/pages/tab_based_pages/tab_page.dart';
 import 'package:my_tie/styles/theme_manager.dart';
 import 'package:my_tie/widgets/drawer/settings_drawer.dart';
@@ -146,8 +147,7 @@ class _PageBaseState extends State<PageBase>
           snap: true,
           floating: true,
           centerTitle: true,
-          elevation: 0.0,
-          // floating: true,
+          elevation: 10.0,
           title: SearchBar(isSearchable: false),
           textTheme: Theme.of(context).primaryTextTheme,
           actions: [
@@ -155,10 +155,20 @@ class _PageBaseState extends State<PageBase>
           ],
           pinned: true,
           bottom: TabBar(
-              controller: _tabController,
-              tabs: widget.tabPages
-                  .map((tabPage) => Tab(text: tabPage.name))
-                  .toList()),
+            controller: _tabController,
+            tabs: widget.tabPages
+                .map((tabPage) => Tab(text: tabPage.name))
+                .toList(),
+          ),
+          expandedHeight: 100,
+          flexibleSpace: FlexibleSpaceBar(
+            background: Image.asset(
+              PlaceHolders.loadingImage,
+              fit: BoxFit.fill,
+              width: 1000,
+              color: Color.fromRGBO(10, 10, 10, 0.3),
+            ),
+          ),
         ),
       ],
       body: TabBarView(
