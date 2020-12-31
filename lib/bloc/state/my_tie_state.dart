@@ -23,7 +23,7 @@ class MyTieStateContainer extends StatefulWidget {
   static MyTieState of(BuildContext context) {
     return (context.inheritFromWidgetOfExactType(_MyTieContainer)
             as _MyTieContainer)
-        .wasteagramState;
+        .myTieState;
   }
 }
 
@@ -32,12 +32,12 @@ class MyTieState extends State<MyTieStateContainer> {
   BlocProvider get blocProvider => widget.blocProvider;
   // int _newFlyFormPageCount = -1;
   bool _isDarkMode = false;
-  bool _isCompactWasteListMode = true;
+  bool _isCompactFlyListMode = true;
   bool _allUsersEntries = true;
 
   // get pageCount => _newFlyFormPageCount;
   get isDarkMode => _isDarkMode;
-  get isCompactWasteListMode => _isCompactWasteListMode;
+  get isCompactFlyListMode => _isCompactFlyListMode;
   get allUsersEntries => _allUsersEntries;
 
   @override
@@ -57,7 +57,7 @@ class MyTieState extends State<MyTieStateContainer> {
       _isDarkMode = initialDarkMode is bool
           ? initialDarkMode
           : MyTieStateContainer.initDarkMode;
-      _isCompactWasteListMode = initialCompactFlyListMode is bool
+      _isCompactFlyListMode = initialCompactFlyListMode is bool
           ? initialCompactFlyListMode
           : MyTieStateContainer.prefsCompactFlyListMode;
     });
@@ -73,10 +73,10 @@ class MyTieState extends State<MyTieStateContainer> {
     setState(() => _allUsersEntries = !_allUsersEntries);
   }
 
-  void toggleCompactWasteListMode() {
-    _prefs.setBool(MyTieStateContainer.prefsCompactFlyListModeKey,
-        !_isCompactWasteListMode);
-    setState(() => _isCompactWasteListMode = !_isCompactWasteListMode);
+  void toggleCompactFlyListMode() {
+    _prefs.setBool(
+        MyTieStateContainer.prefsCompactFlyListModeKey, !_isCompactFlyListMode);
+    setState(() => _isCompactFlyListMode = !_isCompactFlyListMode);
   }
 
   @override
@@ -85,7 +85,7 @@ class MyTieState extends State<MyTieStateContainer> {
       wasteagramState: this,
       // newFlyFormPageCount: _newFlyFormPageCount,
       isDarkMode: _isDarkMode,
-      isCompactWasteListMode: _isCompactWasteListMode,
+      isCompactFlyListMode: _isCompactFlyListMode,
       allUsersEntries: _allUsersEntries,
       blocProvider: widget.blocProvider,
       child: widget.child,
@@ -94,27 +94,27 @@ class MyTieState extends State<MyTieStateContainer> {
 }
 
 class _MyTieContainer extends InheritedWidget {
-  final MyTieState wasteagramState;
+  final MyTieState myTieState;
   final BlocProvider blocProvider;
   final bool isDarkMode;
-  final bool isCompactWasteListMode;
+  final bool isCompactFlyListMode;
   final bool allUsersEntries;
 
   _MyTieContainer({
     Key key,
     @required Widget child,
-    @required this.wasteagramState,
+    @required this.myTieState,
     @required this.blocProvider,
     @required this.isDarkMode,
     @required this.allUsersEntries,
-    @required this.isCompactWasteListMode,
+    @required this.isCompactFlyListMode,
   }) : super(key: key, child: child);
 
   @override
   bool updateShouldNotify(_MyTieContainer oldWidget) {
-    return oldWidget.wasteagramState != this.wasteagramState ||
+    return oldWidget.myTieState != this.myTieState ||
         oldWidget.isDarkMode != this.isDarkMode ||
-        oldWidget.isCompactWasteListMode != this.isCompactWasteListMode ||
+        oldWidget.isCompactFlyListMode != this.isCompactFlyListMode ||
         oldWidget.allUsersEntries != this.allUsersEntries;
   }
 }
