@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:my_tie/misc/placeholders.dart';
+import 'package:my_tie/bloc/state/my_tie_state.dart';
 import 'package:my_tie/models/fly_exhibits/fly_exhibit.dart';
 import 'package:my_tie/routes/fly_exhibit_routes.dart';
 import 'package:my_tie/styles/dimensions.dart';
@@ -68,6 +68,8 @@ class FlyOverviewExhibit extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final compactMode = MyTieStateContainer.of(context).isCompactFlyListMode;
+
     return InkWell(
       onTap: isDisabled
           ? null

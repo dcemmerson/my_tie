@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:my_tie/styles/styles.dart';
 import 'package:my_tie/widgets/drawer/account_dropdown.dart';
-import 'package:my_tie/widgets/drawer/switches/all_users_entries_switch.dart';
-import 'package:my_tie/widgets/drawer/switches/compact_waste_list_switch.dart';
+// import 'package:my_tie/widgets/drawer/switches/all_users_entries_switch.dart';
+import 'package:my_tie/widgets/drawer/switches/compact_fly_list_switch.dart';
 import 'package:my_tie/widgets/drawer/switches/theme_switch.dart';
 
 class SettingsDrawer extends StatelessWidget {
@@ -16,7 +16,7 @@ class SettingsDrawer extends StatelessWidget {
           Container(
             alignment: Alignment.topLeft,
             child: Row(children: [
-              Text('Wasteagram settings',
+              Text('Settings',
                   style: TextStyle(
                       fontSize: AppFonts.h3,
                       color: Theme.of(context).primaryColorLight))
@@ -45,12 +45,7 @@ class SettingsDrawer extends StatelessWidget {
             Padding(
               padding: EdgeInsets.fromLTRB(
                   AppPadding.p7, AppPadding.p2, AppPadding.p7, AppPadding.p4),
-              child: CompactWasteListSwitch(),
-            ),
-            Padding(
-              padding: EdgeInsets.fromLTRB(
-                  AppPadding.p7, AppPadding.p2, AppPadding.p7, AppPadding.p4),
-              child: AllUsersEntriesSwitch(),
+              child: CompactFlyListSwitch(),
             ),
           ],
         ));

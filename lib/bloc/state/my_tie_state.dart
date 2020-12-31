@@ -33,12 +33,10 @@ class MyTieState extends State<MyTieStateContainer> {
   // int _newFlyFormPageCount = -1;
   bool _isDarkMode = false;
   bool _isCompactFlyListMode = true;
-  bool _allUsersEntries = true;
 
   // get pageCount => _newFlyFormPageCount;
-  get isDarkMode => _isDarkMode;
-  get isCompactFlyListMode => _isCompactFlyListMode;
-  get allUsersEntries => _allUsersEntries;
+  bool get isDarkMode => _isDarkMode;
+  bool get isCompactFlyListMode => _isCompactFlyListMode;
 
   @override
   void initState() {
@@ -68,11 +66,6 @@ class MyTieState extends State<MyTieStateContainer> {
     setState(() => _isDarkMode = !_isDarkMode);
   }
 
-  void toggleAllUsersEntries() {
-    _prefs.setBool(MyTieStateContainer.prefsAllUsersEntries, !_allUsersEntries);
-    setState(() => _allUsersEntries = !_allUsersEntries);
-  }
-
   void toggleCompactFlyListMode() {
     _prefs.setBool(
         MyTieStateContainer.prefsCompactFlyListModeKey, !_isCompactFlyListMode);
@@ -82,11 +75,10 @@ class MyTieState extends State<MyTieStateContainer> {
   @override
   Widget build(BuildContext context) {
     return _MyTieContainer(
-      wasteagramState: this,
+      myTieState: this,
       // newFlyFormPageCount: _newFlyFormPageCount,
       isDarkMode: _isDarkMode,
       isCompactFlyListMode: _isCompactFlyListMode,
-      allUsersEntries: _allUsersEntries,
       blocProvider: widget.blocProvider,
       child: widget.child,
     );
@@ -98,7 +90,6 @@ class _MyTieContainer extends InheritedWidget {
   final BlocProvider blocProvider;
   final bool isDarkMode;
   final bool isCompactFlyListMode;
-  final bool allUsersEntries;
 
   _MyTieContainer({
     Key key,
@@ -106,7 +97,6 @@ class _MyTieContainer extends InheritedWidget {
     @required this.myTieState,
     @required this.blocProvider,
     @required this.isDarkMode,
-    @required this.allUsersEntries,
     @required this.isCompactFlyListMode,
   }) : super(key: key, child: child);
 
@@ -114,7 +104,6 @@ class _MyTieContainer extends InheritedWidget {
   bool updateShouldNotify(_MyTieContainer oldWidget) {
     return oldWidget.myTieState != this.myTieState ||
         oldWidget.isDarkMode != this.isDarkMode ||
-        oldWidget.isCompactFlyListMode != this.isCompactFlyListMode ||
-        oldWidget.allUsersEntries != this.allUsersEntries;
+        oldWidget.isCompactFlyListMode != this.isCompactFlyListMode;
   }
 }
