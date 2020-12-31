@@ -7,7 +7,7 @@ import 'package:my_tie/styles/styles.dart';
 
 import 'fly_exhibit_attributes.dart';
 import 'fly_exhibit_description.dart';
-import 'fly_exhibit_title.dart';
+import 'fly_exhibit_header.dart';
 import 'fly_image_with_loading_bar.dart';
 
 class FlyOverviewExhibit extends StatelessWidget {
@@ -16,6 +16,25 @@ class FlyOverviewExhibit extends StatelessWidget {
   final FlyExhibit flyExhibit;
 
   FlyOverviewExhibit(this.flyExhibit, {this.isDisabled = false});
+
+  Widget _buildCompactMode(BuildContext context) {
+    return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+      Container(
+        alignment: Alignment.centerLeft,
+        child: FlyExhibitHeader(
+          flyExhibit: flyExhibit,
+          // title: flyExhibit.fly.flyName,
+          // materialsFraction: flyExhibit.materialsFraction,
+          centered: false,
+        ),
+      ),
+      SizedBox(
+        width: 100,
+        height: 100,
+        child: FlyImageWithLoadingBar(flyExhibit.fly.topLevelImageUris[0]),
+      ),
+    ]);
+  }
 
   Widget _buildSingleView(BuildContext context, double width, double height) {
     return Column(children: [
@@ -55,7 +74,7 @@ class FlyOverviewExhibit extends StatelessWidget {
 
   Widget _buildExhibitInfo() {
     return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-      FlyExhibitTitle(
+      FlyExhibitHeader(
         flyExhibit: flyExhibit,
         // title: flyExhibit.fly.flyName,
         // materialsFraction: flyExhibit.materialsFraction,
@@ -85,11 +104,13 @@ class FlyOverviewExhibit extends StatelessWidget {
                 const EdgeInsets.fromLTRB(0, AppPadding.p4, 0, AppPadding.p2),
             child: Column(
               children: [
-                constraints.maxWidth > Dimensions.sideBySideCutoffWidth
-                    ? _buildSideBySideView(
-                        context, constraints.maxWidth, screenHeight)
-                    : _buildSingleView(
-                        context, constraints.maxWidth, screenHeight)
+                compactMode
+                    ? _buildCompactMode(context)
+                    : constraints.maxWidth > Dimensions.sideBySideCutoffWidth
+                        ? _buildSideBySideView(
+                            context, constraints.maxWidth, screenHeight)
+                        : _buildSingleView(
+                            context, constraints.maxWidth, screenHeight)
               ],
             ),
           ),

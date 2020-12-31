@@ -5,12 +5,11 @@ import 'package:my_tie/models/fly_exhibits/fly_exhibit.dart';
 import 'package:my_tie/pages/tab_based_pages/tab_page.dart';
 import 'package:my_tie/styles/dimensions.dart';
 import 'package:my_tie/styles/styles.dart';
-import 'package:my_tie/styles/string_format.dart';
 import 'package:my_tie/widgets/flies_exhibit/fly_exhibit_detail_stream_builder.dart';
 
 import 'package:my_tie/widgets/flies_exhibit/fly_exhibit_overview/fly_exhibit_attributes.dart';
 import 'package:my_tie/widgets/flies_exhibit/fly_exhibit_overview/fly_exhibit_description.dart';
-import 'package:my_tie/widgets/flies_exhibit/fly_exhibit_overview/fly_exhibit_title.dart';
+import 'package:my_tie/widgets/flies_exhibit/fly_exhibit_overview/fly_exhibit_header.dart';
 
 import 'fly_carousel.dart';
 import 'fly_exhibit_detail_instructions.dart';
@@ -19,7 +18,6 @@ import 'fly_exhibit_detail_materials.dart';
 // ignore: must_be_immutable
 class FlyExhibitDetail extends StatelessWidget {
   BuildContext context;
-  Widget _materialsHeader;
 
   Widget _buildSingleAttributesView(FlyExhibit flyExhibit, BuildContext context,
       double width, double height) {
@@ -60,7 +58,7 @@ class FlyExhibitDetail extends StatelessWidget {
 
   Widget _buildExhibitAttributeInfo(FlyExhibit flyExhibit) {
     return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-      FlyExhibitTitle(
+      FlyExhibitHeader(
         flyExhibit: flyExhibit,
         centered: true,
         detailMode: true,
@@ -110,7 +108,6 @@ class FlyExhibitDetail extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     this.context = context;
-    _materialsHeader = _createHeaderLabel(context, 'Materials');
     // _instructionsHeader = _createHeaderLabel(context, 'Instructions');
 
     // Only use this FlyExhibit passed in to reference (1) docId and

@@ -3,7 +3,6 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:my_tie/models/fly_exhibits/fly_exhibit.dart';
 import 'package:my_tie/routes/fly_exhibit_routes.dart';
-import 'package:my_tie/widgets/flies_exhibit/fly_exhibit_overview/favorite_fly.dart';
 import 'package:my_tie/widgets/flies_exhibit/fly_exhibit_overview/fly_image_with_loading_bar.dart';
 
 class FlySearchResultPreview extends StatelessWidget {

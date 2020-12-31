@@ -7,8 +7,12 @@ import 'package:my_tie/styles/styles.dart';
 class FavoriteFly extends StatelessWidget {
   final FlyExhibit flyExhibit;
   final bool detailMode;
+  final bool centered;
 
-  FavoriteFly({@required this.flyExhibit, this.detailMode = false});
+  FavoriteFly(
+      {@required this.flyExhibit,
+      this.detailMode = false,
+      this.centered = true});
 
   void _handleFavorited(BuildContext context) {
     switch (flyExhibit.flyExhibitType) {
@@ -47,6 +51,7 @@ class FavoriteFly extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      alignment: centered ? Alignment.topCenter : Alignment.topLeft,
       padding: EdgeInsets.fromLTRB(AppPadding.p2, 0, AppPadding.p2, 0),
       child: InkWell(
           onTap: () => _handleFavorited(context),
