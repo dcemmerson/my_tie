@@ -5,9 +5,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class MyTieStateContainer extends StatefulWidget {
   static const initDarkMode = false;
-  static const initCompactWasteListMode = true;
+  static const prefsCompactFlyListMode = true;
   static const prefsDarkMode = 'darkMode';
-  static const prefsCompactWasteListMode = 'compactMode';
+  static const prefsCompactFlyListModeKey = 'compactMode';
   static const prefsAllUsersEntries = 'allUsersEntries';
 
   final Widget child;
@@ -50,16 +50,16 @@ class MyTieState extends State<MyTieStateContainer> {
     _prefs = await SharedPreferences.getInstance();
     var initialDarkMode = _prefs.getBool(MyTieStateContainer.prefsDarkMode);
 
-    var initialCompactWasteListMode =
-        _prefs.getBool(MyTieStateContainer.prefsCompactWasteListMode);
+    var initialCompactFlyListMode =
+        _prefs.getBool(MyTieStateContainer.prefsCompactFlyListModeKey);
 
     setState(() {
       _isDarkMode = initialDarkMode is bool
           ? initialDarkMode
           : MyTieStateContainer.initDarkMode;
-      _isCompactWasteListMode = initialCompactWasteListMode is bool
-          ? initialCompactWasteListMode
-          : MyTieStateContainer.initCompactWasteListMode;
+      _isCompactWasteListMode = initialCompactFlyListMode is bool
+          ? initialCompactFlyListMode
+          : MyTieStateContainer.prefsCompactFlyListMode;
     });
   }
 
@@ -74,7 +74,7 @@ class MyTieState extends State<MyTieStateContainer> {
   }
 
   void toggleCompactWasteListMode() {
-    _prefs.setBool(MyTieStateContainer.prefsCompactWasteListMode,
+    _prefs.setBool(MyTieStateContainer.prefsCompactFlyListModeKey,
         !_isCompactWasteListMode);
     setState(() => _isCompactWasteListMode = !_isCompactWasteListMode);
   }
